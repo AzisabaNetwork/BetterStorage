@@ -1,0 +1,4 @@
+name: BetterStorage
+version: '${project.version}'
+main: felnull.dev.betterstorage
+api-version: '1.16'
