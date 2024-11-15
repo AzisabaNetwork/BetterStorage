@@ -12,10 +12,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class CommonListener implements Listener {
 
-    public static void init(betterstorage plugin) {
-        Bukkit.getServer().getPluginManager().registerEvents(new CommonListener(), plugin);
-    }
 
+    /*  隷下のプラグインに処理させる内容
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event){
         //blockに右クリックしたブロックを取得して入れている
@@ -27,4 +25,5 @@ public class CommonListener implements Listener {
 
         }
     }
+    */
 }

@@ -66,6 +66,10 @@
           <id>jorel</id>
           <url>https://repo.codemc.org/repository/maven-public/</url>
       </repository>
+      <repository>
+          <id>net.azisaba</id>
+          <url>https://repo.azisaba.net/repository/maven-public/</url>
+      </repository>
   </repositories>
 
   <dependencies>
@@ -86,6 +90,16 @@
           <artifactId>commandapi-bukkit-core</artifactId>
           <version>9.5.1</version>
           <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>dev.felnull</groupId>
+          <artifactId>bettergui</artifactId>
+          <version>1.0</version>
+      </dependency>
+      <dependency>
+          <groupId>dev.felnull</groupId>
+          <artifactId>MariaIO</artifactId>
+          <version>1.0-20241115.035849-1</version>
       </dependency>
   </dependencies>
 </project>
