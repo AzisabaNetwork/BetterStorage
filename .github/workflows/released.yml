@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+
+jobs:
+  # ビルドとリリースまでの処理
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Setup JDK #JDKセットアップ
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '16'
+
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+
+      - name: Collect Releases #リリースしたものを収集
+        run: |
+          mkdir release
+          cp target/*.jar release/
+          
+
+      - name: Upload Artifact #アーティファクトをアップロード
+        uses: actions/upload-artifact@v3
+        with:
+          name: releases
+          path: release/*
+
+      - name: ${{ github.ref_name }}リリース #GiHubにリリース
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release/*

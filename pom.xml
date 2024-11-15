@@ -6,7 +6,7 @@
 
   <groupId>felnull.dev</groupId>
   <artifactId>BetterStorage</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <name>BetterStorage</name>
@@ -102,4 +102,15 @@
           <version>1.0-20241115.035849-1</version>
       </dependency>
   </dependencies>
+  
+  <distributionManagement>
+      <repository>
+          <id>azisaba</id>
+          <url>https://repo.azisaba.net/repository/maven-releases/</url>
+      </repository>
+      <snapshotRepository>
+          <id>azisaba</id>
+          <url>https://repo.azisaba.net/repository/maven-snapshots/</url>
+      </snapshotRepository>
+  </distributionManagement>
 </project>
