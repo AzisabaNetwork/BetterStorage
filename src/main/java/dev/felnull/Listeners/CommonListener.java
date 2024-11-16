@@ -1,4 +1,4 @@
-package felnull.dev.Listeners;
+package dev.felnull.Listeners;
 
 import org.bukkit.event.Listener;
 

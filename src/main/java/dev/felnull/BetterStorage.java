@@ -1,6 +1,6 @@
-package felnull.dev;
+package dev.felnull;
 
-import felnull.dev.Listeners.CommonListener;
+import dev.felnull.Listeners.CommonListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

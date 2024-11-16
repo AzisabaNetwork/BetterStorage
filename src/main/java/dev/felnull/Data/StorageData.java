@@ -1,4 +1,4 @@
-package felnull.dev.Data;
+package dev.felnull.Data;
 
 import org.bukkit.inventory.Inventory;
 
