@@ -4,11 +4,12 @@ import felnull.dev.Listeners.CommonListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class betterstorage extends JavaPlugin {
-    public static final String PLUGIN_ID = "betterstorage";
+public final class BetterStorage extends JavaPlugin {
+    public static BetterStorage BSPlugin; //プラグインのインスタンス
 
     @Override
     public void onEnable() {
+        BSPlugin = this;
         initEventListeners();
         //SQLiteに接続
         //MariaDBデータベースに接続
