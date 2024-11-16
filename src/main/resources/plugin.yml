@@ -2,3 +2,5 @@ name: BetterStorage
 version: '${project.version}'
 main: dev.felnull.BetterStorage
 api-version: '1.16'
+depend:
+  - BetterGUI
