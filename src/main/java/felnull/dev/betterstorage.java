@@ -5,9 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class betterstorage extends JavaPlugin {
-
-    public static final String PLUGIN_NAME = "BetterStorage";
-
     public static final String PLUGIN_ID = "betterstorage";
 
     @Override
