@@ -19,4 +19,16 @@ public class InventoryData {
         this.requirePermission = requirePermission;
         this.itemStackSlot = itemStackSlot;
     }
+
+    public void saveInventory(Inventory inventory) {
+        itemStackSlot.clear();
+        for (int i = 0; i < inventory.getSize(); i++) {
+            ItemStack item = inventory.getItem(i);
+
+            // 空でないスロットのみをマップに追加
+            if (item != null) {
+                itemStackSlot.put(i, item);
+            }
+        }
+    }
 }
