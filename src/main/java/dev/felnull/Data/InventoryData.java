@@ -3,6 +3,7 @@ package dev.felnull.Data;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,15 +21,17 @@ public class InventoryData {
         this.itemStackSlot = itemStackSlot;
     }
 
-    public void saveInventory(Inventory inventory) {
-        itemStackSlot.clear();
+    public boolean saveInventory(Inventory inventory) {
+        Map<Integer, ItemStack> newItemStackSlot = new HashMap<>();
         for (int i = 0; i < inventory.getSize(); i++) {
             ItemStack item = inventory.getItem(i);
 
             // 空でないスロットのみをマップに追加
             if (item != null) {
-                itemStackSlot.put(i, item);
+                newItemStackSlot.put(i, item);
             }
         }
+        this.itemStackSlot = newItemStackSlot;
+        return false;
     }
 }
