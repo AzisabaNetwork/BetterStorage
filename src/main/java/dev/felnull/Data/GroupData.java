@@ -25,7 +25,7 @@ public class GroupData {
         this.storageData = storageData;
     }
 
-    public GroupData (@NotNull String groupName,@NotNull Player player, boolean isPrivate, StorageData storageData) {
+    public GroupData (@NotNull String groupName,@NotNull Player player, StorageData storageData) {
         this.groupName = groupName;
 
         //引数で得たプレイヤーをメンバに追加してowner権限を付与する
