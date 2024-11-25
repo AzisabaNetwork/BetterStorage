@@ -25,8 +25,8 @@ public class GroupData {
         this.storageData = storageData;
     }
 
-    public GroupData (@NotNull String groupName,@NotNull Player player, StorageData storageData) {
-        this.groupName = groupName;
+    public GroupData (@NotNull Player player, StorageData storageData) {
+        this.groupName = player.getUniqueId().toString();
 
         //引数で得たプレイヤーをメンバに追加してowner権限を付与する
         playerList = new HashSet<>();
