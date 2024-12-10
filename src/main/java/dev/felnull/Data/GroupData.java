@@ -14,8 +14,9 @@ public class GroupData {
     public Map<Player,String[]> playerPermission; //プレイヤーが保持している役職
     public boolean isPrivate; //個人用グループか否か
     public StorageData storageData; //グループ保有のストレージデータ null許容
+    public String ownerPlugin;
 
-    public GroupData (@NotNull String groupName,@NotNull Set<Player> playerList,@NotNull Map<Player,String[]> playerPermission, boolean isPrivate, StorageData storageData) {
+    public GroupData (@NotNull String groupName,@NotNull Set<Player> playerList,@NotNull Map<Player,String[]> playerPermission, boolean isPrivate, StorageData storageData, String ownerPlugin) {
         this.groupName = groupName;
         this.playerList = playerList;
         this.playerPermission = playerPermission;
@@ -23,11 +24,12 @@ public class GroupData {
         storageData.groupName = groupName;
         storageData.groupData = this;
         this.storageData = storageData;
+        this.ownerPlugin = ownerPlugin;
     }
 
-    public GroupData (@NotNull Player player, StorageData storageData) {
-        this.groupName = player.getUniqueId().toString();
+    public GroupData (@NotNull Player player, StorageData storageData, String ownerPlugin) {
 
+        this.groupName = player.getUniqueId().toString();
         //引数で得たプレイヤーをメンバに追加してowner権限を付与する
         playerList = new HashSet<>();
         playerPermission = new HashMap<>();
@@ -40,6 +42,7 @@ public class GroupData {
         storageData.groupName = groupName;
         storageData.groupData = this;
         this.storageData = storageData;
+        this.ownerPlugin = ownerPlugin;
     }
 
 }
