@@ -1,18 +1,21 @@
 package dev.felnull;
 
+import dev.felnull.DataIO.DatabaseManager;
 import dev.felnull.Listeners.CommonListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class BetterStorage extends JavaPlugin {
     public static BetterStorage BSPlugin; //プラグインのインスタンス
+    private DatabaseManager dbManager;
 
     @Override
     public void onEnable() {
         BSPlugin = this;
         initEventListeners();
-        //SQLiteに接続
-        //MariaDBデータベースに接続
+        dbManager = new DatabaseManager();
+        dbManager.connect();
+        saveDefaultConfig();
         //ロガーの起動
         //Vault呼び出し
         //CSDirectorをnewで呼び出してメインクラスのpublic変数に置く
@@ -26,7 +29,11 @@ public final class BetterStorage extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        dbManager.disconnect();
     }
-    
+
+    public DatabaseManager getDatabaseManager() {
+        return dbManager;
+    }
     
 }

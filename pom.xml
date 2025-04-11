@@ -77,18 +77,17 @@
           <version>1.0.4</version>
           <scope>provided</scope>
       </dependency>
-      <dependency>
-          <groupId>dev.felnull</groupId>
-          <artifactId>MariaIO</artifactId>
-          <version>1.0-20241115.035849-1</version>
-          <scope>provided</scope>
-      </dependency>
       <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
       <dependency>
           <groupId>org.projectlombok</groupId>
           <artifactId>lombok</artifactId>
           <version>1.18.36</version>
           <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>com.zaxxer</groupId>
+          <artifactId>HikariCP</artifactId>
+          <version>6.3.0</version>
       </dependency>
 
   </dependencies>

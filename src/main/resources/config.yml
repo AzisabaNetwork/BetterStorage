@@ -1,0 +1,6 @@
+database:
+  ip: "localhost"
+  port: 3306
+  name: "storage_plugin"
+  username: "betterstorage"
+  password: "password"
