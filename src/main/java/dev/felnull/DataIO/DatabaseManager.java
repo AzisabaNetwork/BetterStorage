@@ -17,7 +17,8 @@ public class DatabaseManager {
     String password = BetterStorage.BSPlugin.getConfig().getString("database.password");
 
     public void connect() {
-        String jdbcUrl = "jdbc:mariadb://" + ip + ":" + port + "/" + dbName;
+        String jdbcUrl = "jdbc:mariadb://" + ip + ":" + port + "/" + dbName
+                + "?useUnicode=true&characterEncoding=utf8mb4";
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(jdbcUrl);
         config.setUsername(username);
