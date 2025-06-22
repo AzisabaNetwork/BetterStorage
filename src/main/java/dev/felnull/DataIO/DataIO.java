@@ -107,7 +107,7 @@ public class DataIO {
     }
 
     private static void saveInventoryData(Connection conn, GroupData g) throws SQLException {
-        String sql = "REPLACE INTO inventory_table (group_name, plugin_name, page_id, display_name, rows, require_permission) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "REPLACE INTO inventory_table (group_name, plugin_name, page_id, display_name, row_count, require_permission) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (Map.Entry<String, InventoryData> entry : g.storageData.storageInventory.entrySet()) {
                 InventoryData inv = entry.getValue();
@@ -143,6 +143,85 @@ public class DataIO {
                 }
             }
             ps.executeBatch();
+        }
+    }
+
+    public static boolean saveInventoryOnly(DatabaseManager db, GroupData g, String pageId) {
+        try (Connection conn = db.getConnection()) {
+            InventoryData inv = g.storageData.storageInventory.get(pageId);
+            if (inv == null) return false;
+
+            // version管理（オプション）
+            long dbVersion = getGroupVersion(conn, g.groupName);
+            if (dbVersion != g.version) return false;
+            g.version = dbVersion + 1;
+
+            // inventory_table
+            String invSql = "REPLACE INTO inventory_table (group_name, plugin_name, page_id, display_name, row_count, require_permission) VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement ps = conn.prepareStatement(invSql)) {
+                ps.setString(1, g.groupName);
+                ps.setString(2, g.ownerPlugin);
+                ps.setString(3, pageId);
+                ps.setString(4, inv.displayName);
+                ps.setInt(5, inv.rows);
+                ps.setString(6, gson.toJson(inv.requirePermission));
+                ps.executeUpdate();
+            }
+
+            // inventory_item_table
+            String itemSql = "REPLACE INTO inventory_item_table (group_name, plugin_name, page_id, slot, itemstack, display_name, material, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement ps = conn.prepareStatement(itemSql)) {
+                for (Map.Entry<Integer, ItemStack> itemEntry : inv.itemStackSlot.entrySet()) {
+                    ItemStack item = itemEntry.getValue();
+                    ps.setString(1, g.groupName);
+                    ps.setString(2, g.ownerPlugin);
+                    ps.setString(3, pageId);
+                    ps.setInt(4, itemEntry.getKey());
+                    ps.setString(5, ItemSerializer.serializeToBase64(item));
+                    ps.setString(6, item.hasItemMeta() ? item.getItemMeta().getDisplayName() : "");
+                    ps.setString(7, item.getType().name());
+                    ps.setInt(8, item.getAmount());
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+            }
+
+            // tag_table
+            String tagSql = "REPLACE INTO tag_table (group_name, plugin_name, page_id, user_tag) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement ps = conn.prepareStatement(tagSql)) {
+                if (inv.userTag != null) {
+                    for (String tag : inv.userTag) {
+                        ps.setString(1, g.groupName);
+                        ps.setString(2, g.ownerPlugin);
+                        ps.setString(3, pageId);
+                        ps.setString(4, tag);
+                        ps.addBatch();
+                    }
+                }
+                ps.executeBatch();
+            }
+
+            // group_table の version 更新（省略しても動くけど整合性のためにやるならやる）
+            saveGroupTable(conn, g);
+
+            return true;
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("Inventory保存失敗: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static long getGroupVersion(Connection conn, String groupName) throws SQLException {
+        String sql = "SELECT version FROM group_table WHERE group_name = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, groupName);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("version");
+                } else {
+                    return 0; // 存在しない場合は初期値として 0 を返す
+                }
+            }
         }
     }
 
@@ -253,7 +332,7 @@ public class DataIO {
     /** inventory_table + items + tags を読み込み */
     private static Map<String, InventoryData> loadInventoryData(Connection conn, String groupName, String pluginName) throws SQLException {
         Map<String, InventoryData> map = new HashMap<>();
-        String sql = "SELECT page_id, display_name, rows, require_permission FROM inventory_table WHERE group_name = ? AND plugin_name = ?";
+        String sql = "SELECT page_id, display_name, row_count, require_permission FROM inventory_table WHERE group_name = ? AND plugin_name = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, groupName);
             ps.setString(2, pluginName);
@@ -261,7 +340,7 @@ public class DataIO {
                 while (rs.next()) {
                     String pageId = rs.getString("page_id");
                     String display = rs.getString("display_name");
-                    int rows = rs.getInt("rows");
+                    int rows = rs.getInt("row_count");
                     Set<String> reqPerm = gson.fromJson(rs.getString("require_permission"), new TypeToken<Set<String>>(){}.getType());
                     Map<Integer, ItemStack> slotMap = loadInventoryItems(conn, groupName, pluginName, pageId);
                     map.put(pageId, new InventoryData(null, display, rows, reqPerm, slotMap));

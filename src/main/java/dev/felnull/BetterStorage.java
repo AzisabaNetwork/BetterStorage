@@ -1,6 +1,7 @@
 package dev.felnull;
 
 import dev.felnull.DataIO.DatabaseManager;
+import dev.felnull.DataIO.TableInitializer;
 import dev.felnull.Listeners.CommonListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,9 +16,14 @@ public final class BetterStorage extends JavaPlugin {
     @Override
     public void onEnable() {
         BSPlugin = this;
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+            //shadeしても読み込まれないバグを直すおまじないコード
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         initEventListeners();
         dbManager = new DatabaseManager();
-        dbManager.connect();
         saveDefaultConfig();
         LogCleanerScheduler.schedule(dbManager);
         //ロガーの起動
@@ -40,5 +46,5 @@ public final class BetterStorage extends JavaPlugin {
     public DatabaseManager getDatabaseManager() {
         return dbManager;
     }
-    
+
 }
