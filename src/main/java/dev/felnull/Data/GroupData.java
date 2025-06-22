@@ -11,14 +11,17 @@ import java.util.Set;
 
 public class GroupData {
     public final String groupName; //グループ名　プレイヤー個人の場合はプレイヤーUUID
+    public String displayName;
     public Set<OfflinePlayer> playerList; //グループ所属のプレイヤーリスト 最低１つは格納されるはず
     public Map<OfflinePlayer,String[]> playerPermission; //プレイヤーが保持している役職
     public boolean isPrivate; //個人用グループか否か
     public StorageData storageData; //グループ保有のストレージデータ null許容
     public String ownerPlugin;
+    public long version = 0;
 
-    public GroupData (@NotNull String groupName,@NotNull Set<OfflinePlayer> playerList,@NotNull Map<OfflinePlayer,String[]> playerPermission, boolean isPrivate, StorageData storageData, String ownerPlugin) {
+    public GroupData (@NotNull String groupName, @NotNull String displayName,@NotNull Set<OfflinePlayer> playerList,@NotNull Map<OfflinePlayer,String[]> playerPermission, boolean isPrivate, StorageData storageData, String ownerPlugin) {
         this.groupName = groupName;
+        this.displayName = displayName;
         this.playerList = playerList;
         this.playerPermission = playerPermission;
         this.isPrivate = isPrivate;

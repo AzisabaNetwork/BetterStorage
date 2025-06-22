@@ -25,9 +25,27 @@ public class DataIO {
     // ===========================================================
 
     /** グループ全体を保存（各テーブルへの分割保存） */
-    public static void saveGroupData(DatabaseManager db, GroupData g) {
+    public static boolean saveGroupData(DatabaseManager db, GroupData g, long clientVersion) {
         try (Connection conn = db.getConnection()) {
-            saveGroupTable(conn, g);
+            // 最新version取得
+            String selectSql = "SELECT version FROM group_table WHERE group_name = ?";
+            long dbVersion = 0;
+            try (PreparedStatement ps = conn.prepareStatement(selectSql)) {
+                ps.setString(1, g.groupName);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) dbVersion = rs.getLong("version");
+                }
+            }
+            // バージョン不一致なら競合
+            if (dbVersion != clientVersion) {
+                return false;
+            }
+
+            // versionを+1
+            g.version = dbVersion + 1;
+
+            // ---- ここから従来の保存処理 ----
+            saveGroupTable(conn, g);          // versionも更新すること！
             saveGroupMembers(conn, g);
             if (g.storageData != null) {
                 saveStorageData(conn, g);
@@ -35,18 +53,24 @@ public class DataIO {
                 saveInventoryItems(conn, g);
                 saveTags(conn, g);
             }
+            // ---- ここまで ----
+
+            return true;
         } catch (SQLException e) {
             Bukkit.getLogger().warning("GroupDataの保存に失敗: " + e.getMessage());
+            return false;
         }
     }
 
     // ---------- SAVE / group ----------
     private static void saveGroupTable(Connection conn, GroupData g) throws SQLException {
-        String sql = "REPLACE INTO group_table (group_name, is_private, group_uuid) VALUES (?, ?, ?)";
+        String sql = "REPLACE INTO group_table (group_name, display_name, is_private, owner_plugin, version) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, g.groupName);
-            ps.setBoolean(2, g.isPrivate);
-            ps.setString(3, g.groupName);
+            ps.setString(2, g.displayName); // 新規
+            ps.setBoolean(3, g.isPrivate);
+            ps.setString(4, g.ownerPlugin);
+            ps.setLong(5, g.version);
             ps.executeUpdate();
         }
     }
@@ -141,11 +165,6 @@ public class DataIO {
             ps.executeBatch();
         }
     }
-
-    // ===========================================================
-    // (code unchanged from previous section)
-    // ... [SAVE code here, omitted for brevity in this view] ...
-
     // ===========================================================
     // ===== 2. LOAD ============================================
     // ===========================================================
@@ -154,26 +173,36 @@ public class DataIO {
     public static GroupData loadGroupData(DatabaseManager db, String groupName) {
         try (Connection conn = db.getConnection()) {
             // --- group_table ------------------------------
+            String displayName = null;
             boolean isPrivate;
-            try (PreparedStatement ps = conn.prepareStatement("SELECT is_private FROM group_table WHERE group_name = ?")) {
+            long version = 0;
+            String ownerPlugin = null;
+
+            // display_name, is_private, version, owner_plugin も一度に取得
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "SELECT display_name, is_private, version, owner_plugin FROM group_table WHERE group_name = ?")) {
                 ps.setString(1, groupName);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (!rs.next()) return null;  // 無ければ null
+                    displayName = rs.getString("display_name");
                     isPrivate = rs.getBoolean("is_private");
+                    version = rs.getLong("version");
+                    ownerPlugin = rs.getString("owner_plugin");
                 }
             }
 
             // --- group_member_table -----------------------
             Set<OfflinePlayer> playerList = new HashSet<>();
             Map<OfflinePlayer, String[]> playerPerm = new HashMap<>();
-            try (PreparedStatement ps = conn.prepareStatement("SELECT member_uuid, role FROM group_member_table WHERE group_uuid = ?")) {
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "SELECT member_uuid, role FROM group_member_table WHERE group_uuid = ?")) {
                 ps.setString(1, groupName);
                 try (ResultSet rs = ps.executeQuery()) {
                     Map<String, List<String>> temp = new HashMap<>();
                     while (rs.next()) {
                         temp.computeIfAbsent(rs.getString("member_uuid"), k -> new ArrayList<>()).add(rs.getString("role"));
                     }
-                    for (java.util.Map.Entry<String, java.util.List<String>> e : temp.entrySet()) {
+                    for (Map.Entry<String, List<String>> e : temp.entrySet()) {
                         OfflinePlayer pl = Bukkit.getOfflinePlayer(UUID.fromString(e.getKey()));
                         playerList.add(pl);
                         playerPerm.put(pl, e.getValue().toArray(new String[0]));
@@ -183,9 +212,19 @@ public class DataIO {
 
             // --- storage & inventories --------------------
             StorageData storage = loadStorageData(conn, groupName);
-            String ownerPlugin = (storage != null) ? loadOwnerPlugin(conn, groupName) : null;
 
-            return new GroupData(groupName, playerList, playerPerm, isPrivate, storage, ownerPlugin);
+            GroupData groupData = new GroupData(
+                    groupName,
+                    displayName,
+                    playerList,
+                    playerPerm,
+                    isPrivate,
+                    storage,
+                    ownerPlugin
+            );
+            groupData.version = version; // versionもセット
+
+            return groupData;
         } catch (SQLException e) {
             Bukkit.getLogger().warning("GroupData の読み込みに失敗: " + e.getMessage());
             return null;
