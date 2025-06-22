@@ -47,7 +47,7 @@ public class RollbackLogManager {
                         String json = rs.getString("json_data");
                         Type type = new TypeToken<GroupData>() {}.getType();
                         GroupData restoredData = gson.fromJson(json, type);
-                        DataIO.saveGroupData(db, restoredData);
+                        DataIO.saveGroupData(db, restoredData, restoredData.version);
                         return true;
                     }
                 }

@@ -1,6 +1,8 @@
 package dev.felnull.commands;
 
 import dev.felnull.BetterStorage;
+import dev.felnull.Data.GroupData;
+import dev.felnull.DataIO.DataIO;
 import dev.felnull.DataIO.RollbackLogManager;
 import dev.felnull.DataIO.DatabaseManager;
 import dev.felnull.DataIO.DiffLogManager;
@@ -79,7 +81,12 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                 String timestampStr = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
                 try {
                     LocalDateTime time = LocalDateTime.parse(timestampStr, FORMATTER);
-                    boolean result = DiffLogManager.restoreGroupFromDiffLog(db, groupName, time);
+                    GroupData groupData = DataIO.loadGroupData(db, groupName);
+                    if (groupData == null) {
+                        sender.sendMessage("指定したグループが見つかりません。");
+                        return true;
+                    }
+                    boolean result = DiffLogManager.restoreGroupFromDiffLog(db, groupData, time);
                     if (result) {
                         sender.sendMessage("グループ " + groupName + " を差分ログから復元しました。");
                     } else {
