@@ -25,9 +25,9 @@ public class RollbackLogManager {
 
     public static void saveRollbackLog(GroupData groupData) {
         try (Connection conn = db.getConnection()) {
-            String sql = "INSERT INTO rollback_log (group_name, timestamp, json_data) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO rollback_log (group_uuid, timestamp, json_data) VALUES (?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, groupData.groupName);
+                ps.setString(1, groupData.groupUUID);
                 ps.setString(2, LocalDateTime.now().format(FORMATTER));
                 ps.setString(3, gson.toJson(groupData));
                 ps.executeUpdate();
@@ -37,11 +37,11 @@ public class RollbackLogManager {
         }
     }
 
-    public static boolean restoreGroupFromRollback(String groupName, LocalDateTime timestamp) {
+    public static boolean restoreGroupFromRollback(String groupUUID, LocalDateTime timestamp) {
         try (Connection conn = db.getConnection()) {
-            String sql = "SELECT json_data FROM rollback_log WHERE group_name = ? AND timestamp = ?";
+            String sql = "SELECT json_data FROM rollback_log WHERE group_uuid = ? AND timestamp = ?";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, groupName);
+                ps.setString(1, groupUUID);
                 ps.setString(2, timestamp.format(FORMATTER));
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
@@ -59,12 +59,12 @@ public class RollbackLogManager {
         return false;
     }
 
-    public static List<LocalDateTime> getRollbackTimestamps(String groupName) {
+    public static List<LocalDateTime> getRollbackTimestamps(String groupUUID) {
         List<LocalDateTime> timestamps = new ArrayList<>();
         try (Connection conn = db.getConnection()) {
-            String sql = "SELECT timestamp FROM rollback_log WHERE group_name = ? ORDER BY timestamp DESC";
+            String sql = "SELECT timestamp FROM rollback_log WHERE group_uuid = ? ORDER BY timestamp DESC";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, groupName);
+                ps.setString(1, groupUUID);
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
                         timestamps.add(LocalDateTime.parse(rs.getString("timestamp"), FORMATTER));
@@ -77,19 +77,19 @@ public class RollbackLogManager {
         return timestamps;
     }
 
-    public static Set<String> getAllGroupNames() {
-        Set<String> groupNames = new HashSet<>();
+    public static Set<String> getAllGroupUUIDs() {
+        Set<String> groupUUIDs = new HashSet<>();
         try (Connection conn = db.getConnection()) {
-            String sql = "SELECT DISTINCT group_name FROM rollback_log";
+            String sql = "SELECT DISTINCT group_uuid FROM rollback_log";
             try (PreparedStatement ps = conn.prepareStatement(sql);
                  ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    groupNames.add(rs.getString("group_name"));
+                    groupUUIDs.add(rs.getString("group_uuid"));
                 }
             }
         } catch (SQLException e) {
-            Bukkit.getLogger().warning("[BetterStorage] グループ名一覧取得失敗: " + e.getMessage());
+            Bukkit.getLogger().warning("[BetterStorage] グループUUID一覧取得失敗: " + e.getMessage());
         }
-        return groupNames;
+        return groupUUIDs;
     }
 }

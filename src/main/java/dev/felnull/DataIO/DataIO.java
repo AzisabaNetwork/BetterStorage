@@ -121,7 +121,6 @@ public class DataIO {
         }
     }
 
-
     // ---------- SAVE / group ----------
     private static void saveGroupTable(Connection conn, GroupData g) throws SQLException {
         String sql = "REPLACE INTO group_table (group_name, display_name, is_private, owner_plugin, version) VALUES (?, ?, ?, ?, ?)";
@@ -236,7 +235,6 @@ public class DataIO {
         }
     }
 
-
     public static long getGroupVersion(Connection conn, String groupName) throws SQLException {
         String sql = "SELECT version FROM group_table WHERE group_name = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -277,20 +275,21 @@ public class DataIO {
 
     /** メインエントリ：グループ名から GroupData を生成 */
     public static GroupData loadGroupData(String groupName) {
-
         try (Connection conn = db.getConnection()) {
             // --- group_table ------------------------------
             String displayName = null;
             boolean isPrivate;
             long version = 0;
             String ownerPlugin = null;
+            String groupUUID = null;
 
-            // display_name, is_private, version, owner_plugin も一度に取得
+            // group_uuid, display_name, is_private, version, owner_plugin を取得
             try (PreparedStatement ps = conn.prepareStatement(
-                    "SELECT display_name, is_private, version, owner_plugin FROM group_table WHERE group_name = ?")) {
+                    "SELECT group_uuid, display_name, is_private, version, owner_plugin FROM group_table WHERE group_name = ?")) {
                 ps.setString(1, groupName);
                 try (ResultSet rs = ps.executeQuery()) {
-                    if (!rs.next()) return null;  // 無ければ null
+                    if (!rs.next()) return null;
+                    groupUUID = rs.getString("group_uuid");
                     displayName = rs.getString("display_name");
                     isPrivate = rs.getBoolean("is_private");
                     version = rs.getLong("version");
@@ -298,16 +297,22 @@ public class DataIO {
                 }
             }
 
+            if (groupUUID == null) {
+                Bukkit.getLogger().warning("GroupData 読み込み失敗: group_uuid が null にゃ");
+                return null;
+            }
+
             // --- group_member_table -----------------------
             Set<OfflinePlayer> playerList = new HashSet<>();
             Map<OfflinePlayer, String[]> playerPerm = new HashMap<>();
             try (PreparedStatement ps = conn.prepareStatement(
                     "SELECT member_uuid, role FROM group_member_table WHERE group_uuid = ?")) {
-                ps.setString(1, groupName);
+                ps.setString(1, groupUUID);
                 try (ResultSet rs = ps.executeQuery()) {
                     Map<String, List<String>> temp = new HashMap<>();
                     while (rs.next()) {
-                        temp.computeIfAbsent(rs.getString("member_uuid"), k -> new ArrayList<>()).add(rs.getString("role"));
+                        temp.computeIfAbsent(rs.getString("member_uuid"), k -> new ArrayList<>())
+                                .add(rs.getString("role"));
                     }
                     for (Map.Entry<String, List<String>> e : temp.entrySet()) {
                         OfflinePlayer pl = Bukkit.getOfflinePlayer(UUID.fromString(e.getKey()));
@@ -318,7 +323,7 @@ public class DataIO {
             }
 
             // --- storage & inventories --------------------
-            StorageData storage = loadStorageData(conn, groupName);
+            StorageData storage = loadStorageData(conn, groupUUID); // ここも groupUUID を使う
 
             GroupData groupData = new GroupData(
                     groupName,
@@ -327,11 +332,13 @@ public class DataIO {
                     playerPerm,
                     isPrivate,
                     storage,
-                    ownerPlugin
+                    ownerPlugin,
+                    groupUUID
             );
-            groupData.version = version; // versionもセット
+            groupData.version = version;
 
             return groupData;
+
         } catch (SQLException e) {
             Bukkit.getLogger().warning("GroupData の読み込みに失敗: " + e.getMessage());
             return null;
@@ -339,30 +346,30 @@ public class DataIO {
     }
 
     /** storage_table を読み込み、InventoryData 群を組み立てる */
-    private static StorageData loadStorageData(Connection conn, String groupName) throws SQLException {
+    private static StorageData loadStorageData(Connection conn, String groupUUID) throws SQLException {
         String pluginName = null;
         double bankMoney = 0;
         Set<String> requireBankPerm = new HashSet<>();
 
-        try (PreparedStatement ps = conn.prepareStatement("SELECT plugin_name, bank_money, require_bank_permission FROM storage_table WHERE group_name = ?")) {
-            ps.setString(1, groupName);
+        try (PreparedStatement ps = conn.prepareStatement("SELECT plugin_name, bank_money, require_bank_permission FROM storage_table WHERE group_uuid = ?")) {
+            ps.setString(1, groupUUID);
             try (ResultSet rs = ps.executeQuery()) {
-                if (!rs.next()) return null; // storage が無い
+                if (!rs.next()) return null;
                 pluginName = rs.getString("plugin_name");
                 bankMoney = rs.getDouble("bank_money");
                 requireBankPerm = gson.fromJson(rs.getString("require_bank_permission"), new TypeToken<Set<String>>(){}.getType());
             }
         }
-        Map<String, InventoryData> invMap = loadInventoryData(conn, groupName, pluginName);
+        Map<String, InventoryData> invMap = loadInventoryData(conn, groupUUID, pluginName);
         return new StorageData(requireBankPerm, invMap, bankMoney);
     }
 
     /** inventory_table + items + tags を読み込み */
-    private static Map<String, InventoryData> loadInventoryData(Connection conn, String groupName, String pluginName) throws SQLException {
+    private static Map<String, InventoryData> loadInventoryData(Connection conn, String groupUUID, String pluginName) throws SQLException {
         Map<String, InventoryData> map = new HashMap<>();
-        String sql = "SELECT page_id, display_name, row_count, require_permission FROM inventory_table WHERE group_name = ? AND plugin_name = ?";
+        String sql = "SELECT page_id, display_name, row_count, require_permission FROM inventory_table WHERE group_uuid = ? AND plugin_name = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, groupName);
+            ps.setString(1, groupUUID);
             ps.setString(2, pluginName);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -370,30 +377,31 @@ public class DataIO {
                     String display = rs.getString("display_name");
                     int rows = rs.getInt("row_count");
                     Set<String> reqPerm = gson.fromJson(rs.getString("require_permission"), new TypeToken<Set<String>>(){}.getType());
-                    Map<Integer, ItemStack> slotMap = loadInventoryItems(conn, groupName, pluginName, pageId);
+                    Map<Integer, ItemStack> slotMap = loadInventoryItems(conn, groupUUID, pluginName, pageId);
                     map.put(pageId, new InventoryData(display, rows, reqPerm, slotMap));
                 }
             }
         }
-        loadTags(conn, groupName, pluginName, map);
+        loadTags(conn, groupUUID, pluginName, map);
         return map;
     }
+
 
     /**
      *
      * @param conn
-     * @param groupName
+     * @param groupUUID
      * @return
      * @throws SQLException
      * GUI表示用にInventoryDataのメタデータのみ取得する 全取得より軽量!
      */
-    public static StorageData loadStorageMetaOnly(Connection conn, String groupName) throws SQLException {
+    private static StorageData loadStorageMetaOnly(Connection conn, String groupUUID) throws SQLException {
         String pluginName = null;
         double bankMoney = 0;
         Set<String> requireBankPerm = new HashSet<>();
 
-        try (PreparedStatement ps = conn.prepareStatement("SELECT plugin_name, bank_money, require_bank_permission FROM storage_table WHERE group_name = ?")) {
-            ps.setString(1, groupName);
+        try (PreparedStatement ps = conn.prepareStatement("SELECT plugin_name, bank_money, require_bank_permission FROM storage_table WHERE group_uuid = ?")) {
+            ps.setString(1, groupUUID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) return null;
                 pluginName = rs.getString("plugin_name");
@@ -402,27 +410,36 @@ public class DataIO {
             }
         }
 
-        // 軽量版 InventoryData 群（アイテム除外）
-        Map<String, InventoryData> invMap = loadInventoryMetaOnly(conn, groupName, pluginName);
+        Map<String, InventoryData> invMap = loadInventoryMetaOnly(conn, groupUUID, pluginName);
         StorageData storageData = new StorageData(requireBankPerm, invMap, bankMoney);
         storageData.setFullyLoaded(false);
         return storageData;
     }
+    //外部呼出し用
+    public static StorageData loadStorageMetaOnly(String groupName) {
+        try (Connection conn = db.getConnection()) {
+            return loadStorageMetaOnly(conn, groupName);
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("StorageMetaの読み込みに失敗: " + e.getMessage());
+            return null;
+        }
+    }
+
 
     /**
      *
      * @param conn
-     * @param groupName
+     * @param groupUUID
      * @param pluginName
      * @return
      * @throws SQLException
      * 軽さだけが取り柄の中身がスカスカなInventoryDataたちを生成する
      */
-    public static Map<String, InventoryData> loadInventoryMetaOnly(Connection conn, String groupName, String pluginName) throws SQLException {
+    private static Map<String, InventoryData> loadInventoryMetaOnly(Connection conn, String groupUUID, String pluginName) throws SQLException {
         Map<String, InventoryData> map = new HashMap<>();
-        String sql = "SELECT page_id, display_name, row_count, require_permission FROM inventory_table WHERE group_name = ? AND plugin_name = ?";
+        String sql = "SELECT page_id, display_name, row_count, require_permission FROM inventory_table WHERE group_uuid = ? AND plugin_name = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, groupName);
+            ps.setString(1, groupUUID);
             ps.setString(2, pluginName);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -430,40 +447,43 @@ public class DataIO {
                     String display = rs.getString("display_name");
                     int rows = rs.getInt("row_count");
                     Set<String> reqPerm = gson.fromJson(rs.getString("require_permission"), new TypeToken<Set<String>>(){}.getType());
-
-                    // 空のslotMapを渡す（中身はまだ読まない）
                     InventoryData inv = new InventoryData(display, rows, reqPerm, new HashMap<>());
                     inv.setFullyLoaded(false);
                     map.put(pageId, inv);
                 }
             }
         }
-
-        // タグだけは必要なので読む
-        loadTags(conn, groupName, pluginName, map);
-
+        loadTags(conn, groupUUID, pluginName, map);
         return map;
+    }
+    //外部呼出し用
+    public static Map<String, InventoryData> loadInventoryMetaOnly(String groupUUID, String pluginName) {
+        try (Connection conn = db.getConnection()) {
+            return loadInventoryMetaOnly(conn, groupUUID, pluginName);
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("InventoryMetaの読み込みに失敗: " + e.getMessage());
+            return Collections.emptyMap();
+        }
     }
 
     /**
      *
      * @param conn
-     * @param groupName
+     * @param groupUUID
      * @param pluginName
      * @param inv
      * @param pageId
      * @throws SQLException
      * スカスカちゃん達に中身を吹き込む(InventoryData)
      */
-    public static void loadPageItems(Connection conn, String groupName, String pluginName, InventoryData inv, String pageId) throws SQLException {
-        String sql = "SELECT slot, itemstack FROM inventory_item_table WHERE group_name = ? AND plugin_name = ? AND page_id = ?";
+    public static void loadPageItems(Connection conn, String groupUUID, String pluginName, InventoryData inv, String pageId) throws SQLException {
+        String sql = "SELECT slot, itemstack FROM inventory_item_table WHERE group_uuid = ? AND plugin_name = ? AND page_id = ?";
         Map<Integer, ItemStack> slotMap = new HashMap<>();
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, groupName);
+            ps.setString(1, groupUUID);
             ps.setString(2, pluginName);
             ps.setString(3, pageId);
-
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     int slot = rs.getInt("slot");
@@ -474,17 +494,16 @@ public class DataIO {
                 }
             }
         }
-
         inv.itemStackSlot = slotMap;
         inv.setFullyLoaded(true);
     }
 
     /** inventory_item_table からアイテムを読み込み */
-    private static Map<Integer, ItemStack> loadInventoryItems(Connection conn, String groupName, String pluginName, String pageId) throws SQLException {
+    private static Map<Integer, ItemStack> loadInventoryItems(Connection conn, String groupUUID, String pluginName, String pageId) throws SQLException {
         Map<Integer, ItemStack> res = new HashMap<>();
-        String sql = "SELECT slot, itemstack FROM inventory_item_table WHERE group_name = ? AND plugin_name = ? AND page_id = ?";
+        String sql = "SELECT slot, itemstack FROM inventory_item_table WHERE group_uuid = ? AND plugin_name = ? AND page_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, groupName);
+            ps.setString(1, groupUUID);
             ps.setString(2, pluginName);
             ps.setString(3, pageId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -497,29 +516,27 @@ public class DataIO {
     }
 
     /** tag_table → InventoryData.userTag へ反映 */
-    private static void loadTags(Connection conn, String groupName, String pluginName, Map<String, InventoryData> map) throws SQLException {
-        String sql = "SELECT page_id, user_tag FROM tag_table WHERE group_name = ? AND plugin_name = ?";
+    private static void loadTags(Connection conn, String groupUUID, String pluginName, Map<String, InventoryData> map) throws SQLException {
+        String sql = "SELECT page_id, user_tag FROM tag_table WHERE group_uuid = ? AND plugin_name = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, groupName);
+            ps.setString(1, groupUUID);
             ps.setString(2, pluginName);
-
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     String pageId = rs.getString("page_id");
                     String userTag = rs.getString("user_tag");
-
                     InventoryData inv = map.get(pageId);
                     if (inv != null && userTag != null && !userTag.isEmpty()) {
-                        inv.userTags.add(userTag); // ← ListだからこれだけでOK！
+                        inv.userTags.add(userTag);
                     }
                 }
             }
         }
     }
 
-    private static String loadOwnerPlugin(Connection conn, String groupName) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("SELECT plugin_name FROM storage_table WHERE group_name = ?")) {
-            ps.setString(1, groupName);
+    private static String loadOwnerPlugin(Connection conn, String groupUUID) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("SELECT plugin_name FROM storage_table WHERE group_uuid = ?")) {
+            ps.setString(1, groupUUID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) return rs.getString("plugin_name");
             }
@@ -527,85 +544,101 @@ public class DataIO {
         return null;
     }
 
+
     // ===========================================================
     // ===== 3. DELETE ==========================================
     // ===========================================================
     /** ページ単位削除 */
-    public static void deletePageData(Connection conn,String g,String p,String page,String exec) throws SQLException{
-        String[] sqls={
+    public static void deletePageData(Connection conn, String g, String p, String page, String exec) throws SQLException {
+        String[] sqls = {
                 "DELETE FROM inventory_item_table WHERE group_name=? AND plugin_name=? AND page_id=?",
                 "DELETE FROM inventory_table WHERE group_name=? AND plugin_name=? AND page_id=?",
-                "DELETE FROM tag_table WHERE group_name=? AND plugin_name=? AND page_id=?"};
-        for(String s:sqls){
-            try(PreparedStatement ps=conn.prepareStatement(s)){
-                ps.setString(1,g); ps.setString(2,p); ps.setString(3,page); ps.executeUpdate();
+                "DELETE FROM tag_table WHERE group_name=? AND plugin_name=? AND page_id=?"
+        };
+        for (String s : sqls) {
+            try (PreparedStatement ps = conn.prepareStatement(s)) {
+                ps.setString(1, g);
+                ps.setString(2, p);
+                ps.setString(3, page);
+                ps.executeUpdate();
             }
         }
-        logDelete("Page \""+page+"\" in Group \""+g+"\" was deleted by "+exec);
+        logDeletionInfo("Page \"" + page + "\" in Group \"" + g + "\" was deleted by " + exec);
     }
 
-    /** グループ単位削除 */
-    public static void deleteGroupData(Connection conn,String g,String p,String exec) throws SQLException{
-        String[] sqls={
+    public static void deleteGroupData(Connection conn, String g, String p, String exec) throws SQLException {
+        String[] sqls = {
                 "DELETE FROM inventory_item_table WHERE group_name=? AND plugin_name=?",
                 "DELETE FROM inventory_table WHERE group_name=? AND plugin_name=?",
                 "DELETE FROM tag_table WHERE group_name=? AND plugin_name=?",
                 "DELETE FROM storage_table WHERE group_name=? AND plugin_name=?",
                 "DELETE FROM group_member_table WHERE group_uuid=?",
-                "DELETE FROM group_table WHERE group_name=?"};
-        for(String s:sqls){
-            try(PreparedStatement ps=conn.prepareStatement(s)){
-                ps.setString(1,g);
-                if(s.contains("plugin_name")) ps.setString(2,p);
+                "DELETE FROM group_table WHERE group_name=?"
+        };
+        for (String s : sqls) {
+            try (PreparedStatement ps = conn.prepareStatement(s)) {
+                ps.setString(1, g);
+                if (s.contains("plugin_name")) ps.setString(2, p);
                 ps.executeUpdate();
             }
         }
-        logDelete("Group \""+g+"\" was deleted by "+exec);
+        logDeletionInfo("Group \"" + g + "\" was deleted by " + exec);
     }
 
     // ===========================================================
     // ===== 4. LOG =============================================
     // ===========================================================
 
-    public static void logInventoryItemChange(Connection conn,String g,String p,String page,int slot,String op,ItemStack item) throws SQLException{
-        try(PreparedStatement ps=conn.prepareStatement(
-                "INSERT INTO inventory_item_log (group_name,plugin_name,page_id,slot,operation_type,itemstack,display_name,material,amount,timestamp) VALUES (?,?,?,?,?,?,?,?,?,NOW())")){
-            ps.setString(1,g); ps.setString(2,p); ps.setString(3,page); ps.setInt(4,slot); ps.setString(5,op);
-            ps.setString(6,ItemSerializer.serializeToBase64(item));
-            ps.setString(7,item.hasItemMeta()?item.getItemMeta().getDisplayName():"");
-            ps.setString(8,item.getType().name()); ps.setInt(9,item.getAmount());
+    public static void logInventoryItemChange(Connection conn, String g, String p, String page, int slot, String op, ItemStack item) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(
+                "INSERT INTO inventory_item_log (group_name, plugin_name, page_id, slot, operation_type, itemstack, display_name, material, amount, timestamp) VALUES (?,?,?,?,?,?,?,?,?,NOW())")) {
+            ps.setString(1, g);
+            ps.setString(2, p);
+            ps.setString(3, page);
+            ps.setInt(4, slot);
+            ps.setString(5, op);
+            ps.setString(6, ItemSerializer.serializeToBase64(item));
+            ps.setString(7, item.hasItemMeta() ? item.getItemMeta().getDisplayName() : "");
+            ps.setString(8, item.getType().name());
+            ps.setInt(9, item.getAmount());
             ps.executeUpdate();
         }
     }
 
-    public static void restoreInventoryState(Connection conn,String g,String p,String page,LocalDateTime before) throws SQLException{
-        String sql="SELECT slot,itemstack FROM inventory_item_log WHERE group_name=? AND plugin_name=? AND page_id=? AND timestamp<=? ORDER BY timestamp DESC";
-        Map<Integer,ItemStack> latest=new HashMap<>();
-        try(PreparedStatement ps=conn.prepareStatement(sql)){
-            ps.setString(1,g); ps.setString(2,p); ps.setString(3,page); ps.setTimestamp(4,Timestamp.valueOf(before));
-            try(ResultSet rs=ps.executeQuery()){
-                while(rs.next()){
-                    int slot=rs.getInt("slot"); if(latest.containsKey(slot)) continue; // 最初に出たものが最新
-                    latest.put(slot,ItemSerializer.deserializeFromBase64(rs.getString("itemstack")));
+    public static void restoreInventoryState(Connection conn, String g, String p, String page, LocalDateTime before) throws SQLException {
+        String sql = "SELECT slot, itemstack FROM inventory_item_log WHERE group_name=? AND plugin_name=? AND page_id=? AND timestamp<=? ORDER BY timestamp DESC";
+        Map<Integer, ItemStack> latest = new HashMap<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, g);
+            ps.setString(2, p);
+            ps.setString(3, page);
+            ps.setTimestamp(4, Timestamp.valueOf(before));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int slot = rs.getInt("slot");
+                    if (latest.containsKey(slot)) continue;
+                    latest.put(slot, ItemSerializer.deserializeFromBase64(rs.getString("itemstack")));
                 }
             }
         }
-        GroupData data= GroupManager.getGroup(g);
-        if(data!=null){
-            InventoryData inv=data.storageData.storageInventory.get(page);
+        GroupData data = GroupManager.getGroup(g);
+        if (data != null) {
+            InventoryData inv = data.storageData.storageInventory.get(page);
             inv.itemStackSlot.clear();
             inv.itemStackSlot.putAll(latest);
         }
     }
 
-    private static void writeLogFile(String msg){
-        try(FileWriter w=new FileWriter(new File(BetterStorage.BSPlugin.getDataFolder(),"BetterStorage.log"),true)){
-            w.write("["+LocalDateTime.now()+"] "+msg+"\n");
-        }catch(IOException e){ Bukkit.getLogger().warning("log write fail: "+e.getMessage()); }
+    private static void writeLogFile(String msg) {
+        try (FileWriter w = new FileWriter(new File(BetterStorage.BSPlugin.getDataFolder(), "BetterStorage.log"), true)) {
+            w.write("[" + LocalDateTime.now() + "] " + msg + "\n");
+        } catch (IOException e) {
+            Bukkit.getLogger().warning("log write fail: " + e.getMessage());
+        }
     }
 
-    private static void logDelete(String msg){
-        Bukkit.getLogger().info("[BetterStorage] "+msg);
+    private static void logDeletionInfo(String msg) {
+        Bukkit.getLogger().info("[BetterStorage] " + msg);
         writeLogFile(msg);
     }
 
@@ -613,13 +646,14 @@ public class DataIO {
     // ===== 5. SEARCH ==========================================
     // ===========================================================
 
-    public static List<String> searchPagesByTag(Connection conn, String g, String p, String kw) throws SQLException {
+    // タグによるページ検索
+    public static List<String> searchPagesByTag(Connection conn, String groupUUID, String plugin, String keyword) throws SQLException {
         List<String> res = new ArrayList<>();
-        String sql = "SELECT DISTINCT page_id FROM tag_table WHERE group_name=? AND plugin_name=? AND user_tag LIKE ?";
+        String sql = "SELECT DISTINCT page_id FROM tag_table WHERE group_uuid=? AND plugin_name=? AND user_tag LIKE ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, g);
-            ps.setString(2, p);
-            ps.setString(3, "%" + kw + "%");
+            ps.setString(1, groupUUID);
+            ps.setString(2, plugin);
+            ps.setString(3, "%" + keyword + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     res.add(rs.getString("page_id"));
@@ -629,13 +663,14 @@ public class DataIO {
         return res;
     }
 
-    public static List<String> getPagesContainingDisplayName(Connection conn, String g, String p, String kw) throws SQLException {
+    // アイテムのDisplayNameによるページ検索
+    public static List<String> getPagesContainingDisplayName(Connection conn, String groupUUID, String plugin, String keyword) throws SQLException {
         List<String> res = new ArrayList<>();
-        String sql = "SELECT DISTINCT page_id FROM inventory_item_table WHERE group_name=? AND plugin_name=? AND display_name LIKE ?";
+        String sql = "SELECT DISTINCT page_id FROM inventory_item_table WHERE group_uuid=? AND plugin_name=? AND display_name LIKE ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, g);
-            ps.setString(2, p);
-            ps.setString(3, "%" + kw + "%");
+            ps.setString(1, groupUUID);
+            ps.setString(2, plugin);
+            ps.setString(3, "%" + keyword + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     res.add(rs.getString("page_id"));
@@ -650,14 +685,39 @@ public class DataIO {
     // ===========================================================
 
     /** group_table から全グループを取得 */
-    public static List<GroupData> loadAllGroups(){
-        List<GroupData> list=new ArrayList<>();
-        try(Connection conn=db.getConnection(); Statement st=conn.createStatement(); ResultSet rs=st.executeQuery("SELECT group_name FROM group_table")){
-            while(rs.next()){
-                GroupData data=loadGroupData(rs.getString(1));
-                if(data!=null) list.add(data);
+    public static List<GroupData> loadAllGroups() {
+        List<GroupData> list = new ArrayList<>();
+        String sql = "SELECT group_uuid FROM group_table";
+        try (Connection conn = db.getConnection();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                String uuid = rs.getString("group_uuid");
+                GroupData data = loadGroupDataByUUID(uuid); // ← これがUUID版のload関数
+                if (data != null) list.add(data);
             }
-        }catch(SQLException e){ Bukkit.getLogger().warning("allGroups load fail: "+e.getMessage()); }
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("allGroups load fail: " + e.getMessage());
+        }
         return list;
+    }
+
+    public static GroupData loadGroupDataByUUID(String groupUUID) {
+        // group_uuid から group_name をまず取得 → loadGroupData(groupName) を呼ぶ構成でもOK
+        try (Connection conn = db.getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement("SELECT group_name FROM group_table WHERE group_uuid = ?")) {
+                ps.setString(1, groupUUID);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        String groupName = rs.getString("group_name");
+                        return loadGroupData(groupName);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("loadGroupDataByUUID fail: " + e.getMessage());
+        }
+        return null;
     }
 }

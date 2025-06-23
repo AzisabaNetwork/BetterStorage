@@ -4,49 +4,57 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class GroupData {
-    public final String groupName; //グループ名　プレイヤー個人の場合はプレイヤーUUID
+    public final String groupName; // グループ名（表示用・識別用）
+    public final String groupUUID; // グループ固有のUUID（内部識別子）
     public String displayName;
-    public Set<OfflinePlayer> playerList; //グループ所属のプレイヤーリスト 最低１つは格納されるはず
-    public Map<OfflinePlayer,String[]> playerPermission; //プレイヤーが保持している役職
-    public boolean isPrivate; //個人用グループか否か
-    public StorageData storageData; //グループ保有のストレージデータ null許容
+    public Set<OfflinePlayer> playerList; // 所属プレイヤー
+    public Map<OfflinePlayer, String[]> playerPermission; // 役職
+    public boolean isPrivate; // 個人グループか
+    public StorageData storageData; // ストレージ情報
     public String ownerPlugin;
     public long version = 0;
 
-    public GroupData (@NotNull String groupName, @NotNull String displayName,@NotNull Set<OfflinePlayer> playerList,@NotNull Map<OfflinePlayer,String[]> playerPermission, boolean isPrivate, StorageData storageData, String ownerPlugin) {
+    // コンストラクタ（グループ新規作成用）
+    public GroupData(@NotNull String groupName, @NotNull String displayName, @NotNull Set<OfflinePlayer> playerList,
+                     @NotNull Map<OfflinePlayer, String[]> playerPermission, boolean isPrivate,
+                     StorageData storageData, String ownerPlugin, @Nullable String groupUUID) {
         this.groupName = groupName;
         this.displayName = displayName;
         this.playerList = playerList;
         this.playerPermission = playerPermission;
         this.isPrivate = isPrivate;
-        storageData.groupName = groupName;
-        storageData.groupData = this;
-        this.storageData = storageData;
         this.ownerPlugin = ownerPlugin;
+
+        this.groupUUID = groupUUID != null ? groupUUID : UUID.randomUUID().toString();
+
+        this.storageData = storageData;
+        if (this.storageData != null) {
+            this.storageData.groupName = this.groupName;
+            this.storageData.groupData = this;
+        }
     }
 
-    public GroupData (@NotNull OfflinePlayer player, StorageData storageData, String ownerPlugin) {
-
+    // 個人用グループ生成用（UUID自動生成）
+    public GroupData(@NotNull OfflinePlayer player, StorageData storageData, String ownerPlugin) {
         this.groupName = player.getUniqueId().toString();
-        //引数で得たプレイヤーをメンバに追加してowner権限を付与する
-        playerList = new HashSet<>();
-        playerPermission = new HashMap<>();
-        playerList.add(player);
-        String[] permission = {GroupPermENUM.OWNER.getPermName()};
-        playerPermission.put(player, permission );
-        //個人用を想定したコンストラクタなのでtrue
+        this.groupUUID = UUID.randomUUID().toString();
+        this.displayName = player.getName(); // 任意で変更可能
+
+        this.playerList = new HashSet<>();
+        this.playerPermission = new HashMap<>();
+        this.playerList.add(player);
+        this.playerPermission.put(player, new String[]{GroupPermENUM.OWNER.getPermName()});
         this.isPrivate = true;
-
-        storageData.groupName = groupName;
-        storageData.groupData = this;
-        this.storageData = storageData;
         this.ownerPlugin = ownerPlugin;
-    }
 
+        this.storageData = storageData;
+        if (this.storageData != null) {
+            this.storageData.groupName = this.groupName;
+            this.storageData.groupData = this;
+        }
+    }
 }

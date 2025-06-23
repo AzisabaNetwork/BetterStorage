@@ -27,7 +27,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage("/bstorage rollback <group> <yyyy-MM-dd HH:mm:ss>");
+            sender.sendMessage("/bstorage rollback <groupUUID> <yyyy-MM-dd HH:mm:ss>");
             return true;
         }
 
@@ -36,17 +36,17 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
         switch (args[0].toLowerCase()) {
             case "rollback": {
                 if (args.length < 3) {
-                    sender.sendMessage("引数が不足しています。/bstorage rollback <group> <yyyy-MM-dd HH:mm:ss>");
+                    sender.sendMessage("引数が不足しています。/bstorage rollback <groupUUID> <yyyy-MM-dd HH:mm:ss>");
                     return true;
                 }
 
-                String groupName = args[1];
+                String groupUUID = args[1];
                 String timestampStr = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
                 try {
                     LocalDateTime time = LocalDateTime.parse(timestampStr, FORMATTER);
-                    boolean result = RollbackLogManager.restoreGroupFromRollback(groupName, time);
+                    boolean result = RollbackLogManager.restoreGroupFromRollback(groupUUID, time);
                     if (result) {
-                        sender.sendMessage("グループ " + groupName + " を " + timestampStr + " に巻き戻しました。");
+                        sender.sendMessage("グループ " + groupUUID + " を " + timestampStr + " に巻き戻しました。");
                     } else {
                         sender.sendMessage("指定の時点のログが見つかりませんでした。");
                     }
@@ -57,15 +57,15 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
             }
             case "list": {
                 if (args.length < 2) {
-                    sender.sendMessage("/bstorage list <group>");
+                    sender.sendMessage("/bstorage list <groupUUID>");
                     return true;
                 }
-                String groupName = args[1];
-                List<LocalDateTime> logs = RollbackLogManager.getRollbackTimestamps(groupName);
+                String groupUUID = args[1];
+                List<LocalDateTime> logs = RollbackLogManager.getRollbackTimestamps(groupUUID);
                 if (logs.isEmpty()) {
                     sender.sendMessage("ログが見つかりませんでした。");
                 } else {
-                    sender.sendMessage("[ " + groupName + " ] のログ一覧:");
+                    sender.sendMessage("[ " + groupUUID + " ] のログ一覧:");
                     for (LocalDateTime log : logs) {
                         sender.sendMessage(" - " + log.format(FORMATTER));
                     }
@@ -74,21 +74,21 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
             }
             case "diff": {
                 if (args.length < 3) {
-                    sender.sendMessage("引数が不足しています。/bstorage diff <group> <yyyy-MM-dd HH:mm:ss>");
+                    sender.sendMessage("引数が不足しています。/bstorage diff <groupUUID> <yyyy-MM-dd HH:mm:ss>");
                     return true;
                 }
-                String groupName = args[1];
+                String groupUUID = args[1];
                 String timestampStr = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
                 try {
                     LocalDateTime time = LocalDateTime.parse(timestampStr, FORMATTER);
-                    GroupData groupData = DataIO.loadGroupData(groupName);
+                    GroupData groupData = DataIO.loadGroupData(groupUUID);
                     if (groupData == null) {
                         sender.sendMessage("指定したグループが見つかりません。");
                         return true;
                     }
                     boolean result = DiffLogManager.restoreGroupFromDiffLog(db, groupData, time);
                     if (result) {
-                        sender.sendMessage("グループ " + groupName + " を差分ログから復元しました。");
+                        sender.sendMessage("グループ " + groupUUID + " を差分ログから復元しました。");
                     } else {
                         sender.sendMessage("差分ログが見つかりませんでした。");
                     }
@@ -99,9 +99,9 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
             }
             case "help":
                 sender.sendMessage("使用可能なコマンド:");
-                sender.sendMessage("/bstorage rollback <group> <yyyy-MM-dd HH:mm:ss> - 指定した時点に巻き戻す");
-                sender.sendMessage("/bstorage list <group> - 利用可能なログ日時を表示");
-                sender.sendMessage("/bstorage diff <group> <yyyy-MM-dd HH:mm:ss> - 差分ログから状態を復元");
+                sender.sendMessage("/bstorage rollback <groupUUID> <yyyy-MM-dd HH:mm:ss> - 指定した時点に巻き戻す");
+                sender.sendMessage("/bstorage list <groupUUID> - 利用可能なログ日時を表示");
+                sender.sendMessage("/bstorage diff <groupUUID> <yyyy-MM-dd HH:mm:ss> - 差分ログから状態を復元");
                 break;
             default:
                 sender.sendMessage("不明なサブコマンドです。 /bstorage help で確認できます。");
@@ -113,19 +113,29 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         List<String> suggestions = new ArrayList<>();
+
         if (args.length == 1) {
             suggestions.addAll(Arrays.asList("rollback", "list", "diff", "help"));
         } else if (args.length == 2 && (args[0].equalsIgnoreCase("rollback") || args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("diff"))) {
-            // プレイヤー名・グループ名の両方をサジェスト
             Set<String> groupNames = new HashSet<>();
-            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                if (player.getName() != null) {
-                    groupNames.add(player.getName());
+
+            for (String uuidStr : RollbackLogManager.getAllGroupUUIDs()) {
+                try {
+                    UUID uuid = UUID.fromString(uuidStr);
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+                    if (player.getName() != null) {
+                        groupNames.add(player.getName());
+                    } else {
+                        groupNames.add(uuidStr); // 名前不明ならUUIDそのまま
+                    }
+                } catch (IllegalArgumentException ignored) {
+                    // 無効なUUIDはスキップ
                 }
             }
-            groupNames.addAll(RollbackLogManager.getAllGroupNames());
+
             suggestions.addAll(groupNames);
         }
+
         return suggestions;
     }
 }
