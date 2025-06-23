@@ -4,3 +4,13 @@ main: dev.felnull.BetterStorage
 api-version: '1.16'
 depend:
   - BetterGUI
+commands:
+  bstorage:
+    description: BetterStorageの管理用コマンド
+    usage: /<command> rollback|list|diff|help
+    permission: betterstorage.command
+    permission-message: 権限がありませんにゃ。
+permissions:
+  betterstorage.command:
+    description: BetterStorageコマンドの使用を許可するにゃ。
+    default: op

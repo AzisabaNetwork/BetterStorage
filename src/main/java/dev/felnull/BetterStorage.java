@@ -3,6 +3,7 @@ package dev.felnull;
 import dev.felnull.DataIO.DatabaseManager;
 import dev.felnull.DataIO.TableInitializer;
 import dev.felnull.Listeners.CommonListener;
+import dev.felnull.commands.BetterStorageCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,6 +24,7 @@ public final class BetterStorage extends JavaPlugin {
             e.printStackTrace();
         }
         initEventListeners();
+        initCommands();
         dbManager = new DatabaseManager();
         saveDefaultConfig();
         LogCleanerScheduler.schedule(dbManager);
@@ -35,6 +37,10 @@ public final class BetterStorage extends JavaPlugin {
     //initEventListenersでリスナーを登録する
     private void initEventListeners() {
         Bukkit.getServer().getPluginManager().registerEvents(new CommonListener(), this);
+    }
+    private void initCommands() {
+        getCommand("bstorage").setExecutor(new BetterStorageCommand());
+        getCommand("bstorage").setTabCompleter(new BetterStorageCommand());
     }
 
 
