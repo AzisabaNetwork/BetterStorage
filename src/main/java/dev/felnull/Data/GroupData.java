@@ -9,7 +9,7 @@ import java.util.*;
 
 public class GroupData {
     public final String groupName; // グループ名（表示用・識別用）
-    public final String groupUUID; // グループ固有のUUID（内部識別子）
+    public final UUID groupUUID;   // グループ固有のUUID（内部識別子）
     public String displayName;
     public Set<OfflinePlayer> playerList; // 所属プレイヤー
     public Map<OfflinePlayer, String[]> playerPermission; // 役職
@@ -21,7 +21,7 @@ public class GroupData {
     // コンストラクタ（グループ新規作成用）
     public GroupData(@NotNull String groupName, @NotNull String displayName, @NotNull Set<OfflinePlayer> playerList,
                      @NotNull Map<OfflinePlayer, String[]> playerPermission, boolean isPrivate,
-                     StorageData storageData, String ownerPlugin, @Nullable String groupUUID) {
+                     StorageData storageData, String ownerPlugin, @Nullable UUID groupUUID) {
         this.groupName = groupName;
         this.displayName = displayName;
         this.playerList = playerList;
@@ -29,7 +29,7 @@ public class GroupData {
         this.isPrivate = isPrivate;
         this.ownerPlugin = ownerPlugin;
 
-        this.groupUUID = groupUUID != null ? groupUUID : UUID.randomUUID().toString();
+        this.groupUUID = groupUUID != null ? groupUUID : UUID.randomUUID();
 
         this.storageData = storageData;
         if (this.storageData != null) {
@@ -41,7 +41,7 @@ public class GroupData {
     // 個人用グループ生成用（UUID自動生成）
     public GroupData(@NotNull OfflinePlayer player, StorageData storageData, String ownerPlugin) {
         this.groupName = player.getUniqueId().toString();
-        this.groupUUID = UUID.randomUUID().toString();
+        this.groupUUID = UUID.randomUUID();
         this.displayName = player.getName(); // 任意で変更可能
 
         this.playerList = new HashSet<>();
