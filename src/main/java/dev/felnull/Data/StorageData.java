@@ -8,23 +8,20 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class StorageData {
-    public String groupName;//グループ名(個人プレイヤーもグループ扱い)
-    public GroupData groupData;//ストレージの所属グループ
-    public final Set<String> requireBankPermission;//ストレージ直下の金庫の要求パーミッション(BukkitPermではない)
-    public double bankMoney;//ストレージ付属金庫の値
+    public UUID groupUUID; // ← UUIDベースに変更
+    public GroupData groupData;
+    public final Set<String> requireBankPermission;
+    public double bankMoney;
     @NotNull
-    public Map<String,InventoryData> storageInventory;//ストレージに含まれているインベントリデータ　キーのStringはページ名
+    public Map<String, InventoryData> storageInventory;
     public boolean fullyLoaded = true;
 
-
-    public StorageData(@NotNull Set<String> requireBankPermission, Map<String,InventoryData> storageInventory, double bankMoney) {
+    public StorageData(@NotNull Set<String> requireBankPermission, Map<String, InventoryData> storageInventory, double bankMoney) {
         this.requireBankPermission = requireBankPermission;
-        if(storageInventory == null){
-            storageInventory = new HashMap<>();
-        }
-        this.storageInventory = storageInventory;
+        this.storageInventory = (storageInventory != null ? storageInventory : new HashMap<>());
         this.bankMoney = bankMoney;
     }
 
@@ -37,18 +34,13 @@ public class StorageData {
     }
 
     /**
-     *
-     * @param conn
-     * @param pluginName
-     * @param pageId
-     * @throws SQLException
-     * 指定したページの中身を詰めるメソッド
-     * isFully = falseの場合　InventoryDataはメタデータのみでアイテム情報がない
+     * 指定したページの中身を読み込む。
+     * isFully = false の場合、InventoryDataはメタデータのみ。
      */
     public void loadPage(Connection conn, String pluginName, String pageId) throws SQLException {
         InventoryData inv = storageInventory.get(pageId);
         if (inv != null && !inv.isFullyLoaded()) {
-            DataIO.loadPageItems(conn, groupName, pluginName, inv, pageId);
+            DataIO.loadPageItems(conn, groupUUID, pluginName, inv, pageId); // ← UUIDに変更
         }
     }
 }

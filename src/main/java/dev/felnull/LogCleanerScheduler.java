@@ -2,17 +2,20 @@ package dev.felnull;
 
 import dev.felnull.DataIO.DatabaseManager;
 import dev.felnull.task.LogCleanerTask;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class LogCleanerScheduler {
+    private static BukkitTask task;
+
     public static void schedule(DatabaseManager db) {
         long delay = getInitialDelayToMidnight();
         long period = 20L * 60 * 60 * 24; // 24時間ごと
 
-        new LogCleanerTask(db).runTaskTimerAsynchronously(
+        task = new LogCleanerTask(db).runTaskTimerAsynchronously(
                 BetterStorage.BSPlugin,
                 delay,
                 period
@@ -25,5 +28,9 @@ public class LogCleanerScheduler {
         ZonedDateTime nextMidnight = now.plusDays(1).toLocalDate().atStartOfDay(ZoneId.of("Asia/Tokyo"));
         Duration duration = Duration.between(now, nextMidnight);
         return duration.getSeconds() * 20; // 秒 → ticks
+    }
+
+    public static void cancelTask() {
+        task.cancel();
     }
 }

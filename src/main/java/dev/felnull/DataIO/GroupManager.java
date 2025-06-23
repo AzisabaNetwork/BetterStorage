@@ -87,4 +87,8 @@ public class GroupManager {
                 .map(gd -> gd.groupName)
                 .collect(Collectors.toList());
     }
+    /** 全グループ名を取得（表示や補完用） */
+    public static List<String> getAllGroupNames() {
+        return new ArrayList<>(nameMap.keySet());
+    }
 }

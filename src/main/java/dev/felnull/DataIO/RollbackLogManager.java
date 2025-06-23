@@ -13,10 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class RollbackLogManager {
     private static final Gson gson = new Gson();
@@ -27,7 +24,7 @@ public class RollbackLogManager {
         try (Connection conn = db.getConnection()) {
             String sql = "INSERT INTO rollback_log (group_uuid, timestamp, json_data) VALUES (?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, groupData.groupUUID);
+                ps.setString(1, groupData.groupUUID.toString());
                 ps.setString(2, LocalDateTime.now().format(FORMATTER));
                 ps.setString(3, gson.toJson(groupData));
                 ps.executeUpdate();
@@ -37,11 +34,11 @@ public class RollbackLogManager {
         }
     }
 
-    public static boolean restoreGroupFromRollback(String groupUUID, LocalDateTime timestamp) {
+    public static boolean restoreGroupFromRollback(UUID groupUUID, LocalDateTime timestamp) {
         try (Connection conn = db.getConnection()) {
             String sql = "SELECT json_data FROM rollback_log WHERE group_uuid = ? AND timestamp = ?";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, groupUUID);
+                ps.setString(1, groupUUID.toString());
                 ps.setString(2, timestamp.format(FORMATTER));
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {

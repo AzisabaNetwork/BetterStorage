@@ -1,10 +1,10 @@
 package dev.felnull.Data;
 
+import dev.felnull.DataIO.GroupManager;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class GroupData {
@@ -33,7 +33,7 @@ public class GroupData {
 
         this.storageData = storageData;
         if (this.storageData != null) {
-            this.storageData.groupName = this.groupName;
+            this.storageData.groupUUID = this.groupUUID;
             this.storageData.groupData = this;
         }
     }
@@ -53,8 +53,45 @@ public class GroupData {
 
         this.storageData = storageData;
         if (this.storageData != null) {
-            this.storageData.groupName = this.groupName;
+            this.storageData.groupUUID = this.groupUUID;
             this.storageData.groupData = this;
         }
+    }
+
+    // ===============================
+    // === GroupManagerラッパー ===
+    // ===============================
+
+    /** groupName → UUID（キャッシュから） */
+    public static @Nullable UUID resolveUUID(String groupName) {
+        return GroupManager.resolveUUID(groupName);
+    }
+
+    /** groupUUID → groupName（キャッシュから） */
+    public static @Nullable String resolveName(UUID groupUUID) {
+        return GroupManager.resolveName(groupUUID);
+    }
+
+    /** groupUUID → GroupData（キャッシュから） */
+    public static @Nullable GroupData resolveByUUID(UUID groupUUID) {
+        return GroupManager.getGroupByUUID(groupUUID);
+    }
+
+    /** groupName → GroupData（キャッシュから） */
+    public static @Nullable GroupData resolveByName(String groupName) {
+        return GroupManager.getGroupByName(groupName);
+    }
+
+    /** プレイヤーが属している全GroupDataを取得（キャッシュから） */
+    public static @NotNull List<GroupData> resolveByPlayer(OfflinePlayer player) {
+        List<String> groupNames = GroupManager.getGroupsForPlayer(player);
+        List<GroupData> result = new ArrayList<>();
+        for (String name : groupNames) {
+            GroupData gd = resolveByName(name);
+            if (gd != null) {
+                result.add(gd);
+            }
+        }
+        return result;
     }
 }

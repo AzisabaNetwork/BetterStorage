@@ -2,10 +2,7 @@ package dev.felnull.commands;
 
 import dev.felnull.BetterStorage;
 import dev.felnull.Data.GroupData;
-import dev.felnull.DataIO.DataIO;
-import dev.felnull.DataIO.RollbackLogManager;
-import dev.felnull.DataIO.DatabaseManager;
-import dev.felnull.DataIO.DiffLogManager;
+import dev.felnull.DataIO.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -40,8 +37,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
 
-                String nameOrGroup = args[1];
-                String groupUUID = resolveGroupUUID(nameOrGroup);
+                UUID groupUUID = resolveGroupUUID(args[1]);
                 if (groupUUID == null) {
                     sender.sendMessage("指定された名前またはグループに対応するUUIDが見つかりませんでした。");
                     return true;
@@ -52,7 +48,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                     LocalDateTime time = LocalDateTime.parse(timestampStr, FORMATTER);
                     boolean result = RollbackLogManager.restoreGroupFromRollback(groupUUID, time);
                     if (result) {
-                        sender.sendMessage("グループ " + nameOrGroup + " を " + timestampStr + " に巻き戻しました。");
+                        sender.sendMessage("グループ " + args[1] + " を " + timestampStr + " に巻き戻しました。");
                     } else {
                         sender.sendMessage("指定の時点のログが見つかりませんでした。");
                     }
@@ -66,17 +62,16 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                     sender.sendMessage("/bstorage list <groupName/playerName>");
                     return true;
                 }
-                String nameOrGroup = args[1];
-                String groupUUID = resolveGroupUUID(nameOrGroup);
+                UUID groupUUID = resolveGroupUUID(args[1]);
                 if (groupUUID == null) {
                     sender.sendMessage("指定された名前またはグループに対応するUUIDが見つかりませんでした。");
                     return true;
                 }
-                List<LocalDateTime> logs = RollbackLogManager.getRollbackTimestamps(groupUUID);
+                List<LocalDateTime> logs = RollbackLogManager.getRollbackTimestamps(groupUUID.toString());
                 if (logs.isEmpty()) {
                     sender.sendMessage("ログが見つかりませんでした。");
                 } else {
-                    sender.sendMessage("[ " + nameOrGroup + " ] のログ一覧:");
+                    sender.sendMessage("[ " + args[1] + " ] のログ一覧:");
                     for (LocalDateTime log : logs) {
                         sender.sendMessage(" - " + log.format(FORMATTER));
                     }
@@ -88,8 +83,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                     sender.sendMessage("引数が不足しています。/bstorage diff <groupName/playerName> <yyyy-MM-dd HH:mm:ss>");
                     return true;
                 }
-                String nameOrGroup = args[1];
-                String groupUUID = resolveGroupUUID(nameOrGroup);
+                UUID groupUUID = resolveGroupUUID(args[1]);
                 if (groupUUID == null) {
                     sender.sendMessage("指定された名前またはグループに対応するUUIDが見つかりませんでした。");
                     return true;
@@ -104,7 +98,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                     }
                     boolean result = DiffLogManager.restoreGroupFromDiffLog(db, groupData, time);
                     if (result) {
-                        sender.sendMessage("グループ " + nameOrGroup + " を差分ログから復元しました。");
+                        sender.sendMessage("グループ " + args[1] + " を差分ログから復元しました。");
                     } else {
                         sender.sendMessage("差分ログが見つかりませんでした。");
                     }
@@ -126,16 +120,17 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private @Nullable String resolveGroupUUID(String input) {
-        // プレイヤー名と照合してUUIDを返す
+    private @Nullable UUID resolveGroupUUID(String input) {
+        UUID fromGroup = GroupManager.resolveUUID(input);
+        if (fromGroup != null) return fromGroup;
+
         OfflinePlayer player = Bukkit.getOfflinePlayer(input);
         if (player.hasPlayedBefore() || player.isOnline()) {
-            return player.getUniqueId().toString();
+            return player.getUniqueId();
         }
-        // 直接UUIDとして使えるかチェック
+
         try {
-            UUID uuid = UUID.fromString(input);
-            return uuid.toString();
+            return UUID.fromString(input);
         } catch (IllegalArgumentException ignored) {
             return null;
         }
@@ -148,7 +143,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             suggestions.addAll(Arrays.asList("rollback", "list", "diff", "help"));
         } else if (args.length == 2 && (args[0].equalsIgnoreCase("rollback") || args[0].equalsIgnoreCase("list") || args[0].equalsIgnoreCase("diff"))) {
-            suggestions.addAll(RollbackLogManager.getAllGroupUUIDs());
+            suggestions.addAll(GroupManager.getAllGroupNames());
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (player.getName() != null) {
                     suggestions.add(player.getName());

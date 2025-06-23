@@ -47,6 +47,7 @@ public final class BetterStorage extends JavaPlugin {
     @Override
     public void onDisable() {
         dbManager.disconnect();
+        LogCleanerScheduler.cancelTask();
     }
 
     public DatabaseManager getDatabaseManager() {

@@ -83,6 +83,22 @@ public class TableInitializer {
                             ");"
             );
 
+            // inventory_item_log（UUID対応版）
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS inventory_item_log (" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +
+                            "plugin_name VARCHAR(255) NOT NULL, " +
+                            "page_id VARCHAR(255) NOT NULL, " +
+                            "slot INT NOT NULL, " +
+                            "operation_type VARCHAR(32) NOT NULL, " +
+                            "itemstack TEXT, " +
+                            "display_name VARCHAR(255), " +
+                            "material VARCHAR(255), " +
+                            "amount INT, " +
+                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+                            ");"
+            );
+
             LOGGER.info("[BetterStorage] 全テーブルの初期化が完了しました。");
 
         } catch (SQLException e) {
