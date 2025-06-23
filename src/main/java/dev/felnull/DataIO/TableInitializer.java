@@ -99,6 +99,30 @@ public class TableInitializer {
                             ");"
             );
 
+            // diff_log_inventory_items（差分ログ、UUID対応版）
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS diff_log_inventory_items (" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +
+                            "plugin_name VARCHAR(255) NOT NULL, " +
+                            "page_id VARCHAR(255) NOT NULL, " +
+                            "slot INT NOT NULL, " +
+                            "itemstack TEXT, " +
+                            "operation_type VARCHAR(32), " +
+                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+                            ");"
+            );
+
+            //diff_log_tags
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS diff_log_tags (" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +
+                            "plugin_name VARCHAR(255) NOT NULL, " +
+                            "page_id VARCHAR(255) NOT NULL, " +
+                            "tag TEXT, " +
+                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+                            ");"
+            );
+
             LOGGER.info("[BetterStorage] 全テーブルの初期化が完了しました。");
 
         } catch (SQLException e) {

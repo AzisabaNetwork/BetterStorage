@@ -182,10 +182,12 @@ public class DataIO {
             storageData.groupUUID = g.groupUUID;
             g.storageData = storageData;
             if (inv == null) {
+                Bukkit.getLogger().warning("インベントリが空のままセーブしようとしたため失敗しました");
                 return false;
             }
 
             if (!inv.isFullyLoaded()) {
+                Bukkit.getLogger().warning("ロードされていないデータをセーブしようとしました");
                 g.storageData.loadPage(conn, g.ownerPlugin, pageId);
             }
 
@@ -242,6 +244,7 @@ public class DataIO {
     // ===== 2. LOAD ============================================
     // ===========================================================
 
+
     /** メインエントリ：グループ名から GroupData を生成 */
     public static GroupData loadGroupData(UUID groupUUID) {
         try (Connection conn = db.getConnection()) {
@@ -255,6 +258,7 @@ public class DataIO {
             try (PreparedStatement ps = conn.prepareStatement(
                     "SELECT group_name, display_name, is_private, version, owner_plugin FROM group_table WHERE group_uuid = ?")) {
                 ps.setString(1, groupUUID.toString());
+                Bukkit.getLogger().info("UUID検索: '" + groupUUID.toString() + "'");
                 try (ResultSet rs = ps.executeQuery()) {
                     if (!rs.next()) return null;
                     groupName = rs.getString("group_name");
@@ -296,6 +300,34 @@ public class DataIO {
             Bukkit.getLogger().warning("GroupData の読み込みに失敗: " + e.getMessage());
             return null;
         }
+    }
+    //グループ名から取得する
+    public static GroupData loadGroupData(String groupName) {
+        try (Connection conn = db.getConnection()) {
+            UUID groupUUID = getGroupUUIDFromName(conn, groupName);
+            if (groupUUID == null) {
+                Bukkit.getLogger().warning("group_name '" + groupName + "' に対応する group_uuid が見つかりませんでした");
+                return null;
+            }
+            return loadGroupData(groupUUID); // 既存のUUID版を再利用
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("GroupUUIDの取得に失敗: " + e.getMessage());
+            return null;
+        }
+    }
+
+    //グループ名をGroup_uuidに変更
+    public static UUID getGroupUUIDFromName(Connection conn, String groupName) throws SQLException {
+        String sql = "SELECT group_uuid FROM group_table WHERE group_name = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, groupName);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return UUID.fromString(rs.getString("group_uuid"));
+                }
+            }
+        }
+        return null; // 見つからなかった場合
     }
 
     /** storage_table を読み込み、InventoryData 群を組み立てる */
@@ -376,12 +408,10 @@ public class DataIO {
         }
 
         Map<String, InventoryData> invMap = loadInventoryMetaOnly(conn, groupUUID, pluginName);
-        if (invMap == null) {
-            Bukkit.getLogger().warning("[Debug] Inventory meta load failed for groupUUID = " + groupUUID);
-            return null;
-        }
         StorageData storageData = new StorageData(requireBankPerm, invMap, bankMoney);
         storageData.groupData = GroupManager.getGroupByUUID(groupUUID);
+        storageData.groupUUID = groupUUID;
+
         storageData.setFullyLoaded(false);
         return storageData;
     }

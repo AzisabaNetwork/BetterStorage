@@ -116,25 +116,26 @@ public class DiffLogManager {
             UUID groupUUID = groupData.groupUUID;
 
             // アイテム差分
-            String itemSql = "INSERT INTO diff_log_inventory_items (group_uuid, page_id, slot, itemstack, timestamp) VALUES (?, ?, ?, ?, ?)";
+            String itemSql = "INSERT INTO diff_log_inventory_items (group_uuid, plugin_name, page_id, slot, itemstack, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(itemSql)) {
                 for (Map.Entry<String, InventoryData> entry : s.storageInventory.entrySet()) {
                     String pageId = entry.getKey();
                     InventoryData inv = entry.getValue();
                     for (Map.Entry<Integer, ItemStack> itemEntry : inv.itemStackSlot.entrySet()) {
                         ps.setString(1, groupUUID.toString());
-                        ps.setString(2, pageId);
-                        ps.setInt(3, itemEntry.getKey());
-                        ps.setString(4, ItemSerializer.serializeToBase64(itemEntry.getValue()));
-                        ps.setString(5, time);
+                        ps.setString(2, groupData.ownerPlugin); // 追加
+                        ps.setString(3, pageId);
+                        ps.setInt(4, itemEntry.getKey());
+                        ps.setString(5, ItemSerializer.serializeToBase64(itemEntry.getValue()));
+                        ps.setString(6, time);
                         ps.addBatch();
                     }
                 }
                 ps.executeBatch();
             }
 
-            // タグ差分
-            String tagSql = "INSERT INTO diff_log_tags (group_uuid, page_id, tag, timestamp) VALUES (?, ?, ?, ?)";
+            // タグ差分（こちらも plugin_name 追加対応）
+            String tagSql = "INSERT INTO diff_log_tags (group_uuid, plugin_name, page_id, tag, timestamp) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(tagSql)) {
                 for (Map.Entry<String, InventoryData> entry : s.storageInventory.entrySet()) {
                     String pageId = entry.getKey();
@@ -143,9 +144,10 @@ public class DiffLogManager {
                     if (inv.userTags != null && !inv.userTags.isEmpty()) {
                         String tagJoined = String.join(",", inv.userTags);
                         ps.setString(1, groupUUID.toString());
-                        ps.setString(2, pageId);
-                        ps.setString(3, tagJoined);
-                        ps.setString(4, time);
+                        ps.setString(2, groupData.ownerPlugin); // 追加
+                        ps.setString(3, pageId);
+                        ps.setString(4, tagJoined);
+                        ps.setString(5, time);
                         ps.addBatch();
                     }
                 }
