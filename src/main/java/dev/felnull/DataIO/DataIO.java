@@ -387,7 +387,7 @@ public class DataIO {
      * @throws SQLException
      * GUI表示用にInventoryDataのメタデータのみ取得する 全取得より軽量!
      */
-    private static StorageData loadStorageMetaOnly(Connection conn, String groupName) throws SQLException {
+    public static StorageData loadStorageMetaOnly(Connection conn, String groupName) throws SQLException {
         String pluginName = null;
         double bankMoney = 0;
         Set<String> requireBankPerm = new HashSet<>();
@@ -418,7 +418,7 @@ public class DataIO {
      * @throws SQLException
      * 軽さだけが取り柄の中身がスカスカなInventoryDataたちを生成する
      */
-    private static Map<String, InventoryData> loadInventoryMetaOnly(Connection conn, String groupName, String pluginName) throws SQLException {
+    public static Map<String, InventoryData> loadInventoryMetaOnly(Connection conn, String groupName, String pluginName) throws SQLException {
         Map<String, InventoryData> map = new HashMap<>();
         String sql = "SELECT page_id, display_name, row_count, require_permission FROM inventory_table WHERE group_name = ? AND plugin_name = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
