@@ -27,6 +27,9 @@ public class DataIO {
 
     /** グループ全体を保存（各テーブルへの分割保存） */
     public static boolean saveGroupData(GroupData g, long clientVersion) {
+
+        Bukkit.getLogger().info("[DEBUG] 保存対象 groupUUID: " + g.groupUUID);
+        Bukkit.getLogger().info("[DEBUG] 保存対象 groupName: " + g.groupName);
         try (Connection conn = db.getConnection()) {
             // 最新version取得
             String selectSql = "SELECT version FROM group_table WHERE group_uuid = ?";
@@ -40,6 +43,7 @@ public class DataIO {
 
             // バージョン不一致なら競合
             if (dbVersion != clientVersion) {
+                Bukkit.getLogger().info("V不一致");
                 return false;
             }
 
@@ -69,6 +73,7 @@ public class DataIO {
 
             // 成功したので差分ログを保存
             DiffLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), g);
+            Bukkit.getLogger().info("保存成功らしい");
             return true;
         } catch (SQLException e) {
             Bukkit.getLogger().warning("GroupDataの保存に失敗: " + e.getMessage());
@@ -171,15 +176,23 @@ public class DataIO {
         }
     }
 
-    public static boolean saveInventoryOnly(GroupData g, String pageId) {
+    public static boolean saveInventoryOnly(GroupData g, StorageData storageData, String pageId) {
         try (Connection conn = db.getConnection()) {
-            InventoryData inv = g.storageData.storageInventory.get(pageId);
-            if (inv == null) return false;
+            InventoryData inv = storageData.storageInventory.get(pageId);
+            storageData.groupUUID = g.groupUUID;
+            g.storageData = storageData;
+            if (inv == null) {
+                return false;
+            }
 
-            if (!inv.isFullyLoaded()) return false;
+            if (!inv.isFullyLoaded()) {
+                g.storageData.loadPage(conn, g.ownerPlugin, pageId);
+            }
 
             long dbVersion = getGroupVersion(conn, g.groupUUID);
-            if (dbVersion != g.version) return false;
+            if (dbVersion != g.version) {
+                return false;
+            }
             g.version = dbVersion + 1;
 
             saveSinglePage(conn, g, pageId, inv);
@@ -345,22 +358,37 @@ public class DataIO {
         try (PreparedStatement ps = conn.prepareStatement(
                 "SELECT plugin_name, bank_money, require_bank_permission FROM storage_table WHERE group_uuid = ?")) {
             ps.setString(1, groupUUID.toString());
+
+            Bukkit.getLogger().info("[Debug] Executing query for group_uuid = " + groupUUID);
+
             try (ResultSet rs = ps.executeQuery()) {
-                if (!rs.next()) return null;
+                if (!rs.next()){
+                    Bukkit.getLogger().warning("[Debug] No result found for group_uuid = " + groupUUID);
+                    return null;
+                }
                 pluginName = rs.getString("plugin_name");
                 bankMoney = rs.getDouble("bank_money");
+                String requireBankPermRaw = rs.getString("require_bank_permission");
                 requireBankPerm = gson.fromJson(rs.getString("require_bank_permission"), new TypeToken<Set<String>>() {}.getType());
+
+                Bukkit.getLogger().info("[Debug] Loaded: plugin=" + pluginName + ", bank=" + bankMoney + ", perms=" + requireBankPermRaw);
             }
         }
 
         Map<String, InventoryData> invMap = loadInventoryMetaOnly(conn, groupUUID, pluginName);
+        if (invMap == null) {
+            Bukkit.getLogger().warning("[Debug] Inventory meta load failed for groupUUID = " + groupUUID);
+            return null;
+        }
         StorageData storageData = new StorageData(requireBankPerm, invMap, bankMoney);
+        storageData.groupData = GroupManager.getGroupByUUID(groupUUID);
         storageData.setFullyLoaded(false);
         return storageData;
     }
     //外部呼出し用
     public static StorageData loadStorageMetaOnly(UUID groupUUID) {
         try (Connection conn = db.getConnection()) {
+            Bukkit.getLogger().info("[Debug] loadStorageMetaOnly: groupUUID = " + groupUUID);
             return loadStorageMetaOnly(conn, groupUUID);
         } catch (SQLException e) {
             Bukkit.getLogger().warning("StorageMetaの読み込みに失敗: " + e.getMessage());
@@ -403,10 +431,11 @@ public class DataIO {
     //外部呼出し用
     public static Map<String, InventoryData> loadInventoryMetaOnly(UUID groupUUID, String pluginName) {
         try (Connection conn = db.getConnection()) {
-            return loadInventoryMetaOnly(conn, groupUUID, pluginName);
+            Map<String, InventoryData> result = loadInventoryMetaOnly(conn, groupUUID, pluginName);
+            return result.isEmpty() ? null : result;
         } catch (SQLException e) {
             Bukkit.getLogger().warning("InventoryMetaの読み込みに失敗: " + e.getMessage());
-            return Collections.emptyMap();
+            return null;
         }
     }
 

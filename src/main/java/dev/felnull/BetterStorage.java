@@ -4,6 +4,8 @@ import dev.felnull.DataIO.DatabaseManager;
 import dev.felnull.DataIO.TableInitializer;
 import dev.felnull.Listeners.CommonListener;
 import dev.felnull.commands.BetterStorageCommand;
+import dev.felnull.commands.CheckDBCommand;
+import dev.felnull.commands.RawSQLCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,10 +26,10 @@ public final class BetterStorage extends JavaPlugin {
             e.printStackTrace();
         }
         initEventListeners();
-        initCommands();
-        dbManager = new DatabaseManager();
         saveDefaultConfig();
+        dbManager = new DatabaseManager();
         LogCleanerScheduler.schedule(dbManager);
+        initCommands();
         //ロガーの起動
         //Vault呼び出し
         //CSDirectorをnewで呼び出してメインクラスのpublic変数に置く
@@ -41,6 +43,9 @@ public final class BetterStorage extends JavaPlugin {
     private void initCommands() {
         getCommand("bstorage").setExecutor(new BetterStorageCommand());
         getCommand("bstorage").setTabCompleter(new BetterStorageCommand());
+        getCommand("bscheckdb").setExecutor(new CheckDBCommand(dbManager));
+        getCommand("bsrawsql").setExecutor(new RawSQLCommand(dbManager));
+
     }
 
 

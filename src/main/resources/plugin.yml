@@ -10,6 +10,14 @@ commands:
     usage: /<command> rollback|list|diff|help
     permission: betterstorage.command
     permission-message: 権限がありませんにゃ。
+  bscheckdb:
+    description: DB整合性を確認するにゃ
+    usage: /bscheckdb
+    permission: betterstorage.command
+  bsrawsql:
+    description: 任意SQLを実行する開発者用コマンド
+    usage: /bsrawsql <SQL文>
+    permission: betterstorage.command
 permissions:
   betterstorage.command:
     description: BetterStorageコマンドの使用を許可するにゃ。

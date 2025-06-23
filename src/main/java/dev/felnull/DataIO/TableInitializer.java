@@ -2,10 +2,10 @@ package dev.felnull.DataIO;
 
 import dev.felnull.BetterStorage;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.sql.*;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class TableInitializer {
@@ -154,4 +154,6 @@ public class TableInitializer {
         if (indexName.contains("inventory")) return "inventory_table";
         return "";
     }
+
+
 }

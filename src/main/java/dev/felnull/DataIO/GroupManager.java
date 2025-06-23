@@ -96,8 +96,9 @@ public class GroupManager {
     /**個人向けグループデータを取得**/
     public static @Nullable GroupData getPersonalGroup(UUID playerUUID) {
         return getAllGroups().stream()
-                .filter(g -> g.isPrivate && g.groupUUID.equals(playerUUID))
+                .filter(g -> g.isPrivate && g.groupName.equals(playerUUID.toString()))
                 .findFirst()
                 .orElse(null);
     }
+
 }
