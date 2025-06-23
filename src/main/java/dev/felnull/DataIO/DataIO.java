@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DataIO {
     private static final Gson gson = new Gson();
@@ -82,11 +83,10 @@ public class DataIO {
     }
 
     private static void saveSinglePage(Connection conn, GroupData g, String pageId, InventoryData inv) throws SQLException {
-        // inventory_table
+        // ---------- inventory_table ----------
         String invSql = "REPLACE INTO inventory_table (group_uuid, plugin_name, page_id, display_name, row_count, require_permission) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(invSql)) {
             ps.setString(1, g.groupUUID.toString());
-            // plugin_name にはこのStorageページを管理するGUI側プラグイン名を指定（例: "StorageGUI"）
             ps.setString(2, g.ownerPlugin);
             ps.setString(3, pageId);
             ps.setString(4, inv.displayName);
@@ -95,13 +95,50 @@ public class DataIO {
             ps.executeUpdate();
         }
 
-        // inventory_item_table
+        // ---------- inventory_item_table ----------
+        // 🔥 1. 既存スロットを取得
+        Set<Integer> currentSlots = inv.itemStackSlot.keySet();
+        Set<Integer> oldSlots = new HashSet<>();
+        String fetchSql = "SELECT slot FROM inventory_item_table WHERE group_uuid = ? AND page_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(fetchSql)) {
+            ps.setString(1, g.groupUUID.toString());
+            ps.setString(2, pageId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    oldSlots.add(rs.getInt("slot"));
+                }
+            }
+        }
+
+        // 🔥 2. 削除されたスロットを DELETE
+        if (!oldSlots.isEmpty()) {
+            Set<Integer> slotsToDelete = new HashSet<>(oldSlots);
+            slotsToDelete.removeAll(currentSlots);
+
+            if (!slotsToDelete.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("DELETE FROM inventory_item_table WHERE group_uuid = ? AND page_id = ? AND slot IN (");
+                sb.append(slotsToDelete.stream().map(s -> "?").collect(Collectors.joining(",")));
+                sb.append(")");
+
+                try (PreparedStatement ps = conn.prepareStatement(sb.toString())) {
+                    ps.setString(1, g.groupUUID.toString());
+                    ps.setString(2, pageId);
+                    int index = 3;
+                    for (Integer slot : slotsToDelete) {
+                        ps.setInt(index++, slot);
+                    }
+                    ps.executeUpdate();
+                }
+            }
+        }
+
+        // 🔥 3. 現在のアイテムを REPLACE
         String itemSql = "REPLACE INTO inventory_item_table (group_uuid, plugin_name, page_id, slot, itemstack, display_name, material, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(itemSql)) {
             for (Map.Entry<Integer, ItemStack> itemEntry : inv.itemStackSlot.entrySet()) {
                 ItemStack item = itemEntry.getValue();
                 ps.setString(1, g.groupUUID.toString());
-                // plugin_name にはこのStorageページを管理するGUI側プラグイン名を指定（例: "StorageGUI"）
                 ps.setString(2, g.ownerPlugin);
                 ps.setString(3, pageId);
                 ps.setInt(4, itemEntry.getKey());
@@ -114,13 +151,12 @@ public class DataIO {
             ps.executeBatch();
         }
 
-        // tag_table
+        // ---------- tag_table ----------
         String tagSql = "REPLACE INTO tag_table (group_uuid, plugin_name, page_id, user_tag) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(tagSql)) {
             if (inv.userTags != null && !inv.userTags.isEmpty()) {
                 for (String tag : inv.userTags) {
                     ps.setString(1, g.groupUUID.toString());
-                    // plugin_name にはこのStorageページを管理するGUI側プラグイン名を指定（例: "StorageGUI"）
                     ps.setString(2, g.ownerPlugin);
                     ps.setString(3, pageId);
                     ps.setString(4, tag);
@@ -130,6 +166,8 @@ public class DataIO {
             }
         }
     }
+
+
 
     // ---------- SAVE / group ----------
     private static void saveGroupTable(Connection conn, GroupData g) throws SQLException {

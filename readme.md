@@ -12,7 +12,7 @@ BetterStorage は、プレイヤーごと・グループごとにインベント
 - UUIDベースの識別（名前変更でも安全）
 - インベントリやタグの差分を自動保存
 - ロールバック機能搭載（過去の状態に戻せる）
-- Redisや他プラグインとの連携を想定したAPI設計
+- 他プラグインとの連携を想定したAPI設計
 - 別プラグインによるGUI制御が可能（BetterStorageはバックエンド）
 
 ## 対応バージョン
@@ -47,7 +47,7 @@ BetterStorage は、プレイヤーごと・グループごとにインベント
 
 ## 開発API
 
-BetterStorageは外部プラグインから `GroupData`, `InventoryData` などのデータ取得や制御が可能です。 詳細は [API.md](API.md) を参照してください。
+BetterStorageは外部プラグインから `GroupData`, `InventoryData` などのデータ取得や制御が可能です。
 
 ## ライセンス
 

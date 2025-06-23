@@ -123,6 +123,15 @@ public class TableInitializer {
                             ");"
             );
 
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS rollback_log (" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +
+                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+                            "json_data LONGTEXT NOT NULL, " +
+                            "PRIMARY KEY (group_uuid, timestamp)" +
+                            ");"
+            );
+
             LOGGER.info("[BetterStorage] 全テーブルの初期化が完了しました。");
 
         } catch (SQLException e) {

@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,21 +63,39 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                     sender.sendMessage("/bstorage list <groupName/playerName>");
                     return true;
                 }
-                UUID groupUUID = resolveGroupUUID(args[1]);
-                if (groupUUID == null) {
-                    sender.sendMessage("指定された名前またはグループに対応するUUIDが見つかりませんでした。");
-                    return true;
-                }
-                List<LocalDateTime> logs = RollbackLogManager.getRollbackTimestamps(groupUUID.toString());
-                if (logs.isEmpty()) {
-                    sender.sendMessage("ログが見つかりませんでした。");
-                } else {
-                    sender.sendMessage("[ " + args[1] + " ] のログ一覧:");
-                    for (LocalDateTime log : logs) {
-                        sender.sendMessage(" - " + log.format(FORMATTER));
+
+                String nameOrGroup = args[1];
+
+                // 非同期で実行
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        UUID groupUUID = resolveGroupUUID(nameOrGroup);
+                        if (groupUUID == null) {
+                            Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () -> {
+                                sender.sendMessage("指定された名前またはグループに対応するUUIDが見つかりませんでした。");
+                            });
+                            return;
+                        }
+
+                        List<LocalDateTime> logs = RollbackLogManager.getRollbackTimestamps(groupUUID.toString());
+
+                        if (logs.isEmpty()) {
+                            Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () -> {
+                                sender.sendMessage("ログが見つかりませんでした。");
+                            });
+                        } else {
+                            Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () -> {
+                                sender.sendMessage("[ " + nameOrGroup + " ] のログ一覧:");
+                                for (LocalDateTime log : logs) {
+                                    sender.sendMessage(" - " + log.format(FORMATTER));
+                                }
+                            });
+                        }
                     }
-                }
-                break;
+                }.runTaskAsynchronously(BetterStorage.BSPlugin);
+
+                return true;
             }
             case "diff": {
                 if (args.length < 3) {
