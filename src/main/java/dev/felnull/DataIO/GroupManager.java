@@ -2,6 +2,7 @@ package dev.felnull.DataIO;
 
 import dev.felnull.Data.GroupData;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -90,5 +91,13 @@ public class GroupManager {
     /** 全グループ名を取得（表示や補完用） */
     public static List<String> getAllGroupNames() {
         return new ArrayList<>(nameMap.keySet());
+    }
+
+    /**個人向けグループデータを取得**/
+    public static @Nullable GroupData getPersonalGroup(UUID playerUUID) {
+        return getAllGroups().stream()
+                .filter(g -> g.isPrivate && g.groupUUID.equals(playerUUID))
+                .findFirst()
+                .orElse(null);
     }
 }
