@@ -37,8 +37,8 @@ public class LogCleanerTask extends BukkitRunnable {
     }
 
     private void backupAllGroupData() {
-        List<GroupData> allGroupData = DataIO.loadAllGroups(db);
-        allGroupData.forEach(groupData -> RollbackLogManager.saveRollbackLog(db, groupData));
+        List<GroupData> allGroupData = DataIO.loadAllGroups();
+        allGroupData.forEach(RollbackLogManager::saveRollbackLog);
         Bukkit.getLogger().info("[BetterStorage] すべてのグループデータをバックアップしました。");
     }
 }

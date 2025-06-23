@@ -3,35 +3,51 @@ package dev.felnull.Data;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class InventoryData {
-    public String[] userTag; //ユーザーがインベントリに対してつけるタグ
-    public String displayName; //表示名
-    public final int rows; //行数
-    public Set<String> requirePermission; //インベントリを開くのに必要な最低限の権限
-    public Map<Integer, ItemStack> itemStackSlot; //スロットに対応するアイテム
-    public InventoryData(String[] userTag, String displayName, int rows, Set<String> requirePermission, Map<Integer, ItemStack> itemStackSlot) {
-        this.userTag = userTag;
+    public List<String> userTags = new ArrayList<>(); // ← 修正：タグを複数保持するListに
+    public String displayName; // 表示名
+    public final int rows; // 行数
+    public Set<String> requirePermission; // インベントリを開くのに必要な最低限の権限
+    public Map<Integer, ItemStack> itemStackSlot; // スロットに対応するアイテム
+    public boolean fullyLoaded = true;
+
+    public InventoryData(String displayName, int rows, Set<String> requirePermission, Map<Integer, ItemStack> itemStackSlot) {
         this.displayName = displayName;
         this.rows = rows;
         this.requirePermission = requirePermission;
         this.itemStackSlot = itemStackSlot;
     }
 
+    // タグ追加用の補助メソッド
+    public void addUserTag(String tag) {
+        userTags.add(tag);
+    }
+
+    // タグ全取得
+    public List<String> getUserTags() {
+        return userTags;
+    }
+
+    // Inventoryを保存して itemStackSlot に更新
     public boolean saveInventory(Inventory inventory) {
         Map<Integer, ItemStack> newItemStackSlot = new HashMap<>();
         for (int i = 0; i < inventory.getSize(); i++) {
             ItemStack item = inventory.getItem(i);
-
-            // 空でないスロットのみをマップに追加
             if (item != null) {
                 newItemStackSlot.put(i, item);
             }
         }
         this.itemStackSlot = newItemStackSlot;
         return false;
+    }
+
+    public void setFullyLoaded(boolean fullyLoaded) {
+        this.fullyLoaded = fullyLoaded;
+    }
+
+    public boolean isFullyLoaded() {
+        return fullyLoaded;
     }
 }

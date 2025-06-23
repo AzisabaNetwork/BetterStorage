@@ -138,8 +138,9 @@ public class DiffLogManager {
                 for (Map.Entry<String, InventoryData> entry : s.storageInventory.entrySet()) {
                     String pageId = entry.getKey();
                     InventoryData inv = entry.getValue();
-                    if (inv.userTag != null && inv.userTag.length > 0) {
-                        String tagJoined = String.join(",", inv.userTag);
+
+                    if (inv.userTags != null && !inv.userTags.isEmpty()) {
+                        String tagJoined = String.join(",", inv.userTags); // ← List対応
                         ps.setString(1, groupData.groupName);
                         ps.setString(2, pageId);
                         ps.setString(3, tagJoined);

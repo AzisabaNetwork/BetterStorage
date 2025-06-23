@@ -44,8 +44,9 @@ public class DatabaseManager {
                     try {
                         connect();
                         isDbConnected = true;
-                        TableInitializer.initTables();
                         Bukkit.getLogger().info("[BetterStorage] DB接続に成功しました！");
+                        TableInitializer.initTables();
+                        TableInitializer.ensureIndex(BetterStorage.BSPlugin.getDatabaseManager());
                     } catch (Exception e) {
                         isDbConnected = false;
                         Bukkit.getLogger().warning("[BetterStorage] DB接続失敗: " + e.getMessage() + " 10秒後に再試行します");

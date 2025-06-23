@@ -21,8 +21,9 @@ import java.util.Set;
 public class RollbackLogManager {
     private static final Gson gson = new Gson();
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static DatabaseManager db = BetterStorage.BSPlugin.getDatabaseManager();
 
-    public static void saveRollbackLog(DatabaseManager db, GroupData groupData) {
+    public static void saveRollbackLog(GroupData groupData) {
         try (Connection conn = db.getConnection()) {
             String sql = "INSERT INTO rollback_log (group_name, timestamp, json_data) VALUES (?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -36,7 +37,7 @@ public class RollbackLogManager {
         }
     }
 
-    public static boolean restoreGroupFromRollback(DatabaseManager db, String groupName, LocalDateTime timestamp) {
+    public static boolean restoreGroupFromRollback(String groupName, LocalDateTime timestamp) {
         try (Connection conn = db.getConnection()) {
             String sql = "SELECT json_data FROM rollback_log WHERE group_name = ? AND timestamp = ?";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -47,7 +48,7 @@ public class RollbackLogManager {
                         String json = rs.getString("json_data");
                         Type type = new TypeToken<GroupData>() {}.getType();
                         GroupData restoredData = gson.fromJson(json, type);
-                        DataIO.saveGroupData(db, restoredData, restoredData.version);
+                        DataIO.saveGroupData(restoredData, restoredData.version);
                         return true;
                     }
                 }
@@ -58,7 +59,7 @@ public class RollbackLogManager {
         return false;
     }
 
-    public static List<LocalDateTime> getRollbackTimestamps(DatabaseManager db, String groupName) {
+    public static List<LocalDateTime> getRollbackTimestamps(String groupName) {
         List<LocalDateTime> timestamps = new ArrayList<>();
         try (Connection conn = db.getConnection()) {
             String sql = "SELECT timestamp FROM rollback_log WHERE group_name = ? ORDER BY timestamp DESC";
@@ -76,7 +77,7 @@ public class RollbackLogManager {
         return timestamps;
     }
 
-    public static Set<String> getAllGroupNames(DatabaseManager db) {
+    public static Set<String> getAllGroupNames() {
         Set<String> groupNames = new HashSet<>();
         try (Connection conn = db.getConnection()) {
             String sql = "SELECT DISTINCT group_name FROM rollback_log";

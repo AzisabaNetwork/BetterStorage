@@ -1,7 +1,10 @@
 package dev.felnull.Data;
 
+import dev.felnull.DataIO.DataIO;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +16,8 @@ public class StorageData {
     public double bankMoney;//ストレージ付属金庫の値
     @NotNull
     public Map<String,InventoryData> storageInventory;//ストレージに含まれているインベントリデータ　キーのStringはページ名
+    public boolean fullyLoaded = true;
+
 
     public StorageData(@NotNull Set<String> requireBankPermission, Map<String,InventoryData> storageInventory, double bankMoney) {
         this.requireBankPermission = requireBankPermission;
@@ -21,5 +26,29 @@ public class StorageData {
         }
         this.storageInventory = storageInventory;
         this.bankMoney = bankMoney;
+    }
+
+    public void setFullyLoaded(boolean fullyLoaded) {
+        this.fullyLoaded = fullyLoaded;
+    }
+
+    public boolean isFullyLoaded() {
+        return fullyLoaded;
+    }
+
+    /**
+     *
+     * @param conn
+     * @param pluginName
+     * @param pageId
+     * @throws SQLException
+     * 指定したページの中身を詰めるメソッド
+     * isFully = falseの場合　InventoryDataはメタデータのみでアイテム情報がない
+     */
+    public void loadPage(Connection conn, String pluginName, String pageId) throws SQLException {
+        InventoryData inv = storageInventory.get(pageId);
+        if (inv != null && !inv.isFullyLoaded()) {
+            DataIO.loadPageItems(conn, groupName, pluginName, inv, pageId);
+        }
     }
 }

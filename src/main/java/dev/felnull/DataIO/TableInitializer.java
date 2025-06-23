@@ -1,6 +1,7 @@
 package dev.felnull.DataIO;
 
 import dev.felnull.BetterStorage;
+import org.bukkit.Bukkit;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -79,6 +80,20 @@ public class TableInitializer {
 
         } catch (SQLException e) {
             LOGGER.warning("[BetterStorage] テーブル初期化中にエラーが発生しました: " + e.getMessage());
+        }
+    }
+
+    public static void ensureIndex(DatabaseManager db) {
+        String sql = "CREATE INDEX IF NOT EXISTS idx_group_tag ON tag_table(group_uuid, user_tag)";
+
+        try (Connection conn = db.getConnection();
+             Statement stmt = conn.createStatement()) {
+
+            stmt.execute(sql);
+            Bukkit.getLogger().info("[BetterStorage] インデックス idx_group_tag を確認・作成しましたにゃ");
+
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("[BetterStorage] インデックス作成失敗: " + e.getMessage());
         }
     }
 }

@@ -44,7 +44,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                 String timestampStr = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
                 try {
                     LocalDateTime time = LocalDateTime.parse(timestampStr, FORMATTER);
-                    boolean result = RollbackLogManager.restoreGroupFromRollback(db, groupName, time);
+                    boolean result = RollbackLogManager.restoreGroupFromRollback(groupName, time);
                     if (result) {
                         sender.sendMessage("グループ " + groupName + " を " + timestampStr + " に巻き戻しました。");
                     } else {
@@ -61,7 +61,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 String groupName = args[1];
-                List<LocalDateTime> logs = RollbackLogManager.getRollbackTimestamps(db, groupName);
+                List<LocalDateTime> logs = RollbackLogManager.getRollbackTimestamps(groupName);
                 if (logs.isEmpty()) {
                     sender.sendMessage("ログが見つかりませんでした。");
                 } else {
@@ -81,7 +81,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                 String timestampStr = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
                 try {
                     LocalDateTime time = LocalDateTime.parse(timestampStr, FORMATTER);
-                    GroupData groupData = DataIO.loadGroupData(db, groupName);
+                    GroupData groupData = DataIO.loadGroupData(groupName);
                     if (groupData == null) {
                         sender.sendMessage("指定したグループが見つかりません。");
                         return true;
@@ -123,7 +123,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                     groupNames.add(player.getName());
                 }
             }
-            groupNames.addAll(RollbackLogManager.getAllGroupNames(BetterStorage.BSPlugin.getDatabaseManager()));
+            groupNames.addAll(RollbackLogManager.getAllGroupNames());
             suggestions.addAll(groupNames);
         }
         return suggestions;
