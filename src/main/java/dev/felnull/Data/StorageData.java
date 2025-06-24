@@ -43,4 +43,14 @@ public class StorageData {
             DataIO.loadPageItems(conn, groupUUID, pluginName, inv, pageId); // ← UUIDに変更
         }
     }
+
+    public void detach() {
+        this.groupData = null;
+    }
+
+    public void attach(GroupData group) {
+        this.groupData = group;
+        this.groupUUID = group.groupUUID;
+        this.groupData.storageData = this;
+    }
 }

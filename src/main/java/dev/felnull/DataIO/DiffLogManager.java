@@ -1,18 +1,20 @@
 package dev.felnull.DataIO;
 
+import dev.felnull.BetterStorage;
 import dev.felnull.Data.GroupData;
 import dev.felnull.Data.InventoryData;
 import dev.felnull.Data.StorageData;
 import dev.felnull.DataIO.ItemSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class DiffLogManager {
@@ -47,18 +49,23 @@ public class DiffLogManager {
                     clearPs.executeUpdate();
                 }
 
-                String insertSql = "INSERT INTO inventory_item_table (group_uuid, plugin_name, page_id, slot, itemstack, display_name, material, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                String insertSql = "INSERT INTO inventory_item_table " +
+                        "(group_uuid, plugin_name, page_id, slot, itemstack, display_name, display_name_plain, material, amount) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 try (PreparedStatement insertPs = conn.prepareStatement(insertSql)) {
                     for (Map.Entry<Integer, ItemStack> itemEntry : items.entrySet()) {
                         ItemStack item = itemEntry.getValue();
+                        ItemMeta meta = item.getItemMeta();
+                        String name = meta != null && meta.hasDisplayName() ? meta.getDisplayName() : "";
                         insertPs.setString(1, groupUUID.toString());
                         insertPs.setString(2, groupData.ownerPlugin);
                         insertPs.setString(3, pageId);
                         insertPs.setInt(4, itemEntry.getKey());
                         insertPs.setString(5, ItemSerializer.serializeToBase64(item));
-                        insertPs.setString(6, item.getItemMeta() != null ? item.getItemMeta().getDisplayName() : "");
-                        insertPs.setString(7, item.getType().name());
-                        insertPs.setInt(8, item.getAmount());
+                        insertPs.setString(6, name);
+                        insertPs.setString(7, ChatColor.stripColor(name));
+                        insertPs.setString(8, item.getType().name());
+                        insertPs.setInt(9, item.getAmount());
                         insertPs.addBatch();
                     }
                     insertPs.executeBatch();
@@ -117,17 +124,14 @@ public class DiffLogManager {
             String time = LocalDateTime.now().format(FORMATTER);
             UUID groupUUID = groupData.groupUUID;
 
-            String itemSql = "INSERT INTO diff_log_inventory_items (group_uuid, plugin_name, page_id, slot, itemstack, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
+            String itemSql = "INSERT INTO diff_log_inventory_items " +
+                    "(group_uuid, plugin_name, page_id, slot, itemstack, display_name, display_name_plain, material, amount, operation_type, timestamp) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(itemSql)) {
-
                 for (Map.Entry<String, InventoryData> entry : s.storageInventory.entrySet()) {
                     String pageId = entry.getKey();
                     InventoryData currentInv = entry.getValue();
-
-                    // 🔁 1. 前回保存されたアイテム状態をロードする（復元用に）
                     Map<Integer, ItemStack> oldItems = loadLatestLoggedItems(conn, groupUUID.toString(), pageId);
-
-                    // 🔍 2. 差分判定（スロット単位）
                     Set<Integer> allSlots = new HashSet<>();
                     allSlots.addAll(oldItems.keySet());
                     allSlots.addAll(currentInv.itemStackSlot.keySet());
@@ -135,15 +139,28 @@ public class DiffLogManager {
                     for (int slot : allSlots) {
                         ItemStack oldItem = oldItems.get(slot);
                         ItemStack newItem = currentInv.itemStackSlot.get(slot);
-
                         if (!Objects.equals(serializeOrNull(oldItem), serializeOrNull(newItem))) {
-                            // 差分があるスロットだけログに保存
                             ps.setString(1, groupUUID.toString());
                             ps.setString(2, groupData.ownerPlugin);
                             ps.setString(3, pageId);
                             ps.setInt(4, slot);
-                            ps.setString(5, serializeOrNull(newItem)); // nullでも保存（削除の記録になる）
-                            ps.setString(6, time);
+                            ps.setString(5, serializeOrNull(newItem));
+                            if (newItem != null && newItem.getType() != Material.AIR) {
+                                ItemMeta meta = newItem.getItemMeta();
+                                String name = meta != null && meta.hasDisplayName() ? meta.getDisplayName() : "";
+                                ps.setString(6, name);
+                                ps.setString(7, ChatColor.stripColor(name));
+                                ps.setString(8, newItem.getType().name());
+                                ps.setInt(9, newItem.getAmount());
+                                ps.setString(10, oldItem == null ? "ADD" : "UPDATE");
+                            } else {
+                                ps.setString(6, "");
+                                ps.setString(7, "");
+                                ps.setString(8, "");
+                                ps.setNull(9, Types.INTEGER);
+                                ps.setString(10, "REMOVE");
+                            }
+                            ps.setString(11, time);
                             ps.addBatch();
                         }
                     }
@@ -187,6 +204,32 @@ public class DiffLogManager {
             }
         }
         return result;
+    }
+
+    public static List<LocalDateTime> getDiffTimestamps(String groupUUID) {
+        List<LocalDateTime> timestamps = new ArrayList<>();
+        String sql = "SELECT DISTINCT timestamp FROM diff_log_inventory_items WHERE group_uuid = ? ORDER BY timestamp DESC";
+
+        try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, groupUUID);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String ts = rs.getString("timestamp");
+                    try {
+                        timestamps.add(LocalDateTime.parse(ts, FORMATTER));
+                    } catch (DateTimeParseException e) {
+                        Bukkit.getLogger().warning("日付のパースに失敗: " + ts);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("差分ログのタイムスタンプ取得に失敗: " + e.getMessage());
+        }
+
+        return timestamps;
     }
 }
 

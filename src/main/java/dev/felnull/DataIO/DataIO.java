@@ -7,9 +7,11 @@ import dev.felnull.Data.GroupData;
 import dev.felnull.Data.InventoryData;
 import dev.felnull.Data.StorageData;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -137,7 +139,7 @@ public class DataIO {
         }
 
         // 🔥 3. 追加・更新されたスロットを REPLACE & ログ記録
-        String itemSql = "REPLACE INTO inventory_item_table (group_uuid, plugin_name, page_id, slot, itemstack, display_name, material, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String itemSql = "REPLACE INTO inventory_item_table (group_uuid, plugin_name, page_id, slot, itemstack, display_name, display_name_plain, material, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(itemSql)) {
             for (Map.Entry<Integer, ItemStack> itemEntry : inv.itemStackSlot.entrySet()) {
                 int slot = itemEntry.getKey();
@@ -151,26 +153,29 @@ public class DataIO {
                     isChanged = !Objects.equals(serialized, oldBase64);
                 }
 
-                if (!isNew && !isChanged) continue; // 差分なし
+                if (!isNew && !isChanged) continue;
 
-                // DB書き込み
+                String displayName = item.hasItemMeta() ? item.getItemMeta().getDisplayName() : "";
+                String plainName = ChatColor.stripColor(displayName);
+
                 ps.setString(1, g.groupUUID.toString());
                 ps.setString(2, g.ownerPlugin);
                 ps.setString(3, pageId);
                 ps.setInt(4, slot);
                 ps.setString(5, serialized);
-                ps.setString(6, item.hasItemMeta() ? item.getItemMeta().getDisplayName() : "");
-                ps.setString(7, item.getType().name());
-                ps.setInt(8, item.getAmount());
+                ps.setString(6, displayName);
+                ps.setString(7, plainName);
+                ps.setString(8, item.getType().name());
+                ps.setInt(9, item.getAmount());
                 ps.addBatch();
 
-                // ログ
                 logInventoryItemChangeAsync(BetterStorage.BSPlugin.getDatabaseManager(),
                         g.groupUUID, g.ownerPlugin, pageId, slot,
                         isNew ? OperationType.ADD : OperationType.UPDATE, item);
             }
             ps.executeBatch();
         }
+
 
         // ---------- tag_table ----------
         String tagSql = "REPLACE INTO tag_table (group_uuid, plugin_name, page_id, user_tag) VALUES (?, ?, ?, ?)";
@@ -299,6 +304,35 @@ public class DataIO {
         }
     }
 
+    /** ロールバック用メソッド **/
+    public static void saveGroupDataWithoutVersionCheck(GroupData g) {
+        try (Connection conn = db.getConnection()) {
+            // group_table
+            saveGroupTable(conn, g);
+            saveGroupMembers(conn, g);
+
+            if (g.storageData != null) {
+                saveStorageData(conn, g);
+
+                for (Map.Entry<String, InventoryData> entry : g.storageData.storageInventory.entrySet()) {
+                    String pageId = entry.getKey();
+                    InventoryData inv = entry.getValue();
+
+                    if (!inv.isFullyLoaded()) {
+                        Bukkit.getLogger().info("[BetterStorage] スキップ: " + g.groupName + "/" + pageId + " は未完全のため保存されません");
+                        continue;
+                    }
+
+                    saveSinglePage(conn, g, pageId, inv);
+                }
+            }
+
+            // 差分ログは保存しない（ロールバック時）
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("[BetterStorage] ロールバック時の保存に失敗: " + e.getMessage());
+        }
+    }
+
     // ===========================================================
     // ===== 2. LOAD ============================================
     // ===========================================================
@@ -363,7 +397,7 @@ public class DataIO {
     //グループ名から取得する
     public static GroupData loadGroupData(String groupName) {
         try (Connection conn = db.getConnection()) {
-            UUID groupUUID = getGroupUUIDFromName(conn, groupName);
+            UUID groupUUID = getGroupUUIDFromName(groupName);
             if (groupUUID == null) {
                 Bukkit.getLogger().warning("group_name '" + groupName + "' に対応する group_uuid が見つかりませんでした");
                 return null;
@@ -376,17 +410,29 @@ public class DataIO {
     }
 
     //グループ名をGroup_uuidに変更
-    public static UUID getGroupUUIDFromName(Connection conn, String groupName) throws SQLException {
-        String sql = "SELECT group_uuid FROM group_table WHERE group_name = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, groupName);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return UUID.fromString(rs.getString("group_uuid"));
+    public static @Nullable UUID getGroupUUIDFromName(String input) {
+        try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection()) {
+            String groupName = input;
+
+            // プレイヤー名 → UUID変換して group_name として扱う
+            OfflinePlayer player = Bukkit.getOfflinePlayer(input);
+            if (player.hasPlayedBefore() || player.isOnline()) {
+                groupName = player.getUniqueId().toString();
+            }
+
+            String sql = "SELECT group_uuid FROM group_table WHERE group_name = ?";
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, groupName);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return UUID.fromString(rs.getString("group_uuid"));
+                    }
                 }
             }
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("グループUUIDの取得中にエラー: " + e.getMessage());
         }
-        return null; // 見つからなかった場合
+        return null;
     }
 
     /** storage_table を読み込み、InventoryData 群を組み立てる */
@@ -691,9 +737,10 @@ public class DataIO {
 
         Bukkit.getScheduler().runTaskAsynchronously(BetterStorage.BSPlugin, () -> {
             try (Connection conn = db.getConnection()) {
+                String plainName = ChatColor.stripColor(displayName);
                 try (PreparedStatement ps = conn.prepareStatement(
-                        "INSERT INTO inventory_item_log (group_uuid, plugin_name, page_id, slot, operation_type, itemstack, display_name, material, amount, timestamp) " +
-                                "VALUES (?,?,?,?,?,?,?,?,?,NOW())")) {
+                        "INSERT INTO inventory_item_log (group_uuid, plugin_name, page_id, slot, operation_type, itemstack, display_name, display_name_plain, material, amount, timestamp) " +
+                                "VALUES (?,?,?,?,?,?,?,?,?,?,NOW())")) {
                     ps.setString(1, groupUUID.toString());
                     ps.setString(2, pluginName);
                     ps.setString(3, pageId);
@@ -701,8 +748,9 @@ public class DataIO {
                     ps.setString(5, op.toDbString());
                     ps.setString(6, serializedItem);
                     ps.setString(7, displayName);
-                    ps.setString(8, material);
-                    ps.setInt(9, amount);
+                    ps.setString(8, plainName);
+                    ps.setString(9, material);
+                    ps.setInt(10, amount);
                     ps.executeUpdate();
                 }
             } catch (SQLException e) {
@@ -712,19 +760,24 @@ public class DataIO {
     }
 
     private static void logInventoryItemChange(Connection conn, UUID groupUUID, String pluginName, String pageId, int slot, String op, ItemStack item) throws SQLException {
+        String displayName = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : "";
+        String plainName = ChatColor.stripColor(displayName);
         try (PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO inventory_item_log (group_uuid, plugin_name, page_id, slot, operation_type, itemstack, display_name, material, amount, timestamp) VALUES (?,?,?,?,?,?,?,?,?,NOW())")) {
+                "INSERT INTO inventory_item_log (group_uuid, plugin_name, page_id, slot, operation_type, itemstack, display_name, display_name_plain, material, amount, timestamp) " +
+                        "VALUES (?,?,?,?,?,?,?,?,?,?,NOW())")) {
             ps.setString(1, groupUUID.toString());
             ps.setString(2, pluginName);
             ps.setString(3, pageId);
             ps.setInt(4, slot);
             ps.setString(5, op);
             ps.setString(6, ItemSerializer.serializeToBase64(item));
-            ps.setString(7, item.hasItemMeta() ? item.getItemMeta().getDisplayName() : "");
-            ps.setString(8, item.getType().name());
-            ps.setInt(9, item.getAmount());
+            ps.setString(7, displayName);
+            ps.setString(8, plainName);
+            ps.setString(9, item.getType().name());
+            ps.setInt(10, item.getAmount());
             ps.executeUpdate();
         }
+
     }
 
     public static void restoreInventoryState(Connection conn, UUID groupUUID, String pluginName, String pageId, LocalDateTime before) throws SQLException {

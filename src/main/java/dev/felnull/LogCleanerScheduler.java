@@ -1,6 +1,7 @@
 package dev.felnull;
 
 import dev.felnull.DataIO.DatabaseManager;
+import dev.felnull.task.ItemLogSummaryTask;
 import dev.felnull.task.LogCleanerTask;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -10,6 +11,7 @@ import java.time.ZonedDateTime;
 
 public class LogCleanerScheduler {
     private static BukkitTask task;
+    private static BukkitTask task2;
 
     public static void schedule(DatabaseManager db) {
         long delay = getInitialDelayToMidnight();
@@ -20,6 +22,12 @@ public class LogCleanerScheduler {
                 delay,
                 period
         );
+        task2 = new ItemLogSummaryTask(db).runTaskTimerAsynchronously(
+                BetterStorage.BSPlugin,
+                delay,
+                period
+        );
+
     }
 
     // 今から次の午前0時までの ticks を返す
@@ -32,5 +40,6 @@ public class LogCleanerScheduler {
 
     public static void cancelTask() {
         task.cancel();
+        task2.cancel();
     }
 }

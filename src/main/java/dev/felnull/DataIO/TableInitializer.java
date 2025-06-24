@@ -62,14 +62,15 @@ public class TableInitializer {
             // インベントリページ内のアイテム情報
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS inventory_item_table (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
-                            "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
-                            "page_id VARCHAR(255) NOT NULL, " +                             // ページ識別子
-                            "slot INT NOT NULL, " +                                         // スロット番号（0～53）
-                            "itemstack TEXT NOT NULL, " +                                   // シリアライズされたアイテム
-                            "display_name VARCHAR(255), " +                                 // 表示名（任意）
-                            "material VARCHAR(255), " +                                     // 材質（Material名）    これらは検索用
-                            "amount INT" +                                                  // 数量
+                            "group_uuid VARCHAR(255) NOT NULL, " +                  // 所属グループ
+                            "plugin_name VARCHAR(255) NOT NULL, " +                 // プラグイン名
+                            "page_id VARCHAR(255) NOT NULL, " +                     // ページ識別子
+                            "slot INT NOT NULL, " +                                 // スロット番号（0～53）
+                            "itemstack TEXT NOT NULL, " +                           // シリアライズされたアイテム
+                            "display_name VARCHAR(255), " +                         // 表示名（任意）
+                            "display_name_plain VARCHAR(255), " +                   // 色コード除去済み表示名
+                            "material VARCHAR(255), " +                             // 材質（Material名）    これらは検索用
+                            "amount INT" +                                          // 数量
                             ");"
             );
 
@@ -91,8 +92,10 @@ public class TableInitializer {
                             "page_id VARCHAR(255) NOT NULL, " +                             // ページ
                             "slot INT NOT NULL, " +                                         // スロット
                             "operation_type VARCHAR(32) NOT NULL, " +                       // 操作種別（ADD/REMOVE/UPDATEなど）
+                            "player_uuid VARCHAR(36), " +                                   // 操作したプレイヤー
                             "itemstack TEXT, " +                                            // アイテム
                             "display_name VARCHAR(255), " +                                 // 表示名
+                            "display_name_plain VARCHAR(255), " +                           // 色コード除去済み表示名
                             "material VARCHAR(255), " +                                     // 材質
                             "amount INT, " +                                                // 数量
                             "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +      // ログ記録時刻
@@ -107,6 +110,10 @@ public class TableInitializer {
                             "page_id VARCHAR(255) NOT NULL, " +                             // 対象ページ
                             "slot INT NOT NULL, " +                                         // スロット番号
                             "itemstack TEXT, " +                                            // 差分のアイテム
+                            "display_name VARCHAR(255), " +                                 // 差分にも表示名を残す
+                            "display_name_plain VARCHAR(255), " +                           // 検索用に色なし名
+                            "material VARCHAR(255), " +                                     // 検索用
+                            "amount INT, " +                                                // 検索用
                             "operation_type VARCHAR(32), " +                                // 操作種別
                             "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +      // 記録時刻
                             ");"
@@ -133,6 +140,22 @@ public class TableInitializer {
                             ");"
             );
 
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS inventory_item_summary (" +
+                            "date DATE NOT NULL, " +                                      // 操作日
+                            "player_uuid VARCHAR(36), " +                                // プレイヤーUUID（任意）
+                            "group_uuid VARCHAR(255), " +                                // グループUUID
+                            "plugin_name VARCHAR(255), " +                               // プラグイン名
+                            "page_id VARCHAR(255), " +                                   // ページID
+                            "material VARCHAR(255), " +                                  // 材質
+                            "display_name VARCHAR(255), " +                              // 表示名（カラー付き）
+                            "display_name_plain VARCHAR(255), " +                        // 表示名（カラーなし）
+                            "operation_type VARCHAR(32), " +                             // 操作種別
+                            "total_amount INT, " +                                       // 合計数量
+                            "PRIMARY KEY (date, player_uuid, group_uuid, plugin_name, page_id, material, display_name_plain, operation_type)" +
+                            ");"
+            );
+
 
             LOGGER.info("[BetterStorage] 全テーブルの初期化が完了しました。");
 
@@ -151,6 +174,14 @@ public class TableInitializer {
             indexes.put("idx_group_tag", "CREATE INDEX idx_group_tag ON tag_table(group_uuid, user_tag)");
             indexes.put("idx_group_member", "CREATE INDEX idx_group_member ON group_member_table(group_uuid)");
             indexes.put("idx_inventory_page", "CREATE INDEX idx_inventory_page ON inventory_table(group_uuid, page_id)");
+            indexes.put("idx_diff_log_time", "CREATE INDEX idx_diff_log_time ON diff_log_inventory_items(timestamp)");
+            indexes.put("idx_item_log_time", "CREATE INDEX idx_item_log_time ON inventory_item_log(timestamp)");
+            indexes.put("idx_display_name_plain", "CREATE INDEX idx_display_name_plain ON inventory_item_table(display_name_plain)");
+            indexes.put("idx_summary_date", "CREATE INDEX idx_summary_date ON inventory_item_summary(date)");
+            indexes.put("idx_summary_player", "CREATE INDEX idx_summary_player ON inventory_item_summary(player_uuid)");
+            indexes.put("idx_summary_group", "CREATE INDEX idx_summary_group ON inventory_item_summary(group_uuid)");
+            indexes.put("idx_summary_display_plain", "CREATE INDEX idx_summary_display_plain ON inventory_item_summary(display_name_plain)");
+
 
             for (Map.Entry<String, String> entry : indexes.entrySet()) {
                 String indexName = entry.getKey();
@@ -184,9 +215,12 @@ public class TableInitializer {
 
     // 補助関数: インデックス名からテーブル名を推定
     private static String getTableNameFromIndex(String indexName) {
+        if (indexName.contains("summary")) return "inventory_item_summary"; // ← 追加
         if (indexName.contains("tag")) return "tag_table";
         if (indexName.contains("member")) return "group_member_table";
         if (indexName.contains("inventory")) return "inventory_table";
+        if (indexName.contains("diff_log")) return "diff_log_inventory_items";
+        if (indexName.contains("item_log")) return "inventory_item_log";
         return "";
     }
 
