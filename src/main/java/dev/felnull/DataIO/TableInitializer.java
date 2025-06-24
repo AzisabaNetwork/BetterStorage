@@ -16,121 +16,123 @@ public class TableInitializer {
         try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // group_table（UUID主キー＋group_nameにUNIQUE制約）
+            // グループの基本情報（UUID主キー＋表示名＋バージョンなど）
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS group_table (" +
-                            "group_uuid VARCHAR(255) PRIMARY KEY, " +
-                            "group_name VARCHAR(255) UNIQUE NOT NULL, " +
-                            "display_name VARCHAR(255), " +
-                            "is_private BOOLEAN NOT NULL, " +
-                            "owner_plugin VARCHAR(255), " +
-                            "version BIGINT NOT NULL" +
+                            "group_uuid VARCHAR(255) PRIMARY KEY, " +                       // 内部識別子（UUID）
+                            "group_name VARCHAR(255) UNIQUE NOT NULL, " +                   // 論理名（内部参照に使う）
+                            "display_name VARCHAR(255), " +                                 // 表示名（ユーザー向け）
+                            "is_private BOOLEAN NOT NULL, " +                               // 非公開グループかどうか
+                            "owner_plugin VARCHAR(255), " +                                 // このグループを扱うプラグイン名
+                            "version BIGINT NOT NULL" +                                     // 差分保存や整合性確認用のバージョン
                             ");"
             );
 
-            // group_member_table（group_uuidを参照）
+            // グループに所属するメンバー情報
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS group_member_table (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +
-                            "member_uuid VARCHAR(36) NOT NULL, " +
-                            "role VARCHAR(255) NOT NULL" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
+                            "member_uuid VARCHAR(36) NOT NULL, " +                          // プレイヤーのUUID
+                            "role VARCHAR(255) NOT NULL" +                                  // 権限（OWNER, MEMBERなど）
                             ");"
             );
 
-            // storage_table（group_uuidベースに変更）
+            // ストレージ情報（銀行/お金関係）
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS storage_table (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +
-                            "plugin_name VARCHAR(255) NOT NULL, " +
-                            "bank_money DOUBLE NOT NULL, " +
-                            "require_bank_permission TEXT" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
+                            "plugin_name VARCHAR(255) NOT NULL, " +                         // 使用しているプラグイン
+                            "bank_money DOUBLE NOT NULL, " +                                // 所持金
+                            "require_bank_permission TEXT" +                                // アクセス権限
                             ");"
             );
 
-            // inventory_table（group_uuidベースに変更）
+            // 各ページ単位のインベントリ設定
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS inventory_table (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +
-                            "plugin_name VARCHAR(255) NOT NULL, " +
-                            "page_id VARCHAR(255) NOT NULL, " +
-                            "display_name VARCHAR(255), " +
-                            "row_count INT NOT NULL, " +
-                            "require_permission TEXT" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
+                            "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
+                            "page_id VARCHAR(255) NOT NULL, " +                             // ページ識別子（例: "main"）
+                            "display_name VARCHAR(255), " +                                 // GUIの見た目名
+                            "row_count INT NOT NULL, " +                                    // GUIの行数（1～6）
+                            "require_permission TEXT" +                                     // アクセス制限
                             ");"
             );
 
-            // inventory_item_table（group_uuidベースに変更）
+            // インベントリページ内のアイテム情報
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS inventory_item_table (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +
-                            "plugin_name VARCHAR(255) NOT NULL, " +
-                            "page_id VARCHAR(255) NOT NULL, " +
-                            "slot INT NOT NULL, " +
-                            "itemstack TEXT NOT NULL, " +
-                            "display_name VARCHAR(255), " +
-                            "material VARCHAR(255), " +
-                            "amount INT" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
+                            "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
+                            "page_id VARCHAR(255) NOT NULL, " +                             // ページ識別子
+                            "slot INT NOT NULL, " +                                         // スロット番号（0～53）
+                            "itemstack TEXT NOT NULL, " +                                   // シリアライズされたアイテム
+                            "display_name VARCHAR(255), " +                                 // 表示名（任意）
+                            "material VARCHAR(255), " +                                     // 材質（Material名）    これらは検索用
+                            "amount INT" +                                                  // 数量
                             ");"
             );
 
-            // tag_table（group_uuidベースに変更）
+            // ページに設定されたタグ情報
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS tag_table (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +
-                            "plugin_name VARCHAR(255) NOT NULL, " +
-                            "page_id VARCHAR(255) NOT NULL, " +
-                            "user_tag VARCHAR(255)" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
+                            "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
+                            "page_id VARCHAR(255) NOT NULL, " +                             // 対象ページ
+                            "user_tag VARCHAR(255)" +                                       // ユーザー定義のタグ（例: "大切なアイテム,AssaultRifle"）
                             ");"
             );
 
-            // inventory_item_log（UUID対応版）
+            // アイテム操作ログ（操作種別＋日時）
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS inventory_item_log (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +
-                            "plugin_name VARCHAR(255) NOT NULL, " +
-                            "page_id VARCHAR(255) NOT NULL, " +
-                            "slot INT NOT NULL, " +
-                            "operation_type VARCHAR(32) NOT NULL, " +
-                            "itemstack TEXT, " +
-                            "display_name VARCHAR(255), " +
-                            "material VARCHAR(255), " +
-                            "amount INT, " +
-                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
+                            "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
+                            "page_id VARCHAR(255) NOT NULL, " +                             // ページ
+                            "slot INT NOT NULL, " +                                         // スロット
+                            "operation_type VARCHAR(32) NOT NULL, " +                       // 操作種別（ADD/REMOVE/UPDATEなど）
+                            "itemstack TEXT, " +                                            // アイテム
+                            "display_name VARCHAR(255), " +                                 // 表示名
+                            "material VARCHAR(255), " +                                     // 材質
+                            "amount INT, " +                                                // 数量
+                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +      // ログ記録時刻
                             ");"
             );
 
-            // diff_log_inventory_items（差分ログ、UUID対応版）
+            // 差分ログ（主にロールバックの復元用）
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS diff_log_inventory_items (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +
-                            "plugin_name VARCHAR(255) NOT NULL, " +
-                            "page_id VARCHAR(255) NOT NULL, " +
-                            "slot INT NOT NULL, " +
-                            "itemstack TEXT, " +
-                            "operation_type VARCHAR(32), " +
-                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
+                            "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
+                            "page_id VARCHAR(255) NOT NULL, " +                             // 対象ページ
+                            "slot INT NOT NULL, " +                                         // スロット番号
+                            "itemstack TEXT, " +                                            // 差分のアイテム
+                            "operation_type VARCHAR(32), " +                                // 操作種別
+                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +      // 記録時刻
                             ");"
             );
 
-            //diff_log_tags
+            // タグの変更に関する差分ログ
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS diff_log_tags (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +
-                            "plugin_name VARCHAR(255) NOT NULL, " +
-                            "page_id VARCHAR(255) NOT NULL, " +
-                            "tag TEXT, " +
-                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
+                            "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
+                            "page_id VARCHAR(255) NOT NULL, " +                             // 対象ページ
+                            "tag TEXT, " +                                                  // タグ内容
+                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +      // 記録時刻
                             ");"
             );
 
+            // ロールバック用の完全バックアップ
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS rollback_log (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +
-                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
-                            "json_data LONGTEXT NOT NULL, " +
-                            "PRIMARY KEY (group_uuid, timestamp)" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
+                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +    // バックアップ時刻
+                            "json_data LONGTEXT NOT NULL, " +                               // グループ全体のシリアライズJSON
+                            "PRIMARY KEY (group_uuid, timestamp)" +                         // 時刻単位で識別
                             ");"
             );
+
 
             LOGGER.info("[BetterStorage] 全テーブルの初期化が完了しました。");
 

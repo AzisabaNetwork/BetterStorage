@@ -7,6 +7,7 @@ import dev.felnull.Data.GroupData;
 import dev.felnull.Data.InventoryData;
 import dev.felnull.Data.StorageData;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
@@ -74,7 +75,6 @@ public class DataIO {
 
             // 成功したので差分ログを保存
             DiffLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), g);
-            Bukkit.getLogger().info("保存成功らしい");
             return true;
         } catch (SQLException e) {
             Bukkit.getLogger().warning("GroupDataの保存に失敗: " + e.getMessage());
@@ -96,57 +96,78 @@ public class DataIO {
         }
 
         // ---------- inventory_item_table ----------
-        // 🔥 1. 既存スロットを取得
-        Set<Integer> currentSlots = inv.itemStackSlot.keySet();
-        Set<Integer> oldSlots = new HashSet<>();
-        String fetchSql = "SELECT slot FROM inventory_item_table WHERE group_uuid = ? AND page_id = ?";
+        // 🔥 1. 既存スロットとitemstack取得
+        Map<Integer, String> oldSlotBase64Map = new HashMap<>();
+        String fetchSql = "SELECT slot, itemstack FROM inventory_item_table WHERE group_uuid = ? AND page_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(fetchSql)) {
             ps.setString(1, g.groupUUID.toString());
             ps.setString(2, pageId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    oldSlots.add(rs.getInt("slot"));
+                    oldSlotBase64Map.put(rs.getInt("slot"), rs.getString("itemstack"));
                 }
             }
         }
 
-        // 🔥 2. 削除されたスロットを DELETE
-        if (!oldSlots.isEmpty()) {
-            Set<Integer> slotsToDelete = new HashSet<>(oldSlots);
-            slotsToDelete.removeAll(currentSlots);
+        Set<Integer> currentSlots = inv.itemStackSlot.keySet();
 
-            if (!slotsToDelete.isEmpty()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("DELETE FROM inventory_item_table WHERE group_uuid = ? AND page_id = ? AND slot IN (");
-                sb.append(slotsToDelete.stream().map(s -> "?").collect(Collectors.joining(",")));
-                sb.append(")");
-
-                try (PreparedStatement ps = conn.prepareStatement(sb.toString())) {
-                    ps.setString(1, g.groupUUID.toString());
-                    ps.setString(2, pageId);
-                    int index = 3;
-                    for (Integer slot : slotsToDelete) {
-                        ps.setInt(index++, slot);
-                    }
-                    ps.executeUpdate();
+        // 🔥 2. 削除されたスロットを DELETE & ログ記録
+        Set<Integer> slotsToDelete = new HashSet<>(oldSlotBase64Map.keySet());
+        slotsToDelete.removeAll(currentSlots);
+        if (!slotsToDelete.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("DELETE FROM inventory_item_table WHERE group_uuid = ? AND page_id = ? AND slot IN (");
+            sb.append(slotsToDelete.stream().map(s -> "?").collect(Collectors.joining(",")));
+            sb.append(")");
+            try (PreparedStatement ps = conn.prepareStatement(sb.toString())) {
+                ps.setString(1, g.groupUUID.toString());
+                ps.setString(2, pageId);
+                int index = 3;
+                for (Integer slot : slotsToDelete) {
+                    ps.setInt(index++, slot);
                 }
+                ps.executeUpdate();
+            }
+
+            for (int slot : slotsToDelete) {
+                ItemStack dummy = new ItemStack(Material.AIR); // ログ用にダミー
+                logInventoryItemChangeAsync(BetterStorage.BSPlugin.getDatabaseManager(),
+                        g.groupUUID, g.ownerPlugin, pageId, slot, OperationType.REMOVE, dummy);
             }
         }
 
-        // 🔥 3. 現在のアイテムを REPLACE
+        // 🔥 3. 追加・更新されたスロットを REPLACE & ログ記録
         String itemSql = "REPLACE INTO inventory_item_table (group_uuid, plugin_name, page_id, slot, itemstack, display_name, material, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(itemSql)) {
             for (Map.Entry<Integer, ItemStack> itemEntry : inv.itemStackSlot.entrySet()) {
+                int slot = itemEntry.getKey();
                 ItemStack item = itemEntry.getValue();
+                String serialized = ItemSerializer.serializeToBase64(item);
+
+                boolean isNew = !oldSlotBase64Map.containsKey(slot);
+                boolean isChanged = false;
+                if (!isNew) {
+                    String oldBase64 = oldSlotBase64Map.get(slot);
+                    isChanged = !Objects.equals(serialized, oldBase64);
+                }
+
+                if (!isNew && !isChanged) continue; // 差分なし
+
+                // DB書き込み
                 ps.setString(1, g.groupUUID.toString());
                 ps.setString(2, g.ownerPlugin);
                 ps.setString(3, pageId);
-                ps.setInt(4, itemEntry.getKey());
-                ps.setString(5, ItemSerializer.serializeToBase64(item));
+                ps.setInt(4, slot);
+                ps.setString(5, serialized);
                 ps.setString(6, item.hasItemMeta() ? item.getItemMeta().getDisplayName() : "");
                 ps.setString(7, item.getType().name());
                 ps.setInt(8, item.getAmount());
                 ps.addBatch();
+
+                // ログ
+                logInventoryItemChangeAsync(BetterStorage.BSPlugin.getDatabaseManager(),
+                        g.groupUUID, g.ownerPlugin, pageId, slot,
+                        isNew ? OperationType.ADD : OperationType.UPDATE, item);
             }
             ps.executeBatch();
         }
@@ -656,7 +677,41 @@ public class DataIO {
     // ===== 4. LOG =============================================
     // ===========================================================
 
-    public static void logInventoryItemChange(Connection conn, UUID groupUUID, String pluginName, String pageId, int slot, String op, ItemStack item) throws SQLException {
+    public static void logInventoryItemChangeAsync(DatabaseManager db, UUID groupUUID, String pluginName, String pageId, int slot, OperationType op, ItemStack item) {
+        // 削除操作ならAIRでも保存する
+        boolean isRemove = (op == OperationType.REMOVE);
+
+        // nullやAIRを除外（ただし削除は除外しない）
+        if (item == null || (!isRemove && item.getType() == Material.AIR)) return;
+
+        String serializedItem = ItemSerializer.serializeToBase64(item);
+        String displayName = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : "";
+        String material = item.getType().name();
+        int amount = item.getAmount();
+
+        Bukkit.getScheduler().runTaskAsynchronously(BetterStorage.BSPlugin, () -> {
+            try (Connection conn = db.getConnection()) {
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "INSERT INTO inventory_item_log (group_uuid, plugin_name, page_id, slot, operation_type, itemstack, display_name, material, amount, timestamp) " +
+                                "VALUES (?,?,?,?,?,?,?,?,?,NOW())")) {
+                    ps.setString(1, groupUUID.toString());
+                    ps.setString(2, pluginName);
+                    ps.setString(3, pageId);
+                    ps.setInt(4, slot);
+                    ps.setString(5, op.toDbString());
+                    ps.setString(6, serializedItem);
+                    ps.setString(7, displayName);
+                    ps.setString(8, material);
+                    ps.setInt(9, amount);
+                    ps.executeUpdate();
+                }
+            } catch (SQLException e) {
+                Bukkit.getLogger().warning("[BetterStorage] 非同期ログ保存失敗: " + e.getMessage());
+            }
+        });
+    }
+
+    private static void logInventoryItemChange(Connection conn, UUID groupUUID, String pluginName, String pageId, int slot, String op, ItemStack item) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
                 "INSERT INTO inventory_item_log (group_uuid, plugin_name, page_id, slot, operation_type, itemstack, display_name, material, amount, timestamp) VALUES (?,?,?,?,?,?,?,?,?,NOW())")) {
             ps.setString(1, groupUUID.toString());

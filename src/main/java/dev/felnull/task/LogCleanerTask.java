@@ -31,7 +31,7 @@ public class LogCleanerTask extends BukkitRunnable {
             int deleted1 = 0, deleted2 = 0, deleted3 = 0;
 
             try (PreparedStatement ps = conn.prepareStatement(
-                    "DELETE FROM inventory_item_log WHERE timestamp < NOW() - INTERVAL 30 DAY")) {
+                    "DELETE FROM inventory_item_log WHERE timestamp < NOW() - INTERVAL 6 MONTH")) {
                 deleted1 = ps.executeUpdate();
             }
 
