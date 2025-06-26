@@ -76,7 +76,7 @@ public class DataIO {
             }
 
             // 成功したので差分ログを保存
-            DiffLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), g);
+            UnifiedLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), g);
             return true;
         } catch (SQLException e) {
             Bukkit.getLogger().warning("GroupDataの保存に失敗: " + e.getMessage());
@@ -265,7 +265,7 @@ public class DataIO {
             saveGroupTable(conn, g);
 
             // 成功したので差分ログを保存
-            DiffLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), g);
+            UnifiedLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), g);
             return true;
         } catch (SQLException e) {
             Bukkit.getLogger().warning("Inventory保存失敗: " + e.getMessage());
@@ -409,20 +409,12 @@ public class DataIO {
         }
     }
 
-    //グループ名をGroup_uuidに変更
+    //GroupNameからGroupUUID生成
     public static @Nullable UUID getGroupUUIDFromName(String input) {
         try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection()) {
-            String groupName = input;
-
-            // プレイヤー名 → UUID変換して group_name として扱う
-            OfflinePlayer player = Bukkit.getOfflinePlayer(input);
-            if (player.hasPlayedBefore() || player.isOnline()) {
-                groupName = player.getUniqueId().toString();
-            }
-
             String sql = "SELECT group_uuid FROM group_table WHERE group_name = ?";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, groupName);
+                ps.setString(1, input);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         return UUID.fromString(rs.getString("group_uuid"));
@@ -668,7 +660,7 @@ public class DataIO {
         // 差分ログを削除前に保存
         GroupData group = GroupManager.getGroupByUUID(groupUUID);
         if (group != null) {
-            DiffLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), group);
+            UnifiedLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), group);
         }
 
         String[] sqls = {
@@ -694,7 +686,7 @@ public class DataIO {
         // 差分ログを削除前に保存
         GroupData group = GroupManager.getGroupByUUID(groupUUID);
         if (group != null) {
-            DiffLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), group);
+            UnifiedLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), group);
         }
 
         String[] sqls = {

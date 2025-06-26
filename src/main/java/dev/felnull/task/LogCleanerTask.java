@@ -3,7 +3,7 @@ package dev.felnull.task;
 import dev.felnull.Data.GroupData;
 import dev.felnull.DataIO.DataIO;
 import dev.felnull.DataIO.DatabaseManager;
-import dev.felnull.DataIO.RollbackLogManager;
+import dev.felnull.DataIO.UnifiedLogManager;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -72,7 +72,7 @@ public class LogCleanerTask extends BukkitRunnable {
 
     private void backupAllGroupData() {
         List<GroupData> allGroupData = DataIO.loadAllGroups();
-        allGroupData.forEach(RollbackLogManager::saveRollbackLog);
+        allGroupData.forEach(UnifiedLogManager::saveBackupSnapshot);
         Bukkit.getLogger().info("[BetterStorage] すべてのグループデータをバックアップしました。");
     }
 }

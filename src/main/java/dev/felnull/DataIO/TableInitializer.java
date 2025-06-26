@@ -109,7 +109,8 @@ public class TableInitializer {
                             "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
                             "page_id VARCHAR(255) NOT NULL, " +                             // 対象ページ
                             "slot INT NOT NULL, " +                                         // スロット番号
-                            "itemstack TEXT, " +                                            // 差分のアイテム
+                            "itemstack TEXT, " +                                            // 差分のアイテム（新状態）
+                            "old_itemstack TEXT, " +                                        // 変更前のアイテム（旧状態）★追加★
                             "display_name VARCHAR(255), " +                                 // 差分にも表示名を残す
                             "display_name_plain VARCHAR(255), " +                           // 検索用に色なし名
                             "material VARCHAR(255), " +                                     // 検索用
@@ -142,20 +143,22 @@ public class TableInitializer {
 
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS inventory_item_summary (" +
-                            "date DATE NOT NULL, " +                                      // 操作日
-                            "player_uuid VARCHAR(36), " +                                // プレイヤーUUID（任意）
-                            "group_uuid VARCHAR(255), " +                                // グループUUID
-                            "plugin_name VARCHAR(255), " +                               // プラグイン名
-                            "page_id VARCHAR(255), " +                                   // ページID
-                            "material VARCHAR(255), " +                                  // 材質
-                            "display_name VARCHAR(255), " +                              // 表示名（カラー付き）
-                            "display_name_plain VARCHAR(255), " +                        // 表示名（カラーなし）
-                            "operation_type VARCHAR(32), " +                             // 操作種別
-                            "total_amount INT, " +                                       // 合計数量
-                            "PRIMARY KEY (date, player_uuid, group_uuid, plugin_name, page_id, material, display_name_plain, operation_type)" +
+                            "date DATE NOT NULL, " +
+                            "player_uuid VARCHAR(36), " +
+                            "group_uuid VARCHAR(128), " +
+                            "plugin_name VARCHAR(64), " +
+                            "page_id VARCHAR(64), " +
+                            "material VARCHAR(64), " +
+                            "display_name VARCHAR(128), " +
+                            "display_name_plain VARCHAR(128), " +
+                            "operation_type VARCHAR(16), " +
+                            "total_amount INT, " +
+                            "PRIMARY KEY (" +
+                            "date, player_uuid, group_uuid, plugin_name, " +
+                            "page_id, material, display_name_plain, operation_type" +
+                            ")" +
                             ");"
             );
-
 
             LOGGER.info("[BetterStorage] 全テーブルの初期化が完了しました。");
 
@@ -166,22 +169,23 @@ public class TableInitializer {
 
 
     public static void ensureIndexes(DatabaseManager db) {
+
         try (Connection conn = db.getConnection()) {
             DatabaseMetaData meta = conn.getMetaData();
 
-            // チェックすべきインデックス定義
+            // 明示的に管理するインデックス定義
             Map<String, String> indexes = new LinkedHashMap<>();
             indexes.put("idx_group_tag", "CREATE INDEX idx_group_tag ON tag_table(group_uuid, user_tag)");
             indexes.put("idx_group_member", "CREATE INDEX idx_group_member ON group_member_table(group_uuid)");
             indexes.put("idx_inventory_page", "CREATE INDEX idx_inventory_page ON inventory_table(group_uuid, page_id)");
             indexes.put("idx_diff_log_time", "CREATE INDEX idx_diff_log_time ON diff_log_inventory_items(timestamp)");
             indexes.put("idx_item_log_time", "CREATE INDEX idx_item_log_time ON inventory_item_log(timestamp)");
-            indexes.put("idx_display_name_plain", "CREATE INDEX idx_display_name_plain ON inventory_item_table(display_name_plain)");
             indexes.put("idx_summary_date", "CREATE INDEX idx_summary_date ON inventory_item_summary(date)");
             indexes.put("idx_summary_player", "CREATE INDEX idx_summary_player ON inventory_item_summary(player_uuid)");
             indexes.put("idx_summary_group", "CREATE INDEX idx_summary_group ON inventory_item_summary(group_uuid)");
+            indexes.put("idx_item_table_display_plain", "CREATE INDEX idx_item_table_display_plain ON inventory_item_table(display_name_plain)");
             indexes.put("idx_summary_display_plain", "CREATE INDEX idx_summary_display_plain ON inventory_item_summary(display_name_plain)");
-
+            indexes.put("idx_group_name", "CREATE UNIQUE INDEX idx_group_name ON group_table(group_name)");
 
             for (Map.Entry<String, String> entry : indexes.entrySet()) {
                 String indexName = entry.getKey();
@@ -215,13 +219,29 @@ public class TableInitializer {
 
     // 補助関数: インデックス名からテーブル名を推定
     private static String getTableNameFromIndex(String indexName) {
-        if (indexName.contains("summary")) return "inventory_item_summary"; // ← 追加
-        if (indexName.contains("tag")) return "tag_table";
-        if (indexName.contains("member")) return "group_member_table";
-        if (indexName.contains("inventory")) return "inventory_table";
-        if (indexName.contains("diff_log")) return "diff_log_inventory_items";
-        if (indexName.contains("item_log")) return "inventory_item_log";
-        return "";
+        switch (indexName) {
+            case "idx_group_tag":
+                return "tag_table";
+            case "idx_group_member":
+                return "group_member_table";
+            case "idx_inventory_page":
+                return "inventory_table";
+            case "idx_diff_log_time":
+                return "diff_log_inventory_items";
+            case "idx_item_log_time":
+                return "inventory_item_log";
+            case "idx_item_table_display_plain":
+                return "inventory_item_table";
+            case "idx_summary_date":
+            case "idx_summary_player":
+            case "idx_summary_group":
+            case "idx_summary_display_plain":
+                return "inventory_item_summary";
+            case "idx_group_name":
+                return "group_table";
+            default:
+                throw new IllegalArgumentException("Unknown index name: " + indexName);
+        }
     }
 
 

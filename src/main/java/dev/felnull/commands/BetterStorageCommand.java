@@ -8,22 +8,21 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -37,6 +36,8 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
+        long first = System.currentTimeMillis();
 
         DatabaseManager db = BetterStorage.BSPlugin.getDatabaseManager();
 
@@ -62,7 +63,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
 
                         try {
                             LocalDateTime time = LocalDateTime.parse(timestampStr, FORMATTER);
-                            boolean result = RollbackLogManager.restoreGroupFromRollback(groupUUID, time);
+                            boolean result = UnifiedLogManager.restoreGroupToTimestamp(groupUUID, time);
                             Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () -> {
                                 if (result) {
                                     sender.sendMessage("グループ " + nameOrGroup + " を " + timestampStr + " に巻き戻しました。");
@@ -99,7 +100,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                             return;
                         }
 
-                        List<LocalDateTime> logs = RollbackLogManager.getRollbackTimestamps(groupUUID.toString());
+                        List<LocalDateTime> logs = UnifiedLogManager.getRollbackTimestamps(groupUUID);
 
                         if (logs.isEmpty()) {
                             Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () -> {
@@ -127,6 +128,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                 String targetName = args[1];
                 String timestampStr = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
                 sender.sendMessage("DBアクセス中...");
+
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -138,7 +140,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                         }
 
                         try {
-                            LocalDateTime time = LocalDateTime.parse(timestampStr, FORMATTER);
+                            LocalDateTime to = LocalDateTime.parse(timestampStr, FORMATTER);
                             GroupData groupData = DataIO.loadGroupData(groupUUID);
                             if (groupData == null) {
                                 Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
@@ -146,22 +148,45 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                                 return;
                             }
 
-                            boolean result = DiffLogManager.restoreGroupFromDiffLog(db, groupData, time);
+                            // ✅ version に対応するスナップショット時刻を取得
+                            LocalDateTime from = UnifiedLogManager.getTimestampForVersion(groupUUID, groupData.version);
+                            if (from == null) {
+                                Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
+                                        sender.sendMessage("現在のバージョンに対応するスナップショットが見つかりません。"));
+                                return;
+                            }
+
+                            if (to.isBefore(from)) {
+                                Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
+                                        sender.sendMessage("指定された時刻は現在より過去です。巻き戻しには /bstorage rollback を使ってください。"));
+                                return;
+                            }
+
+                            boolean result = UnifiedLogManager.applyForwardDiffs(groupData, from, to);
+
+                            if (result) {
+                                // 適用後の保存（version++ される）
+                                DataIO.saveGroupData(groupData, groupData.version);
+                            }
+
                             Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () -> {
                                 if (result) {
-                                    sender.sendMessage("グループ " + targetName + " を差分ログから復元しました。");
+                                    sender.sendMessage("グループ " + targetName + " を " + from + " → " + to + " へ差分適用しました。");
                                 } else {
                                     sender.sendMessage("差分ログが見つかりませんでした。");
                                 }
                             });
+
                         } catch (DateTimeParseException e) {
                             Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
                                     sender.sendMessage("日時の形式が正しくありません。yyyy-MM-dd HH:mm:ss で指定してください。"));
                         }
                     }
                 }.runTaskAsynchronously(BetterStorage.BSPlugin);
+
                 return true;
             }
+
             case "difflist": {
                 if (args.length < 2) {
                     sender.sendMessage("/bstorage difflist <groupName/playerName>");
@@ -173,22 +198,27 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
+                        long start = System.currentTimeMillis();
+
                         UUID groupUUID = resolveGroupUUID(nameOrGroup);
+                        long afterUUID = System.currentTimeMillis();
+
                         if (groupUUID == null) {
                             Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
-                                    sender.sendMessage("指定された名前またはグループに対応するUUIDが見つかりませんでした。"));
+                                    sender.sendMessage("UUIDが見つかりませんでした（" + (afterUUID - start) + "ms）"));
                             return;
                         }
 
-                        List<LocalDateTime> logs = DiffLogManager.getDiffTimestamps(groupUUID.toString());
+                        List<LocalDateTime> logs = UnifiedLogManager.getRollbackTimestamps(groupUUID);
+                        long afterLogs = System.currentTimeMillis();
 
-                        if (logs.isEmpty()) {
-                            Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
-                                    sender.sendMessage("差分ログが見つかりませんでした。"));
-                        } else {
-                            Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () -> {
+                        Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () -> {
+                            sender.sendMessage("処理完了！UUID: " + (afterUUID - start) + "ms, Logs: " + (afterLogs - afterUUID) + "ms");
+
+                            if (logs.isEmpty()) {
+                                sender.sendMessage("差分ログは見つかりませんでした。");
+                            } else {
                                 sender.sendMessage(Component.text("[ " + nameOrGroup + " ] の差分ログ一覧:").color(NamedTextColor.YELLOW));
-
                                 for (LocalDateTime log : logs) {
                                     String formatted = log.format(FORMATTER);
                                     Component msg = Component.text(" - [ ")
@@ -197,11 +227,12 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                                                     .clickEvent(ClickEvent.suggestCommand("/bstorage diff " + nameOrGroup + " " + formatted))
                                                     .hoverEvent(HoverEvent.showText(Component.text("クリックでコマンドを入力"))))
                                             .append(Component.text(" ]"));
-
                                     sender.sendMessage(msg);
                                 }
-                            });
-                        }
+                            }
+                        });
+                        long end = System.currentTimeMillis();
+                        sender.sendMessage(end - first + "msで処理しました");
                     }
                 }.runTaskAsynchronously(BetterStorage.BSPlugin);
 
@@ -232,7 +263,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                             return;
                         }
 
-                        RollbackLogManager.saveRollbackLog(groupData);
+                        UnifiedLogManager.saveBackupSnapshot(groupData);
                         Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
                                 sender.sendMessage("ロールバック用バックアップを保存しました。"));
                     }
@@ -248,10 +279,12 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                 String playerName = args[1];
                 String displayNamePlain = args[2];
 
-                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
-                if (offlinePlayer == null || offlinePlayer.getUniqueId() == null) {
+                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(playerName);
+                if (offlinePlayer == null) {
                     sender.sendMessage("プレイヤーが見つかりませんでした。");
                     return true;
+                } else {
+                    offlinePlayer.getUniqueId();
                 }
 
                 UUID playerUUID = offlinePlayer.getUniqueId();
@@ -319,6 +352,36 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
 
                 return true;
             }
+            case "wipealldata": {
+
+                sender.sendMessage(ChatColor.YELLOW + "全テーブル削除を開始します...");
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        try (Connection conn = db.getConnection(); Statement stmt = conn.createStatement()) {
+                            stmt.executeUpdate("DROP TABLE IF EXISTS inventory_item_summary");
+                            stmt.executeUpdate("DROP TABLE IF EXISTS rollback_log");
+                            stmt.executeUpdate("DROP TABLE IF EXISTS diff_log_inventory_items");
+                            stmt.executeUpdate("DROP TABLE IF EXISTS diff_log_tags");
+                            stmt.executeUpdate("DROP TABLE IF EXISTS inventory_item_log");
+                            stmt.executeUpdate("DROP TABLE IF EXISTS inventory_item_table");
+                            stmt.executeUpdate("DROP TABLE IF EXISTS inventory_table");
+                            stmt.executeUpdate("DROP TABLE IF EXISTS tag_table");
+                            stmt.executeUpdate("DROP TABLE IF EXISTS group_member_table");
+                            stmt.executeUpdate("DROP TABLE IF EXISTS storage_table");
+                            stmt.executeUpdate("DROP TABLE IF EXISTS group_table");
+
+                            Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
+                                    sender.sendMessage(ChatColor.GREEN + "[BetterStorage] 全テーブルを削除しましたにゃ。"));
+                        } catch (SQLException e) {
+                            Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
+                                    sender.sendMessage(ChatColor.RED + "[BetterStorage] テーブル削除に失敗したにゃ: " + e.getMessage()));
+                        }
+                    }
+                }.runTaskAsynchronously(BetterStorage.BSPlugin);
+                return true;
+            }
             default:
                 sender.sendMessage("使用可能なコマンド:");
                 sender.sendMessage("/bstorage rollback <groupName/playerName> <yyyy-MM-dd HH:mm:ss> - 指定した時点に巻き戻す");
@@ -332,21 +395,25 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    private @Nullable UUID resolveGroupUUID(String input) {
-        // 1. 入力がUUID文字列ならそのまま使う
-        try {
-            return UUID.fromString(input);
-        } catch (IllegalArgumentException ignored) {
-            // UUID形式ではない
+        private @Nullable UUID resolveGroupUUID(String input) {
+            // 1. UUID形式ならそのまま返す
+            try {
+                return UUID.fromString(input);
+            } catch (IllegalArgumentException ignored) {
+            }
+
+            // 2. グループ名から取得
+            UUID groupUUID = DataIO.getGroupUUIDFromName(input);
+            if (groupUUID != null) return groupUUID;
+
+            // 3. プレイヤー名 → UUID（オンライン or キャッシュにいるプレイヤー）
+            OfflinePlayer offline = Bukkit.getOfflinePlayerIfCached(input);
+            if (offline != null && (offline.hasPlayedBefore() || offline.isOnline())) {
+                return DataIO.getGroupUUIDFromName(offline.getUniqueId().toString());
+            }
+
+            return null;
         }
-
-        // 2. グループ名から取得（DB経由）
-        UUID groupUUID = DataIO.getGroupUUIDFromName(input);
-        if (groupUUID != null) return groupUUID;
-
-
-        return null;
-    }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
@@ -355,13 +422,11 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             suggestions.addAll(Arrays.asList("rollback", "list", "diff", "difflist", "help", "backup", "exportlog"));
         } else if (args.length == 2 && Arrays.asList("rollback", "list", "diff", "difflist", "backup").contains(args[0].toLowerCase())) {
-            // グループ名とプレイヤー名だけを対象にする
             suggestions.addAll(GroupManager.getAllGroupNames());
 
-            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                if (player.getName() != null) {
-                    suggestions.add(player.getName());
-                }
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                player.getName();
+                suggestions.add(player.getName());
             }
         }
 

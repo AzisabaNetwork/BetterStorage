@@ -1,9 +1,15 @@
 package dev.felnull.DataIO;
 
+import dev.felnull.BetterStorage;
 import dev.felnull.Data.GroupData;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -69,10 +75,31 @@ public class GroupManager {
 
     // — 便利ユーティリティ —
 
-    /** groupName から UUID を返す（キャッシュがなければ null） */
+    /** groupName から UUID を返す（キャッシュがなければ 取得） */
     public static UUID resolveUUID(String groupName) {
+        // 1. キャッシュ確認
         GroupData gd = nameMap.get(groupName);
-        return (gd != null ? gd.groupUUID : null);
+        if (gd != null) return gd.groupUUID;
+
+        // 2. DBフォールバック（キャッシュにない場合はDBから取得）
+        try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT group_uuid FROM group_table WHERE group_name = ?")) {
+            ps.setString(1, groupName);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String uuidStr = rs.getString("group_uuid");
+                    UUID uuid = UUID.fromString(uuidStr);
+
+                    // （オプション）GroupData自体の再構築・登録はここでは行わない
+                    return uuid;
+                }
+            }
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("[BetterStorage] resolveUUIDのDBフォールバックに失敗: " + e.getMessage());
+        }
+
+        return null;
     }
 
     /** UUID から groupName を返す（キャッシュがなければ null） */
