@@ -16,7 +16,6 @@ public class GroupData {
     public boolean isPrivate; // 個人グループか
     public StorageData storageData; // ストレージ情報
     public String ownerPlugin;
-    public long version = 0;
 
     // コンストラクタ（グループ新規作成用）
     public GroupData(@NotNull String groupName, @NotNull String displayName, @NotNull Set<OfflinePlayer> playerList,

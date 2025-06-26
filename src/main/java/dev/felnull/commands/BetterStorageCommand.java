@@ -149,10 +149,16 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                             }
 
                             // ✅ version に対応するスナップショット時刻を取得
-                            LocalDateTime from = UnifiedLogManager.getTimestampForVersion(groupUUID, groupData.version);
+                            List<LocalDateTime> rollbackTimes = UnifiedLogManager.getRollbackTimestamps(groupUUID);
+                            if (rollbackTimes.isEmpty()) {
+                                Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
+                                        sender.sendMessage("ロールバック用のスナップショットが見つかりませんでした。"));
+                                return;
+                            }
+                            LocalDateTime from = rollbackTimes.get(0); // 最新のものを取得（ORDER BY DESCされてるから）
                             if (from == null) {
                                 Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
-                                        sender.sendMessage("現在のバージョンに対応するスナップショットが見つかりません。"));
+                                        sender.sendMessage("ロールバック用のスナップショットが見つかりませんでした。"));
                                 return;
                             }
 
@@ -165,8 +171,8 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                             boolean result = UnifiedLogManager.applyForwardDiffs(groupData, from, to);
 
                             if (result) {
-                                // 適用後の保存（version++ される）
-                                DataIO.saveGroupData(groupData, groupData.version);
+                                // 適用後の保存
+                                DataIO.saveGroupData(groupData);
                             }
 
                             Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () -> {

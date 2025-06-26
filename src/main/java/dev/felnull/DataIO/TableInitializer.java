@@ -23,8 +23,7 @@ public class TableInitializer {
                             "group_name VARCHAR(255) UNIQUE NOT NULL, " +                   // 論理名（内部参照に使う）
                             "display_name VARCHAR(255), " +                                 // 表示名（ユーザー向け）
                             "is_private BOOLEAN NOT NULL, " +                               // 非公開グループかどうか
-                            "owner_plugin VARCHAR(255), " +                                 // このグループを扱うプラグイン名
-                            "version BIGINT NOT NULL" +                                     // 差分保存や整合性確認用のバージョン
+                            "owner_plugin VARCHAR(255)" +                                   // このグループを扱うプラグイン名
                             ");"
             );
 
@@ -50,12 +49,13 @@ public class TableInitializer {
             // 各ページ単位のインベントリ設定
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS inventory_table (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
-                            "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
-                            "page_id VARCHAR(255) NOT NULL, " +                             // ページ識別子（例: "main"）
-                            "display_name VARCHAR(255), " +                                 // GUIの見た目名
-                            "row_count INT NOT NULL, " +                                    // GUIの行数（1～6）
-                            "require_permission TEXT" +                                     // アクセス制限
+                            "group_uuid VARCHAR(255) NOT NULL, " +             // 所属グループ
+                            "plugin_name VARCHAR(255) NOT NULL, " +            // プラグイン名
+                            "page_id VARCHAR(255) NOT NULL, " +                // ページ識別子（例: \"main\"）
+                            "display_name VARCHAR(255), " +                    // GUIの見た目名
+                            "row_count INT NOT NULL, " +                       // GUIの行数（1～6）
+                            "require_permission TEXT, " +                      // アクセス制限
+                            "version BIGINT NOT NULL DEFAULT 0" +              // ★ページ単位のバージョン管理（楽観ロック用）
                             ");"
             );
 
@@ -127,17 +127,8 @@ public class TableInitializer {
                             "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
                             "page_id VARCHAR(255) NOT NULL, " +                             // 対象ページ
                             "tag TEXT, " +                                                  // タグ内容
+                            "operation_type VARCHAR(32), " +                                // 操作種別（ADD/REMOVE）
                             "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +      // 記録時刻
-                            ");"
-            );
-
-            // ロールバック用の完全バックアップ
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS rollback_log (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
-                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +    // バックアップ時刻
-                            "json_data LONGBLOB NOT NULL, " +                               // グループ全体のシリアライズJSON（※圧縮バイナリ対応のためLONGBLOBに変更）
-                            "PRIMARY KEY (group_uuid, timestamp)" +                         // 時刻単位で識別
                             ");"
             );
 

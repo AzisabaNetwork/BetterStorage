@@ -30,36 +30,14 @@ public class DataIO {
     // ===========================================================
 
     /** グループ全体を保存（各テーブルへの分割保存） */
-    public static boolean saveGroupData(GroupData g, long clientVersion) {
-
-        Bukkit.getLogger().info("[DEBUG] 保存対象 groupUUID: " + g.groupUUID);
-        Bukkit.getLogger().info("[DEBUG] 保存対象 groupName: " + g.groupName);
+    public static boolean saveGroupData(GroupData g) {
         try (Connection conn = db.getConnection()) {
-            // 最新version取得
-            String selectSql = "SELECT version FROM group_table WHERE group_uuid = ?";
-            long dbVersion = 0;
-            try (PreparedStatement ps = conn.prepareStatement(selectSql)) {
-                ps.setString(1, g.groupUUID.toString());
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) dbVersion = rs.getLong("version");
-                }
-            }
-
-            // バージョン不一致なら競合
-            if (dbVersion != clientVersion) {
-                Bukkit.getLogger().info("V不一致");
-                return false;
-            }
-
-            // versionを+1
-            g.version = dbVersion + 1;
-
-            // ---- 保存処理 ----
-            saveGroupTable(conn, g);        // group_table
-            saveGroupMembers(conn, g);      // group_member_table
+            // group_table
+            saveGroupTable(conn, g);
+            saveGroupMembers(conn, g);
 
             if (g.storageData != null) {
-                saveStorageData(conn, g);   // storage_table
+                saveStorageData(conn, g);
 
                 for (Map.Entry<String, InventoryData> entry : g.storageData.storageInventory.entrySet()) {
                     String pageId = entry.getKey();
@@ -70,23 +48,35 @@ public class DataIO {
                         continue;
                     }
 
-                    // 個別保存
-                    saveSinglePage(conn, g, pageId, inv);
+                    if (!saveSinglePage(conn, g, pageId, inv)) {
+                        return false; // ここで失敗通知
+                    }
                 }
             }
 
-            // 成功したので差分ログを保存
+            // 差分ログを保存
             UnifiedLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), g);
             return true;
+
         } catch (SQLException e) {
             Bukkit.getLogger().warning("GroupDataの保存に失敗: " + e.getMessage());
             return false;
         }
     }
 
-    private static void saveSinglePage(Connection conn, GroupData g, String pageId, InventoryData inv) throws SQLException {
+    private static boolean saveSinglePage(Connection conn, GroupData g, String pageId, InventoryData inv) throws SQLException {
+        // 🔁 versionチェック
+        long dbPageVersion = getInventoryPageVersion(conn, g.groupUUID, pageId);
+        if (dbPageVersion != inv.version) {
+            Bukkit.getLogger().warning("[BetterStorage] ページバージョン不一致: " + pageId);
+            return false;
+        }
+        inv.version = dbPageVersion + 1;
+
         // ---------- inventory_table ----------
-        String invSql = "REPLACE INTO inventory_table (group_uuid, plugin_name, page_id, display_name, row_count, require_permission) VALUES (?, ?, ?, ?, ?, ?)";
+        String invSql = "REPLACE INTO inventory_table " +
+                "(group_uuid, plugin_name, page_id, display_name, row_count, require_permission, version) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(invSql)) {
             ps.setString(1, g.groupUUID.toString());
             ps.setString(2, g.ownerPlugin);
@@ -94,8 +84,10 @@ public class DataIO {
             ps.setString(4, inv.displayName);
             ps.setInt(5, inv.rows);
             ps.setString(6, gson.toJson(inv.requirePermission));
+            ps.setLong(7, inv.version);
             ps.executeUpdate();
         }
+
 
         // ---------- inventory_item_table ----------
         // 🔥 1. 既存スロットとitemstack取得
@@ -191,20 +183,20 @@ public class DataIO {
                 ps.executeBatch();
             }
         }
+        return true;
     }
 
 
 
     // ---------- SAVE / group ----------
     private static void saveGroupTable(Connection conn, GroupData g) throws SQLException {
-        String sql = "REPLACE INTO group_table (group_uuid, group_name, display_name, is_private, owner_plugin, version) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "REPLACE INTO group_table (group_uuid, group_name, display_name, is_private, owner_plugin) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, g.groupUUID.toString());
             ps.setString(2, g.groupName);
             ps.setString(3, g.displayName);
             ps.setBoolean(4, g.isPrivate);
             ps.setString(5, g.ownerPlugin);
-            ps.setLong(6, g.version);
             ps.executeUpdate();
         }
     }
@@ -255,31 +247,20 @@ public class DataIO {
                 g.storageData.loadPage(conn, g.ownerPlugin, pageId);
             }
 
-            long dbVersion = getGroupVersion(conn, g.groupUUID);
-            if (dbVersion != g.version) {
+            long dbPageVersion = getInventoryPageVersion(conn, g.groupUUID, pageId);
+            if (dbPageVersion != inv.version) {
                 return false;
             }
-            g.version = dbVersion + 1;
+            inv.version = dbPageVersion + 1;
 
             saveSinglePage(conn, g, pageId, inv);
-            saveGroupTable(conn, g);
+            saveGroupTable(conn, g); // group_tableは必須（versionが無くても更新してOK）
 
-            // 成功したので差分ログを保存
             UnifiedLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), g);
             return true;
         } catch (SQLException e) {
             Bukkit.getLogger().warning("Inventory保存失敗: " + e.getMessage());
             return false;
-        }
-    }
-
-    public static long getGroupVersion(Connection conn, UUID groupUUID) throws SQLException {
-        String sql = "SELECT version FROM group_table WHERE group_uuid = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, groupUUID.toString());
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next() ? rs.getLong("version") : 0;
-            }
         }
     }
 
@@ -303,36 +284,6 @@ public class DataIO {
             ps.executeBatch();
         }
     }
-
-    /** ロールバック用メソッド **/
-    public static void saveGroupDataWithoutVersionCheck(GroupData g) {
-        try (Connection conn = db.getConnection()) {
-            // group_table
-            saveGroupTable(conn, g);
-            saveGroupMembers(conn, g);
-
-            if (g.storageData != null) {
-                saveStorageData(conn, g);
-
-                for (Map.Entry<String, InventoryData> entry : g.storageData.storageInventory.entrySet()) {
-                    String pageId = entry.getKey();
-                    InventoryData inv = entry.getValue();
-
-                    if (!inv.isFullyLoaded()) {
-                        Bukkit.getLogger().info("[BetterStorage] スキップ: " + g.groupName + "/" + pageId + " は未完全のため保存されません");
-                        continue;
-                    }
-
-                    saveSinglePage(conn, g, pageId, inv);
-                }
-            }
-
-            // 差分ログは保存しない（ロールバック時）
-        } catch (SQLException e) {
-            Bukkit.getLogger().warning("[BetterStorage] ロールバック時の保存に失敗: " + e.getMessage());
-        }
-    }
-
     // ===========================================================
     // ===== 2. LOAD ============================================
     // ===========================================================
@@ -344,12 +295,11 @@ public class DataIO {
             String groupName = null;
             String displayName;
             boolean isPrivate;
-            long version;
             String ownerPlugin;
 
             // --- group_table ------------------------------------
             try (PreparedStatement ps = conn.prepareStatement(
-                    "SELECT group_name, display_name, is_private, version, owner_plugin FROM group_table WHERE group_uuid = ?")) {
+                    "SELECT group_name, display_name, is_private, owner_plugin FROM group_table WHERE group_uuid = ?")) {
                 ps.setString(1, groupUUID.toString());
                 Bukkit.getLogger().info("UUID検索: '" + groupUUID.toString() + "'");
                 try (ResultSet rs = ps.executeQuery()) {
@@ -357,7 +307,6 @@ public class DataIO {
                     groupName = rs.getString("group_name");
                     displayName = rs.getString("display_name");
                     isPrivate = rs.getBoolean("is_private");
-                    version = rs.getLong("version");
                     ownerPlugin = rs.getString("owner_plugin");
                 }
             }
@@ -385,9 +334,8 @@ public class DataIO {
             // --- storage + inventory + tags ----------------------
             StorageData storage = loadStorageData(conn, groupUUID);
 
-            GroupData groupData = new GroupData(groupName, displayName, playerList, playerPerm, isPrivate, storage, ownerPlugin, groupUUID);
-            groupData.version = version;
-            return groupData;
+            // GroupDataを生成（versionは不要）
+            return new GroupData(groupName, displayName, playerList, playerPerm, isPrivate, storage, ownerPlugin, groupUUID);
 
         } catch (SQLException e) {
             Bukkit.getLogger().warning("GroupData の読み込みに失敗: " + e.getMessage());
@@ -450,7 +398,7 @@ public class DataIO {
     /** inventory_table + items + tags を読み込み */
     private static Map<String, InventoryData> loadInventoryData(Connection conn, UUID groupUUID, String pluginName) throws SQLException {
         Map<String, InventoryData> map = new HashMap<>();
-        String sql = "SELECT page_id, display_name, row_count, require_permission FROM inventory_table WHERE group_uuid = ? AND plugin_name = ?";
+        String sql = "SELECT page_id, display_name, row_count, require_permission, version FROM inventory_table WHERE group_uuid = ? AND plugin_name = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, groupUUID.toString());
             ps.setString(2, pluginName);
@@ -460,8 +408,13 @@ public class DataIO {
                     String display = rs.getString("display_name");
                     int rows = rs.getInt("row_count");
                     Set<String> reqPerm = gson.fromJson(rs.getString("require_permission"), new TypeToken<Set<String>>(){}.getType());
+                    long version = rs.getLong("version"); // ← 追加！
+
                     Map<Integer, ItemStack> slotMap = loadInventoryItems(conn, groupUUID, pluginName, pageId);
-                    map.put(pageId, new InventoryData(display, rows, reqPerm, slotMap));
+
+                    InventoryData inv = new InventoryData(display, rows, reqPerm, slotMap);
+                    inv.version = version; // ← version設定！
+                    map.put(pageId, inv);
                 }
             }
         }
@@ -535,7 +488,7 @@ public class DataIO {
      */
     private static Map<String, InventoryData> loadInventoryMetaOnly(Connection conn, UUID groupUUID, String pluginName) throws SQLException {
         Map<String, InventoryData> map = new HashMap<>();
-        String sql = "SELECT page_id, display_name, row_count, require_permission FROM inventory_table WHERE group_uuid = ? AND plugin_name = ?";
+        String sql = "SELECT page_id, display_name, row_count, require_permission, version FROM inventory_table WHERE group_uuid = ? AND plugin_name = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, groupUUID.toString());
             ps.setString(2, pluginName);
@@ -545,7 +498,10 @@ public class DataIO {
                     String display = rs.getString("display_name");
                     int rows = rs.getInt("row_count");
                     Set<String> reqPerm = gson.fromJson(rs.getString("require_permission"), new TypeToken<Set<String>>() {}.getType());
+                    long version = rs.getLong("version"); // ← ここ追加！
+
                     InventoryData inv = new InventoryData(display, rows, reqPerm, new HashMap<>());
+                    inv.version = version; // ← versionをセット！
                     inv.setFullyLoaded(false);
                     map.put(pageId, inv);
                 }
@@ -650,6 +606,24 @@ public class DataIO {
         return null;
     }
 
+    /**
+     * 各ページのバージョンを取得するメソッド
+     * @param conn
+     * @param groupUUID
+     * @param pageId
+     * @return
+     * @throws SQLException
+     */
+    public static long getInventoryPageVersion(Connection conn, UUID groupUUID, String pageId) throws SQLException {
+        String sql = "SELECT version FROM inventory_table WHERE group_uuid = ? AND page_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, groupUUID.toString());
+            ps.setString(2, pageId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getLong("version") : 0;
+            }
+        }
+    }
 
     // ===========================================================
     // ===== 3. DELETE ==========================================

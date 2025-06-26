@@ -29,38 +29,10 @@ import java.util.zip.GZIPOutputStream;
         public static boolean saveBackupSnapshot(GroupData groupData) {
             Logger logger = Bukkit.getLogger();
 
-            logger.info("[Debug] groupUUID: " + groupData.groupUUID);
-            logger.info("[Debug] version: " + groupData.version);
-
             StorageData storage = groupData.storageData;
             if (storage == null) {
                 logger.warning("[BetterStorage] スナップショット保存失敗: storageData が null");
                 return false;
-            }
-
-            // --- デバッグ出力 ---
-            logger.info("[Debug] bankMoney: " + storage.bankMoney);
-            logger.info("[Debug] inventory pages: " + storage.storageInventory.size());
-            for (Map.Entry<String, InventoryData> entry : storage.storageInventory.entrySet()) {
-                String pageId = entry.getKey();
-                InventoryData inv = entry.getValue();
-                logger.info("  [Page] " + pageId + " rows: " + inv.rows + " items: " + inv.itemStackSlot.size());
-
-                for (Map.Entry<Integer, ItemStack> slotEntry : inv.itemStackSlot.entrySet()) {
-                    int slot = slotEntry.getKey();
-                    ItemStack item = slotEntry.getValue();
-                    ItemMeta meta = item.getItemMeta();
-                    logger.info("    [Slot " + slot + "] Type: " + item.getType() + ", Meta: " + meta.getClass().getName());
-                    String displayName = meta.hasDisplayName() ? meta.getDisplayName() : "none";
-                    logger.info("    → displayName: " + displayName);
-
-                    List<String> lore = meta.getLore();
-                    if (lore != null) {
-                        for (String line : lore) {
-                            logger.info("    → lore: " + line);
-                        }
-                    }
-                }
             }
 
             try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection()) {
@@ -68,7 +40,7 @@ import java.util.zip.GZIPOutputStream;
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     storage.detach();
                     StorageDataBackup safeCopy = new StorageDataBackup(storage);
-                    GroupStorageBackup backup = new GroupStorageBackup(groupData.groupUUID, safeCopy, groupData.version);
+                    GroupStorageBackup backup = new GroupStorageBackup(groupData.groupUUID, safeCopy);
 
                     String json = gson.toJson(backup);
                     byte[] compressed = compress(json.getBytes());
@@ -119,7 +91,7 @@ import java.util.zip.GZIPOutputStream;
         public static @Nullable GroupStorageBackup getLatestSnapshot(DatabaseManager db, UUID groupUUID, LocalDateTime beforeTime) {
             try (Connection conn = db.getConnection();
                  PreparedStatement ps = conn.prepareStatement(
-                         "SELECT data FROM rollback_log WHERE group_uuid = ? AND timestamp <= ? ORDER BY timestamp DESC LIMIT 1")) {
+                         "SELECT json_data FROM rollback_log WHERE group_uuid = ? AND timestamp <= ? ORDER BY timestamp DESC LIMIT 1")) {
                 ps.setString(1, groupUUID.toString());
                 ps.setString(2, beforeTime.format(FORMATTER));
 
@@ -142,8 +114,6 @@ import java.util.zip.GZIPOutputStream;
                 return;
             }
 
-            // バージョンも復元
-            group.version = backup.version;
 
             // 古いStorageDataを復元
             StorageData restored = backup.storageData.toStorageData();
@@ -151,7 +121,7 @@ import java.util.zip.GZIPOutputStream;
             group.storageData = restored;
 
             // ストレージデータを書き戻す
-            DataIO.saveGroupDataWithoutVersionCheck(group);
+            DataIO.saveGroupData(group);
         }
 
         public static boolean restoreGroupToTimestamp(UUID groupUUID, LocalDateTime targetTime) {
@@ -187,13 +157,12 @@ import java.util.zip.GZIPOutputStream;
 
                 backup.storageData.toStorageData().attach(group);
                 group.storageData = backup.storageData.toStorageData();
-                group.version = backup.version;
 
                 // 3. スナップショット以降の差分を適用
                 applyForwardDiffs(group, snapshotTime, targetTime);
 
                 // 4. 保存
-                return DataIO.saveGroupData(group, group.version);
+                return DataIO.saveGroupData(group);
             } catch (Exception e) {
                 Bukkit.getLogger().warning("[BetterStorage] 巻き戻しに失敗: " + e.getMessage());
                 return false;
@@ -293,11 +262,23 @@ import java.util.zip.GZIPOutputStream;
                 if (s == null) return;
 
                 String now = LocalDateTime.now().format(FORMATTER);
-                UUID groupUUID = groupData.groupUUID;
 
-                boolean changed = saveItemDiffs(conn, groupData, now) | saveTagDiffs(conn, groupData, now);
+                boolean changed = false;
+
+                for (Map.Entry<String, InventoryData> entry : s.storageInventory.entrySet()) {
+                    String pageId = entry.getKey();
+                    InventoryData inv = entry.getValue();
+
+                    boolean itemChanged = saveItemDiffs(conn, groupData, inv, pageId, now);
+                    boolean tagChanged = saveTagDiffs(conn, groupData, inv, pageId, now);
+
+                    if (itemChanged || tagChanged) {
+                        changed = true;
+                    }
+                }
+
                 if (changed) {
-                    groupData.version++;
+                    // GroupData.version は更新しない（全体保存じゃないので）
                 }
 
             } catch (SQLException e) {
@@ -306,69 +287,74 @@ import java.util.zip.GZIPOutputStream;
         }
 
 
-        private static boolean saveItemDiffs(Connection conn, GroupData groupData, String timestamp) throws SQLException {
+
+        private static boolean saveItemDiffs(Connection conn, GroupData groupData, InventoryData currentInv, String pageId, String timestamp) throws SQLException {
             boolean hasChanges = false;
             UUID groupUUID = groupData.groupUUID;
-            StorageData s = groupData.storageData;
 
             String sql = "INSERT INTO diff_log_inventory_items " +
                     "(group_uuid, plugin_name, page_id, slot, itemstack, old_itemstack, display_name, display_name_plain, material, amount, operation_type, timestamp) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                for (Map.Entry<String, InventoryData> entry : s.storageInventory.entrySet()) {
-                    String pageId = entry.getKey();
-                    InventoryData currentInv = entry.getValue();
+                Map<Integer, ItemStack> oldItems = loadLatestLoggedItems(conn, groupUUID.toString(), pageId);
+                Set<Integer> allSlots = new HashSet<>();
+                allSlots.addAll(oldItems.keySet());
+                allSlots.addAll(currentInv.itemStackSlot.keySet());
 
-                    Map<Integer, ItemStack> oldItems = loadLatestLoggedItems(conn, groupUUID.toString(), pageId);
-                    Set<Integer> allSlots = new HashSet<>();
-                    allSlots.addAll(oldItems.keySet());
-                    allSlots.addAll(currentInv.itemStackSlot.keySet());
+                for (int slot : allSlots) {
+                    ItemStack oldItem = oldItems.get(slot);
+                    ItemStack newItem = currentInv.itemStackSlot.get(slot);
 
-                    for (int slot : allSlots) {
-                        ItemStack oldItem = oldItems.get(slot);
-                        ItemStack newItem = currentInv.itemStackSlot.get(slot);
-                        if (!Objects.equals(serializeOrNull(oldItem), serializeOrNull(newItem))) {
-                            hasChanges = true;
+                    // 両方nullまたはAIRなら無視
+                    if ((oldItem == null || oldItem.getType() == Material.AIR) &&
+                            (newItem == null || newItem.getType() == Material.AIR)) {
+                        continue;
+                    }
 
-                            ps.setString(1, groupUUID.toString());
-                            ps.setString(2, groupData.ownerPlugin);
-                            ps.setString(3, pageId);
-                            ps.setInt(4, slot);
+                    if (!Objects.equals(serializeOrNull(oldItem), serializeOrNull(newItem))) {
+                        hasChanges = true;
 
-                            if (newItem != null && newItem.getType() != Material.AIR) {
-                                ps.setString(5, ItemSerializer.serializeToBase64(newItem));
-                            } else {
-                                ps.setNull(5, Types.VARCHAR);
-                            }
+                        ps.setString(1, groupUUID.toString());
+                        ps.setString(2, groupData.ownerPlugin);
+                        ps.setString(3, pageId);
+                        ps.setInt(4, slot);
 
-                            if (oldItem != null && oldItem.getType() != Material.AIR) {
-                                ps.setString(6, ItemSerializer.serializeToBase64(oldItem));
-                            } else {
-                                ps.setNull(6, Types.VARCHAR);
-                            }
-
-                            if (newItem != null && newItem.getType() != Material.AIR) {
-                                ItemMeta meta = newItem.getItemMeta();
-                                String name = meta != null && meta.hasDisplayName() ? meta.getDisplayName() : "";
-                                ps.setString(7, name);
-                                ps.setString(8, ChatColor.stripColor(name));
-                                ps.setString(9, newItem.getType().name());
-                                ps.setInt(10, newItem.getAmount());
-                                ps.setString(11, oldItem == null ? "ADD" : "UPDATE");
-                            } else {
-                                ps.setString(7, "");
-                                ps.setString(8, "");
-                                ps.setString(9, "");
-                                ps.setNull(10, Types.INTEGER);
-                                ps.setString(11, "REMOVE");
-                            }
-
-                            ps.setString(12, timestamp);
-                            ps.addBatch();
+                        // itemstack
+                        if (newItem != null && newItem.getType() != Material.AIR) {
+                            ps.setString(5, ItemSerializer.serializeToBase64(newItem));
+                        } else {
+                            ps.setNull(5, Types.VARCHAR);
                         }
+
+                        if (oldItem != null && oldItem.getType() != Material.AIR) {
+                            ps.setString(6, ItemSerializer.serializeToBase64(oldItem));
+                        } else {
+                            ps.setNull(6, Types.VARCHAR);
+                        }
+
+                        // display nameなど
+                        if (newItem != null && newItem.getType() != Material.AIR) {
+                            ItemMeta meta = newItem.getItemMeta();
+                            String name = meta != null && meta.hasDisplayName() ? meta.getDisplayName() : "";
+                            ps.setString(7, name);
+                            ps.setString(8, ChatColor.stripColor(name));
+                            ps.setString(9, newItem.getType().name());
+                            ps.setInt(10, newItem.getAmount());
+                            ps.setString(11, oldItem == null ? "ADD" : "UPDATE");
+                        } else {
+                            ps.setString(7, "");
+                            ps.setString(8, "");
+                            ps.setString(9, "");
+                            ps.setNull(10, Types.INTEGER);
+                            ps.setString(11, "REMOVE");
+                        }
+
+                        ps.setString(12, timestamp);
+                        ps.addBatch();
                     }
                 }
+
                 ps.executeBatch();
             }
 
@@ -376,40 +362,33 @@ import java.util.zip.GZIPOutputStream;
         }
 
 
-        private static boolean saveTagDiffs(Connection conn, GroupData groupData, String timestamp) throws SQLException {
+        private static boolean saveTagDiffs(Connection conn, GroupData groupData, InventoryData inv, String pageId, String timestamp) throws SQLException {
             boolean hasChanges = false;
             UUID groupUUID = groupData.groupUUID;
-            StorageData s = groupData.storageData;
+            List<String> currentTags = inv.getUserTags();
 
-            String sql = "INSERT INTO diff_log_tags (group_uuid, plugin_name, page_id, tag, operation_type, timestamp) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+            Set<String> oldTags = loadLatestLoggedTags(conn, groupUUID.toString(), pageId);
+
+            Set<String> allTags = new HashSet<>();
+            allTags.addAll(currentTags);
+            allTags.addAll(oldTags);
+
+            String sql = "INSERT INTO diff_log_tags (group_uuid, plugin_name, page_id, tag, operation_type, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
 
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                for (Map.Entry<String, InventoryData> entry : s.storageInventory.entrySet()) {
-                    String pageId = entry.getKey();
-                    InventoryData inv = entry.getValue();
-                    List<String> currentTags = inv.getUserTags();
+                for (String tag : allTags) {
+                    boolean isAdded = currentTags.contains(tag) && !oldTags.contains(tag);
+                    boolean isRemoved = !currentTags.contains(tag) && oldTags.contains(tag);
 
-                    Set<String> oldTags = loadLatestLoggedTags(conn, groupUUID.toString(), pageId);
-
-                    Set<String> allTags = new HashSet<>();
-                    allTags.addAll(currentTags);
-                    allTags.addAll(oldTags);
-
-                    for (String tag : allTags) {
-                        boolean isAdded = currentTags.contains(tag) && !oldTags.contains(tag);
-                        boolean isRemoved = !currentTags.contains(tag) && oldTags.contains(tag);
-
-                        if (isAdded || isRemoved) {
-                            hasChanges = true;
-                            ps.setString(1, groupUUID.toString());
-                            ps.setString(2, groupData.ownerPlugin);
-                            ps.setString(3, pageId);
-                            ps.setString(4, tag);
-                            ps.setString(5, isAdded ? "ADD" : "REMOVE");
-                            ps.setString(6, timestamp);
-                            ps.addBatch();
-                        }
+                    if (isAdded || isRemoved) {
+                        hasChanges = true;
+                        ps.setString(1, groupUUID.toString());
+                        ps.setString(2, groupData.ownerPlugin);
+                        ps.setString(3, pageId);
+                        ps.setString(4, tag);
+                        ps.setString(5, isAdded ? "ADD" : "REMOVE");
+                        ps.setString(6, timestamp);
+                        ps.addBatch();
                     }
                 }
                 ps.executeBatch();
@@ -417,6 +396,7 @@ import java.util.zip.GZIPOutputStream;
 
             return hasChanges;
         }
+
 
 
         private static Set<String> loadLatestLoggedTags(Connection conn, String groupUUID, String pageId) throws SQLException {
@@ -447,6 +427,7 @@ import java.util.zip.GZIPOutputStream;
 
         private static Map<Integer, ItemStack> loadLatestLoggedItems(Connection conn, String groupUUID, String pageId) throws SQLException {
             Map<Integer, ItemStack> result = new HashMap<>();
+
             String sql = "SELECT slot, itemstack FROM diff_log_inventory_items " +
                     "WHERE group_uuid = ? AND page_id = ? AND timestamp = (" +
                     "SELECT MAX(timestamp) FROM diff_log_inventory_items WHERE group_uuid = ? AND page_id = ?)";
@@ -461,8 +442,16 @@ import java.util.zip.GZIPOutputStream;
                     while (rs.next()) {
                         int slot = rs.getInt("slot");
                         String base64 = rs.getString("itemstack");
-                        if (!"null".equals(base64)) {
+
+                        if (base64 == null || base64.trim().isEmpty() || "null".equalsIgnoreCase(base64)) {
+                            Bukkit.getLogger().warning("[BetterStorage] 無効なitemstack(Base64)が読み込まれました → slot=" + slot + ", group=" + groupUUID + ", page=" + pageId);
+                            continue;
+                        }
+
+                        try {
                             result.put(slot, ItemSerializer.deserializeFromBase64(base64));
+                        } catch (Exception e) {
+                            Bukkit.getLogger().warning("[BetterStorage] Base64復元中に例外発生 → slot=" + slot + ": " + e.getMessage());
                         }
                     }
                 }
@@ -470,6 +459,7 @@ import java.util.zip.GZIPOutputStream;
 
             return result;
         }
+
 
         public static List<LocalDateTime> getRollbackTimestamps(UUID groupUUID) {
             List<LocalDateTime> timestamps = new ArrayList<>();
@@ -497,24 +487,5 @@ import java.util.zip.GZIPOutputStream;
 
             return timestamps;
         }
-
-        public static LocalDateTime getTimestampForVersion(UUID groupUUID, long version) {
-            try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection();
-                 PreparedStatement ps = conn.prepareStatement("SELECT timestamp FROM rollback_log WHERE group_uuid = ? AND version = ?")) {
-                ps.setString(1, groupUUID.toString());
-                ps.setLong(2, version);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return rs.getTimestamp("timestamp").toLocalDateTime();
-                    }
-                }
-            } catch (SQLException e) {
-                Bukkit.getLogger().warning("[BetterStorage] バージョンからtimestamp取得に失敗: " + e.getMessage());
-            }
-            return null;
-        }
-
-
-
     }
 

@@ -5,11 +5,9 @@ import java.util.UUID;
 public class GroupStorageBackup {
     public UUID groupUUID;
     public StorageDataBackup storageData;
-    public long version;
 
-    public GroupStorageBackup(UUID groupUUID, StorageDataBackup storageData, long version) {
+    public GroupStorageBackup(UUID groupUUID, StorageDataBackup storageData) {
         this.groupUUID = groupUUID;
         this.storageData = storageData;
-        this.version = version;
     }
 }

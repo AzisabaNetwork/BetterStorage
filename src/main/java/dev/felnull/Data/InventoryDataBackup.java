@@ -11,6 +11,7 @@ public class InventoryDataBackup {
     public Set<String> requirePermission;
     public Map<Integer, String> itemStackBase64 = new HashMap<>(); // ← Base64形式に変える
     public List<String> userTags;
+    public long version; // ←追加！
 
     public InventoryDataBackup(InventoryData original) {
         this.displayName = original.displayName;
@@ -22,5 +23,18 @@ public class InventoryDataBackup {
             String base64 = ItemSerializer.serializeToBase64(entry.getValue());
             itemStackBase64.put(entry.getKey(), base64);
         }
+    }
+
+    public InventoryData toInventoryData() {
+        Map<Integer, ItemStack> itemStackSlot = new HashMap<>();
+        for (Map.Entry<Integer, String> entry : itemStackBase64.entrySet()) {
+            ItemStack item = ItemSerializer.deserializeFromBase64(entry.getValue());
+            itemStackSlot.put(entry.getKey(), item);
+        }
+        InventoryData inv = new InventoryData(this.displayName, this.rows, this.requirePermission, itemStackSlot);
+        inv.userTags.clear();
+        inv.userTags.addAll(userTags != null ? userTags : Collections.emptyList());
+        inv.version = this.version;
+        return inv;
     }
 }

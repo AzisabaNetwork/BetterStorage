@@ -12,6 +12,7 @@ public class InventoryData {
     public Set<String> requirePermission; // インベントリを開くのに必要な最低限の権限
     public Map<Integer, ItemStack> itemStackSlot; // スロットに対応するアイテム
     public boolean fullyLoaded = true;
+    public long version = 0;
 
     public InventoryData(String displayName, int rows, Set<String> requirePermission, Map<Integer, ItemStack> itemStackSlot) {
         this.displayName = displayName;
