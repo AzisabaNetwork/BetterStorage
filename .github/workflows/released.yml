@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Cache Maven packages    # ←この行追加
@@ -26,7 +26,7 @@ jobs:
             ${{ runner.os }}-maven-
       
       - name: Setup JDK #JDKセットアップ
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
           java-version: '16'
@@ -41,12 +41,12 @@ jobs:
           
 
       - name: Upload Artifact #アーティファクトをアップロード
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: releases
           path: release/*
 
       - name: ${{ github.ref_name }}リリース #GiHubにリリース
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: release/*
