@@ -66,7 +66,8 @@ public class StorageData {
      * 指定されたページIDに対応するInventoryDataを更新する。
      * nullチェック付きで安全に置き換える。
      */
-    public void updateInventoryData(String pageId, InventoryData newData) {
+    public void updateInventoryData(String pageId) {
+        InventoryData newData = storageInventory.get(pageId);
         if (pageId == null || newData == null) {
             throw new IllegalArgumentException("pageId または newData が null です");
         }
