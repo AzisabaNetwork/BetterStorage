@@ -45,7 +45,7 @@ public class StorageData {
 
             // ← versionが未設定だったらここで取得しておく（重要！）
             if (inv.version == 0L) {
-                inv.version = DataIO.getInventoryPageVersion(conn, groupUUID, pageId);
+                inv.version = DataIO.getInventoryPageVersion(conn, groupUUID, pluginName, pageId);
             }
 
             inv.setFullyLoaded(true);
