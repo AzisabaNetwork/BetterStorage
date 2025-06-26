@@ -11,6 +11,9 @@ import java.util.Base64;
 
 public class ItemSerializer {
     public static String serializeToBase64(ItemStack item) {
+        if (item == null) {
+            return null; // ← nullのまま返す（DB保存時にNULLとして扱える）
+        }
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              BukkitObjectOutputStream oos = new BukkitObjectOutputStream(baos)) {
             oos.writeObject(item);
@@ -21,6 +24,9 @@ public class ItemSerializer {
     }
 
     public static ItemStack deserializeFromBase64(String base64) {
+        if (base64 == null) {
+            return null; // ← ここで防ぐ
+        }
         byte[] data = Base64.getDecoder().decode(base64);
         try (BukkitObjectInputStream ois = new BukkitObjectInputStream(new ByteArrayInputStream(data))) {
             return (ItemStack) ois.readObject();

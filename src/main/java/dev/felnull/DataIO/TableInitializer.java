@@ -136,7 +136,7 @@ public class TableInitializer {
                     "CREATE TABLE IF NOT EXISTS rollback_log (" +
                             "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
                             "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +    // バックアップ時刻
-                            "json_data LONGTEXT NOT NULL, " +                               // グループ全体のシリアライズJSON
+                            "json_data LONGBLOB NOT NULL, " +                               // グループ全体のシリアライズJSON（※圧縮バイナリ対応のためLONGBLOBに変更）
                             "PRIMARY KEY (group_uuid, timestamp)" +                         // 時刻単位で識別
                             ");"
             );

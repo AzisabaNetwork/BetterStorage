@@ -263,9 +263,15 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                             return;
                         }
 
-                        UnifiedLogManager.saveBackupSnapshot(groupData);
-                        Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
-                                sender.sendMessage("ロールバック用バックアップを保存しました。"));
+                        boolean success = UnifiedLogManager.saveBackupSnapshot(groupData);
+                        Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () -> {
+                                    if (success) {
+                                        sender.sendMessage("ロールバック用バックアップを保存しました。");
+                                    } else {
+                                        sender.sendMessage("ロールバック用バックアップを保存できませんでした...");
+                                    }
+                                }
+                                );
                     }
                 }.runTaskAsynchronously(BetterStorage.BSPlugin);
                 return true;

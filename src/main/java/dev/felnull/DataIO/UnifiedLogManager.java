@@ -2,10 +2,7 @@ package dev.felnull.DataIO;
 
 import com.google.gson.Gson;
 import dev.felnull.BetterStorage;
-import dev.felnull.Data.GroupData;
-import dev.felnull.Data.GroupStorageBackup;
-import dev.felnull.Data.InventoryData;
-import dev.felnull.Data.StorageData;
+import dev.felnull.Data.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -28,22 +26,62 @@ import java.util.zip.GZIPOutputStream;
         private static final Gson gson = new Gson();
 
         // === 1. スナップショット保存（過去の状態をGZIP+JSONで保存） ===
-        public static void saveBackupSnapshot(GroupData groupData) {
+        public static boolean saveBackupSnapshot(GroupData groupData) {
+            Logger logger = Bukkit.getLogger();
+
+            logger.info("[Debug] groupUUID: " + groupData.groupUUID);
+            logger.info("[Debug] version: " + groupData.version);
+
+            StorageData storage = groupData.storageData;
+            if (storage == null) {
+                logger.warning("[BetterStorage] スナップショット保存失敗: storageData が null");
+                return false;
+            }
+
+            // --- デバッグ出力 ---
+            logger.info("[Debug] bankMoney: " + storage.bankMoney);
+            logger.info("[Debug] inventory pages: " + storage.storageInventory.size());
+            for (Map.Entry<String, InventoryData> entry : storage.storageInventory.entrySet()) {
+                String pageId = entry.getKey();
+                InventoryData inv = entry.getValue();
+                logger.info("  [Page] " + pageId + " rows: " + inv.rows + " items: " + inv.itemStackSlot.size());
+
+                for (Map.Entry<Integer, ItemStack> slotEntry : inv.itemStackSlot.entrySet()) {
+                    int slot = slotEntry.getKey();
+                    ItemStack item = slotEntry.getValue();
+                    ItemMeta meta = item.getItemMeta();
+                    logger.info("    [Slot " + slot + "] Type: " + item.getType() + ", Meta: " + meta.getClass().getName());
+                    String displayName = meta.hasDisplayName() ? meta.getDisplayName() : "none";
+                    logger.info("    → displayName: " + displayName);
+
+                    List<String> lore = meta.getLore();
+                    if (lore != null) {
+                        for (String line : lore) {
+                            logger.info("    → lore: " + line);
+                        }
+                    }
+                }
+            }
+
             try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection()) {
                 String sql = "INSERT INTO rollback_log (group_uuid, timestamp, json_data) VALUES (?, ?, ?)";
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                    GroupStorageBackup backup = new GroupStorageBackup(
-                            groupData.groupUUID, groupData.storageData, groupData.version
-                    );
+                    storage.detach();
+                    StorageDataBackup safeCopy = new StorageDataBackup(storage);
+                    GroupStorageBackup backup = new GroupStorageBackup(groupData.groupUUID, safeCopy, groupData.version);
+
                     String json = gson.toJson(backup);
                     byte[] compressed = compress(json.getBytes());
+
                     ps.setString(1, groupData.groupUUID.toString());
                     ps.setString(2, LocalDateTime.now().format(FORMATTER));
                     ps.setBytes(3, compressed);
                     ps.executeUpdate();
                 }
+                return true;
             } catch (Exception e) {
-                Bukkit.getLogger().warning("バックアップスナップショット保存失敗: " + e.getMessage());
+                logger.warning("バックアップスナップショット保存失敗: " + e.getMessage());
+                return false;
             }
         }
         private static byte[] compress(byte[] input) throws IOException {
@@ -108,7 +146,7 @@ import java.util.zip.GZIPOutputStream;
             group.version = backup.version;
 
             // 古いStorageDataを復元
-            StorageData restored = backup.storageData;
+            StorageData restored = backup.storageData.toStorageData();
             restored.attach(group); // GroupDataと結び付け
             group.storageData = restored;
 
@@ -147,8 +185,8 @@ import java.util.zip.GZIPOutputStream;
                     return false;
                 }
 
-                backup.storageData.attach(group);
-                group.storageData = backup.storageData;
+                backup.storageData.toStorageData().attach(group);
+                group.storageData = backup.storageData.toStorageData();
                 group.version = backup.version;
 
                 // 3. スナップショット以降の差分を適用
