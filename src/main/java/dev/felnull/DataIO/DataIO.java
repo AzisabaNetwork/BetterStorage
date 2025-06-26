@@ -245,10 +245,13 @@ public class DataIO {
             if (!inv.isFullyLoaded()) {
                 Bukkit.getLogger().warning("ロードされていないデータをセーブしようとしました");
                 g.storageData.loadPage(conn, g.ownerPlugin, pageId);
+                inv = g.storageData.storageInventory.get(pageId);
             }
 
             long dbPageVersion = getInventoryPageVersion(conn, g.groupUUID, pageId);
             if (dbPageVersion != inv.version) {
+                Bukkit.getLogger().warning("[BetterStorage]Error:InventoryDataVersion不一致:" + g.groupName);
+                Bukkit.getLogger().warning("[BetterStorage]DB上のVer:" + dbPageVersion + "保存しようとしたVer:" + inv.version);
                 return false;
             }
             inv.version = dbPageVersion + 1;
@@ -553,6 +556,7 @@ public class DataIO {
 
         inv.itemStackSlot = slotMap;
         inv.setFullyLoaded(true);
+        inv.version = getInventoryPageVersion(conn, groupUUID, pageId);
     }
 
     /** inventory_item_table からアイテムを読み込み */
@@ -624,6 +628,7 @@ public class DataIO {
             }
         }
     }
+
 
     // ===========================================================
     // ===== 3. DELETE ==========================================

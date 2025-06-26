@@ -40,7 +40,15 @@ public class StorageData {
     public void loadPage(Connection conn, String pluginName, String pageId) throws SQLException {
         InventoryData inv = storageInventory.get(pageId);
         if (inv != null && !inv.isFullyLoaded()) {
-            DataIO.loadPageItems(conn, groupUUID, pluginName, inv, pageId); // ← UUIDに変更
+            // ページ内のアイテムを読み込み
+            DataIO.loadPageItems(conn, groupUUID, pluginName, inv, pageId);
+
+            // ← versionが未設定だったらここで取得しておく（重要！）
+            if (inv.version == 0L) {
+                inv.version = DataIO.getInventoryPageVersion(conn, groupUUID, pageId);
+            }
+
+            inv.setFullyLoaded(true);
         }
     }
 
@@ -52,6 +60,25 @@ public class StorageData {
         this.groupData = group;
         this.groupUUID = group.groupUUID;
         this.groupData.storageData = this;
+    }
+
+    /**
+     * 指定されたページIDに対応するInventoryDataを更新する。
+     * nullチェック付きで安全に置き換える。
+     */
+    public void updateInventoryData(String pageId, InventoryData newData) {
+        if (pageId == null || newData == null) {
+            throw new IllegalArgumentException("pageId または newData が null です");
+        }
+
+        storageInventory.put(pageId, newData);
+    }
+
+    /**
+     * 指定されたページIDのInventoryDataを取得する（存在しない場合はnull）。
+     */
+    public InventoryData getInventoryData(String pageId) {
+        return storageInventory.get(pageId);
     }
 }
 
