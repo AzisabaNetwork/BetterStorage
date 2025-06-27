@@ -490,6 +490,30 @@ public class DataIO {
         }
     }
 
+    //指定したgroupのdb状にあるインベントリデータを持ってくるメソッド
+    public static InventoryData getLatestInventoryData(UUID groupUUID, String pageId, String pluginName) {
+        try (Connection conn = db.getConnection()) {
+            // InventoryDataをDBから取得
+            Map<String, InventoryData> inventoryDataMap = loadInventoryData(conn, groupUUID, pluginName);
+
+            // 指定されたpageIdに対応するInventoryDataを取得
+            InventoryData invData = inventoryDataMap.get(pageId);
+
+            if (invData != null) {
+                // データが見つかればそのまま返す
+                Bukkit.getLogger().info("Loaded latest inventory data for pageId: " + pageId);
+                return invData;
+            } else {
+                // pageIdが見つからない場合
+                Bukkit.getLogger().warning("No inventory data found for pageId: " + pageId);
+                return null;
+            }
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("Failed to load latest inventory data: " + e.getMessage());
+            return null;
+        }
+    }
+
 
     /**
      *

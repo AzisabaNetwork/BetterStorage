@@ -51,11 +51,12 @@ public class TableInitializer {
                     "CREATE TABLE IF NOT EXISTS inventory_table (" +
                             "group_uuid VARCHAR(255) NOT NULL, " +             // 所属グループ
                             "plugin_name VARCHAR(255) NOT NULL, " +            // プラグイン名
-                            "page_id VARCHAR(255) NOT NULL, " +                // ページ識別子（例: \"main\"）
+                            "page_id VARCHAR(255) NOT NULL, " +                // ページ識別子（例: "main"）
                             "display_name VARCHAR(255), " +                    // GUIの見た目名
                             "row_count INT NOT NULL, " +                       // GUIの行数（1～6）
                             "require_permission TEXT, " +                      // アクセス制限
-                            "version BIGINT NOT NULL DEFAULT 0" +              // ★ページ単位のバージョン管理（楽観ロック用）
+                            "version BIGINT NOT NULL DEFAULT 0, " +            // ★ページ単位のバージョン管理（楽観ロック用）
+                            "CONSTRAINT unique_page_group UNIQUE (group_uuid, page_id)" +  // group_uuid と page_id の組み合わせにユニーク制約を追加
                             ");"
             );
 

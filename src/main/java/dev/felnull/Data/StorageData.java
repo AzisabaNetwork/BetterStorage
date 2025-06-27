@@ -64,7 +64,7 @@ public class StorageData {
      * nullチェック付きで安全に置き換える。
      */
     public void updateInventoryData(String pageId) {
-        InventoryData newData = storageInventory.get(pageId);
+        InventoryData newData = DataIO.getLatestInventoryData(groupUUID, pageId, groupData.ownerPlugin);
         if (pageId == null || newData == null) {
             throw new IllegalArgumentException("pageId または newData が null です");
         }
