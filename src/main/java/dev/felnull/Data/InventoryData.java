@@ -51,4 +51,20 @@ public class InventoryData {
     public boolean isFullyLoaded() {
         return fullyLoaded;
     }
+
+    public InventoryData deepClone() {
+        InventoryData clone = new InventoryData(this.displayName, this.rows,
+                new HashSet<>(this.requirePermission),
+                new HashMap<>()); // itemStackSlotは後でコピー
+
+        // ItemStackを安全にコピー（浅いコピーで十分ならそのまま）
+        for (Map.Entry<Integer, ItemStack> entry : this.itemStackSlot.entrySet()) {
+            clone.itemStackSlot.put(entry.getKey(), entry.getValue().clone()); // deep copy推奨
+        }
+
+        clone.userTags = new ArrayList<>(this.userTags);
+        clone.version = this.version;
+        clone.fullyLoaded = this.fullyLoaded;
+        return clone;
+    }
 }
