@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -72,6 +73,11 @@ public class DataIO {
         if (dbPageVersion != inv.version) {
             Bukkit.getLogger().warning("[BetterStorage] ページバージョン不一致: " + pageId);
             return false;
+        }
+
+        if (isInventoryDataSame(conn, g, pageId, inv)) {
+            Bukkit.getLogger().info("[BetterStorage][debug] データが変更されていないため更新しません。");
+            return true; // データが一致していれば更新しない
         }
 
         // ✅ 楽観ロック：保存前に version を進める
@@ -172,6 +178,8 @@ public class DataIO {
             ps.executeBatch();
         }
 
+
+
         // ---------- tag_table ----------
         String tagSql = "REPLACE INTO tag_table (group_uuid, plugin_name, page_id, user_tag) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(tagSql)) {
@@ -184,6 +192,87 @@ public class DataIO {
                     ps.addBatch();
                 }
                 ps.executeBatch();
+            }
+        }
+
+        return true;
+    }
+
+    // 新しいデータとDB上のデータが同じかチェック
+    private static boolean isInventoryDataSame(Connection conn, GroupData g, String pageId, InventoryData inv) throws SQLException {
+        // DBから現在のデータを取得
+        String sql = "SELECT display_name, row_count, require_permission, version FROM inventory_table WHERE group_uuid = ? AND page_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, g.groupUUID.toString());
+            ps.setString(2, pageId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String dbDisplayName = rs.getString("display_name");
+                    int dbRowCount = rs.getInt("row_count");
+                    String dbRequirePermission = rs.getString("require_permission");
+                    long dbVersion = rs.getLong("version");
+
+                    // displayNameの比較（nullでも比較できる）
+                    if ((inv.displayName == null && dbDisplayName != null) || (inv.displayName != null && !inv.displayName.equals(dbDisplayName))) {
+                        return false;
+                    }
+
+                    if (dbRowCount != inv.rows) {
+                        return false;
+                    }
+
+                    // require_permissionの比較（必要に応じてJSON解析）
+                    if (!dbRequirePermission.equals(gson.toJson(inv.requirePermission))) {
+                        return false;
+                    }
+
+                    // バージョンチェック
+                    if (dbVersion != inv.version) {
+                        return false;
+                    }
+
+                    // アイテムスロットの比較（インベントリ内容の差異をチェック）
+                    String fetchItemsSql = "SELECT slot, itemstack FROM inventory_item_table WHERE group_uuid = ? AND page_id = ?";
+                    Map<Integer, String> dbItemsMap = new HashMap<>();
+                    try (PreparedStatement psItems = conn.prepareStatement(fetchItemsSql)) {
+                        psItems.setString(1, g.groupUUID.toString());
+                        psItems.setString(2, pageId);
+                        try (ResultSet rsItems = psItems.executeQuery()) {
+                            while (rsItems.next()) {
+                                dbItemsMap.put(rsItems.getInt("slot"), rsItems.getString("itemstack"));
+                            }
+                        }
+                    }
+
+                    // 現在のアイテムスロットとDBのアイテムスロットを比較
+                    if (!compareInventoryItems(dbItemsMap, inv.itemStackSlot)) {
+                        return false;
+                    }
+
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // アイテムの比較メソッド
+    private static boolean compareInventoryItems(Map<Integer, String> dbItems, Map<Integer, ItemStack> clientItems) {
+        // アイテムの数が違う場合は即座に差異あり
+        if (dbItems.size() != clientItems.size()) {
+            return false;
+        }
+
+        // スロットごとにアイテムを比較
+        for (Map.Entry<Integer, ItemStack> clientEntry : clientItems.entrySet()) {
+            int slot = clientEntry.getKey();
+            ItemStack clientItem = clientEntry.getValue();
+            String dbItemBase64 = dbItems.get(slot);
+
+            // DBアイテムとクライアントアイテムが異なる場合
+            String clientItemBase64 = ItemSerializer.serializeToBase64(clientItem);
+            if (!clientItemBase64.equals(dbItemBase64)) {
+                return false;
             }
         }
 
@@ -664,6 +753,31 @@ public class DataIO {
         }
     }
 
+    /** プレイヤーが属しているすべてのGroupDataを取得（group_member_tableベース） */
+    public static @NotNull List<GroupData> loadGroupsByPlayer(OfflinePlayer player) {
+        List<GroupData> result = new ArrayList<>();
+        UUID playerUUID = player.getUniqueId();
+
+        try (Connection conn = db.getConnection()) {
+            String sql = "SELECT DISTINCT group_uuid FROM group_member_table WHERE member_uuid = ?";
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, playerUUID.toString());
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        UUID groupUUID = UUID.fromString(rs.getString("group_uuid"));
+                        GroupData gd = loadGroupData(groupUUID);
+                        if (gd != null) {
+                            result.add(gd);
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("プレイヤー所属グループ取得に失敗: " + e.getMessage());
+        }
+
+        return result;
+    }
 
     // ===========================================================
     // ===== 3. DELETE ==========================================
@@ -672,9 +786,9 @@ public class DataIO {
     public static void deletePageData(Connection conn, UUID groupUUID, String pluginName, String pageId, String executedBy) throws SQLException {
 
         // 差分ログを削除前に保存
-        GroupData group = GroupManager.getGroupByUUID(groupUUID);
+        GroupData group = loadGroupData(groupUUID);
         if (group != null) {
-            UnifiedLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), group);
+            UnifiedLogManager.saveBackupSnapshot(group);
         }
 
         String[] sqls = {

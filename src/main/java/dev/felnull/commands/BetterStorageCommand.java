@@ -434,12 +434,11 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             suggestions.addAll(Arrays.asList("rollback", "list", "diff", "difflist", "help", "backup", "exportlog"));
         } else if (args.length == 2 && Arrays.asList("rollback", "list", "diff", "difflist", "backup").contains(args[0].toLowerCase())) {
-            suggestions.addAll(GroupManager.getAllGroupNames());
-
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                player.getName();
-                suggestions.add(player.getName());
-            }
+            suggestions.addAll(
+                    DataIO.loadAllGroups().stream()
+                            .map(g -> g.groupName)
+                            .collect(Collectors.toList())
+            );
         }
 
         // 第3引数以降の補完は提供しない

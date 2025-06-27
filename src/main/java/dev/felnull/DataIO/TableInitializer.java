@@ -152,6 +152,16 @@ public class TableInitializer {
                             ");"
             );
 
+            // ロールバック用の完全バックアップ
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS rollback_log (" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
+                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +    // バックアップ時刻
+                            "json_data LONGBLOB NOT NULL, " +                               // グループ全体のシリアライズJSON（※圧縮バイナリ対応のためLONGBLOBに変更）
+                            "PRIMARY KEY (group_uuid, timestamp)" +                         // 時刻単位で識別
+                            ");"
+            );
+
             LOGGER.info("[BetterStorage] 全テーブルの初期化が完了しました。");
 
         } catch (SQLException e) {

@@ -1,5 +1,6 @@
 package dev.felnull.Data;
 
+import dev.felnull.DataIO.DataIO;
 import dev.felnull.DataIO.GroupManager;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -61,37 +62,33 @@ public class GroupData {
     // === GroupManagerラッパー ===
     // ===============================
 
-    /** groupName → UUID（キャッシュから） */
+    /** groupName → UUID */
     public static @Nullable UUID resolveUUID(String groupName) {
-        return GroupManager.resolveUUID(groupName);
+        GroupData data = DataIO.loadGroupData(groupName);
+        return data != null ? data.groupUUID : null;
     }
 
-    /** groupUUID → groupName（キャッシュから） */
+    /** groupUUID → groupName */
     public static @Nullable String resolveName(UUID groupUUID) {
-        return GroupManager.resolveName(groupUUID);
+        GroupData data = DataIO.loadGroupData(groupUUID);
+        return data != null ? data.groupName : null;
     }
 
-    /** groupUUID → GroupData（キャッシュから） */
+    /** groupUUID → GroupData */
     public static @Nullable GroupData resolveByUUID(UUID groupUUID) {
-        return GroupManager.getGroupByUUID(groupUUID);
+        return DataIO.loadGroupData(groupUUID);
     }
 
-    /** groupName → GroupData（キャッシュから） */
+    /** groupName → GroupData */
     public static @Nullable GroupData resolveByName(String groupName) {
-        return GroupManager.getGroupByName(groupName);
+        return DataIO.loadGroupData(groupName);
     }
 
-    /** プレイヤーが属している全GroupDataを取得（キャッシュから） */
-    public static @NotNull List<GroupData> resolveByPlayer(OfflinePlayer player) {
-        List<String> groupNames = GroupManager.getGroupsForPlayer(player);
-        List<GroupData> result = new ArrayList<>();
-        for (String name : groupNames) {
-            GroupData gd = resolveByName(name);
-            if (gd != null) {
-                result.add(gd);
-            }
-        }
-        return result;
+    /**
+     * 指定されたプレイヤーが所属している全 GroupData を返すラッパー（DataIOベース）。
+     */
+    public static List<GroupData> getGroupsOfPlayer(OfflinePlayer player) {
+        return DataIO.loadGroupsByPlayer(player);
     }
 
     public GroupData deepClone(StorageData storageData) {
