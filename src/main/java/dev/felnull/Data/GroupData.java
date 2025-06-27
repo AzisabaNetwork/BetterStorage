@@ -93,4 +93,14 @@ public class GroupData {
         }
         return result;
     }
+
+    public GroupData deepClone(StorageData storageData) {
+        // ここではdeepClone時に groupData は引数で渡される
+        Set<OfflinePlayer> clonedPlayerList = new HashSet<>(this.playerList);
+        Map<OfflinePlayer, String[]> clonedPlayerPermission = new HashMap<>(this.playerPermission);
+
+        return new GroupData(this.groupName, this.displayName, clonedPlayerList, clonedPlayerPermission, this.isPrivate, storageData, this.ownerPlugin, this.groupUUID);
+    }
+
+
 }

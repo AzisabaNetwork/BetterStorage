@@ -78,7 +78,7 @@ public class StorageData {
     public InventoryData getInventoryData(String pageId) {
         return storageInventory.get(pageId);
     }
-    public StorageData deepClone() {
+    public StorageData deepClone(GroupData groupData) {
         Map<String, InventoryData> clonedInventoryMap = new HashMap<>();
         for (Map.Entry<String, InventoryData> entry : this.storageInventory.entrySet()) {
             clonedInventoryMap.put(entry.getKey(), entry.getValue().deepClone());
@@ -90,6 +90,9 @@ public class StorageData {
         StorageData clone = new StorageData(clonedRequirePerm, clonedInventoryMap, this.bankMoney);
         clone.groupUUID = this.groupUUID; // UUIDは共有で問題なし
         clone.fullyLoaded = this.fullyLoaded; // 同期状態も継承
+
+        // 引数で渡された groupData をそのまま代入
+        clone.groupData = groupData;
 
         return clone;
     }

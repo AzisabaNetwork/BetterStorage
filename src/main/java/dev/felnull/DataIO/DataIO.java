@@ -467,8 +467,14 @@ public class DataIO {
 
         Map<String, InventoryData> invMap = loadInventoryMetaOnly(conn, groupUUID, pluginName);
         StorageData storageData = new StorageData(requireBankPerm, invMap, bankMoney);
-        storageData.groupData = GroupManager.getGroupByUUID(groupUUID);
+        storageData.groupData = loadGroupData(groupUUID);
         storageData.groupUUID = groupUUID;
+        if(storageData.groupData == null){
+            Bukkit.getLogger().warning("StorageMetaのGroupDataNull");
+        }else {
+            Bukkit.getLogger().warning("StorageMetaのGroupData有効!");
+        }
+
 
         storageData.setFullyLoaded(false);
         return storageData;
