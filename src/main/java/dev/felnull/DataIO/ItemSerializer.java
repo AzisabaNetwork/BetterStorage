@@ -1,5 +1,6 @@
 package dev.felnull.DataIO;
 
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
@@ -24,14 +25,16 @@ public class ItemSerializer {
     }
 
     public static ItemStack deserializeFromBase64(String base64) {
-        if (base64 == null) {
-            return null; // ← ここで防ぐ
+        if (base64 == null || base64.trim().isEmpty() || "null".equalsIgnoreCase(base64.trim())) {
+            return null;
         }
         byte[] data = Base64.getDecoder().decode(base64);
         try (BukkitObjectInputStream ois = new BukkitObjectInputStream(new ByteArrayInputStream(data))) {
             return (ItemStack) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("ItemStack deserialization failed", e);
+            Bukkit.getLogger().warning("[BetterStorage] ItemStackのデシリアライズ失敗: base64=" + base64);
+            e.printStackTrace(); // または Logに出すだけにしてreturn nullでも可
+            return null;
         }
     }
 }

@@ -162,6 +162,27 @@ public class TableInitializer {
                             ");"
             );
 
+            // 削除されたグループのバックアップ保存用テーブル
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS group_deleted_backup (" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +
+                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+                            "json_data LONGBLOB NOT NULL, " +
+                            "PRIMARY KEY (group_uuid, timestamp)" +
+                            ");"
+            );
+
+            // ロールバック操作のログ（誰がいつどこに戻したか）
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS rollback_operation_log (" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +             // 対象グループ
+                            "plugin_name VARCHAR(255) NOT NULL, " +            // 操作対象のプラグイン
+                            "target_time TIMESTAMP NOT NULL, " +               // ロールバックされた時刻
+                            "executor VARCHAR(255), " +                        // 実行者（null = コンソール）
+                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +  // 記録時刻
+                            ");"
+            );
+
             LOGGER.info("[BetterStorage] 全テーブルの初期化が完了しました。");
 
         } catch (SQLException e) {
@@ -188,6 +209,8 @@ public class TableInitializer {
             indexes.put("idx_item_table_display_plain", "CREATE INDEX idx_item_table_display_plain ON inventory_item_table(display_name_plain)");
             indexes.put("idx_summary_display_plain", "CREATE INDEX idx_summary_display_plain ON inventory_item_summary(display_name_plain)");
             indexes.put("idx_group_name", "CREATE UNIQUE INDEX idx_group_name ON group_table(group_name)");
+            indexes.put("idx_rollback_op_time", "CREATE INDEX idx_rollback_op_time ON rollback_operation_log(timestamp)");
+
 
             for (Map.Entry<String, String> entry : indexes.entrySet()) {
                 String indexName = entry.getKey();
@@ -231,7 +254,7 @@ public class TableInitializer {
             case "idx_diff_log_time":
                 return "diff_log_inventory_items";
             case "idx_item_log_time":
-                return "inventory_item_log";
+                   return "inventory_item_log";
             case "idx_item_table_display_plain":
                 return "inventory_item_table";
             case "idx_summary_date":
@@ -241,6 +264,9 @@ public class TableInitializer {
                 return "inventory_item_summary";
             case "idx_group_name":
                 return "group_table";
+            case "idx_rollback_op_time":
+                return "rollback_operation_log";
+
             default:
                 throw new IllegalArgumentException("Unknown index name: " + indexName);
         }

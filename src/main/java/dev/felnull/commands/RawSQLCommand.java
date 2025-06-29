@@ -1,6 +1,7 @@
 package dev.felnull.commands;
 
 import dev.felnull.DataIO.DatabaseManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -40,20 +41,23 @@ public class RawSQLCommand implements CommandExecutor {
                         header.append(" | ").append(meta.getColumnLabel(i));
                     }
                     sender.sendMessage(header.toString());
-
+                    Bukkit.getLogger().info(header.toString());
                     // データ行
                     int rowCount = 0;
-                    while (rs.next() && rowCount < 10) { // 上限10行まで表示（多すぎ防止）
+                    while (rs.next() && rowCount < 100) { // 上限100行まで表示（多すぎ防止）
                         StringBuilder row = new StringBuilder();
                         for (int i = 1; i <= columnCount; i++) {
                             row.append(" | ").append(rs.getString(i));
                         }
                         sender.sendMessage(row.toString());
+                        Bukkit.getLogger().info(row.toString());
+
                         rowCount++;
                     }
 
                     if (rs.next()) {
-                        sender.sendMessage(ChatColor.GRAY + "...さらに結果があります（10行のみ表示）");
+                        sender.sendMessage(ChatColor.GRAY + "...さらに結果があります（100行のみ表示）");
+                        Bukkit.getLogger().info(ChatColor.GRAY + "...さらに結果があります(100行のみ)");
                     }
 
                 }

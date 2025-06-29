@@ -3,9 +3,7 @@ package dev.felnull.DataIO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dev.felnull.BetterStorage;
-import dev.felnull.Data.GroupData;
-import dev.felnull.Data.InventoryData;
-import dev.felnull.Data.StorageData;
+import dev.felnull.Data.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,6 +20,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static dev.felnull.DataIO.UnifiedLogManager.saveGroupBackup;
+
 public class DataIO {
     private static final Gson gson = new Gson();
     public static DatabaseManager db = BetterStorage.BSPlugin.getDatabaseManager();
@@ -30,60 +30,79 @@ public class DataIO {
     // ===== 1. SAVE ============================================
     // ===========================================================
 
-        /** グループ全体を保存（各テーブルへの分割保存） */
-        public static boolean saveGroupData(GroupData g) {
-            try (Connection conn = db.getConnection()) {
-                // group_table
-                saveGroupTable(conn, g);
-                saveGroupMembers(conn, g);
+    /**
+     * グループ全体を保存（各テーブルへの分割保存）
+     */
+    public static boolean saveGroupData(GroupData g, UUID playerUUID) {
+        return saveGroupDataInternal(g, playerUUID, false);
+    }
 
-                if (g.storageData != null) {
-                    saveStorageData(conn, g);
+    public static boolean saveGroupDataIgnoringVersion(GroupData g, UUID playerUUID) {
+        return saveGroupDataInternal(g, playerUUID, true);
+    }
 
-                    for (Map.Entry<String, InventoryData> entry : g.storageData.storageInventory.entrySet()) {
-                        String pageId = entry.getKey();
-                        InventoryData inv = entry.getValue();
+    private static boolean saveGroupDataInternal(GroupData g, UUID playerUUID, boolean ignoreVersion) {
+        try (Connection conn = db.getConnection()) {
+            saveGroupTable(conn, g);
+            saveGroupMembers(conn, g);
 
-                        if (!inv.isFullyLoaded()) {
-                            Bukkit.getLogger().info("[BetterStorage] スキップ: " + g.groupName + "/" + pageId + " は未完全のため保存されません");
-                            continue;
-                        }
+            if (g.storageData != null) {
+                saveStorageData(conn, g);
+                for (Map.Entry<String, InventoryData> entry : g.storageData.storageInventory.entrySet()) {
+                    String pageId = entry.getKey();
+                    InventoryData inv = entry.getValue();
 
-                        if (!saveSinglePage(conn, g, pageId, inv)) {
-                            return false; // ここで失敗通知
-                        }
+                    if (!inv.isFullyLoaded()) {
+                        Bukkit.getLogger().info("[BetterStorage] スキップ: " + g.groupName + "/" + pageId + " は未完全のため保存されません");
+                        continue;
+                    }
+
+                    if (!saveSinglePage(conn, g, pageId, inv, playerUUID, ignoreVersion)) {
+                        return false;
                     }
                 }
-
-                // 差分ログを保存
-                UnifiedLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), g);
-                return true;
-
-            } catch (SQLException e) {
-                Bukkit.getLogger().warning("GroupDataの保存に失敗: " + e.getMessage());
-                return false;
             }
-        }
 
-    private static boolean saveSinglePage(Connection conn, GroupData g, String pageId, InventoryData inv) throws SQLException {
-        // 🔁 versionチェック
-        long dbPageVersion = getInventoryPageVersion(conn, g.groupUUID, g.ownerPlugin, pageId);
-        Bukkit.getLogger().info("[Debug]保存前最終チェック pageId=" + pageId + ", client=" + inv.version + ", db=" + dbPageVersion);
-
-        if (dbPageVersion != inv.version) {
-            Bukkit.getLogger().warning("[BetterStorage] ページバージョン不一致: " + pageId);
+            UnifiedLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), g);
+            return true;
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("GroupDataの保存に失敗: " + e.getMessage());
             return false;
         }
+    }
 
-        if (isInventoryDataSame(conn, g, pageId, inv)) {
-            Bukkit.getLogger().info("[BetterStorage][debug] データが変更されていないため更新しません。");
-            return true; // データが一致していれば更新しない
+    /**
+     *
+     * @param conn
+     * @param g
+     * @param pageId
+     * @param inv
+     * @param playerUUID 操作したプレイヤーのuuid　プレイヤーではないならnull
+     * @param ignoreVersion 楽観ロックのversionを無視するか true=無視
+     * @return
+     * @throws SQLException
+     */
+    private static boolean saveSinglePage(Connection conn, GroupData g, String pageId, InventoryData inv, UUID playerUUID, boolean ignoreVersion) throws SQLException {
+        // 🔁 versionチェック
+        long dbPageVersion = getInventoryPageVersion(conn, g.groupUUID, g.ownerPlugin, pageId);
+        if (!ignoreVersion) {
+            //Bukkit.getLogger().info("[Debug]保存前最終チェック pageId=" + pageId + ", client=" + inv.version + ", db=" + dbPageVersion);
+            if (dbPageVersion != inv.version) {
+                Bukkit.getLogger().warning("[BetterStorage] ページバージョン不一致: " + pageId);
+                return false;
+            }
+
+            if (isInventoryDataSame(conn, g, pageId, inv)) {
+                //Bukkit.getLogger().info("[BetterStorage][debug] データが変更されていないため更新しません。");
+                return true;
+            }
+
+            inv.version++;
+        } else {
+            // ロック無視モードならログ出すだけ
+            inv.version = dbPageVersion + 1;
+            Bukkit.getLogger().info("[BetterStorage] ⚠ ロック無視モードで保存中 pageId=" + pageId + ", clientVersion=" + inv.version);
         }
-
-        // ✅ 楽観ロック：保存前に version を進める
-        inv.version++;
-
-        Bukkit.getLogger().info("[Debug]この内容で保存します pageId=" + pageId + ", client=" + inv.version + ", db=" + dbPageVersion);
 
         // ---------- inventory_table ----------
         String invSql = "REPLACE INTO inventory_table " +
@@ -136,7 +155,7 @@ public class DataIO {
             for (int slot : slotsToDelete) {
                 ItemStack dummy = new ItemStack(Material.AIR); // ログ用にダミー
                 logInventoryItemChangeAsync(BetterStorage.BSPlugin.getDatabaseManager(),
-                        g.groupUUID, g.ownerPlugin, pageId, slot, OperationType.REMOVE, dummy);
+                        g.groupUUID, g.ownerPlugin, pageId, slot, OperationType.REMOVE, dummy, playerUUID );
             }
         }
 
@@ -173,7 +192,7 @@ public class DataIO {
 
                 logInventoryItemChangeAsync(BetterStorage.BSPlugin.getDatabaseManager(),
                         g.groupUUID, g.ownerPlugin, pageId, slot,
-                        isNew ? OperationType.ADD : OperationType.UPDATE, item);
+                        isNew ? OperationType.ADD : OperationType.UPDATE, item, playerUUID);
             }
             ps.executeBatch();
         }
@@ -295,25 +314,23 @@ public class DataIO {
             }
         }
 
-        private static void saveGroupMembers(Connection conn, GroupData g) throws SQLException {
-            String sql = "REPLACE INTO group_member_table (group_uuid, member_uuid, role) VALUES (?, ?, ?)";
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                for (OfflinePlayer member : g.playerList) {
-                    String[] roles = g.playerPermission.get(member);
-                    if (roles != null) {
-                        for (String role : roles) {
-                            ps.setString(1, g.groupUUID.toString());
-                            ps.setString(2, member.getUniqueId().toString());
-                            ps.setString(3, role);
-                            ps.addBatch();
-                        }
-                    }
+    private static void saveGroupMembers(Connection conn, GroupData g) throws SQLException {
+        String sql = "REPLACE INTO group_member_table (group_uuid, member_uuid, role) VALUES (?, ?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            for (GroupMemberData member : g.playerList) {
+                for (String role : member.role) {
+                    ps.setString(1, g.groupUUID.toString());
+                    ps.setString(2, member.memberUUID.toString());
+                    ps.setString(3, role);
+                    ps.addBatch();
                 }
-                ps.executeBatch();
             }
+            ps.executeBatch();
         }
+    }
 
-        // ---------- SAVE / storage ----------
+
+    // ---------- SAVE / storage ----------
         private static void saveStorageData(Connection conn, GroupData g) throws SQLException {
             StorageData s = g.storageData;
             String sql = "REPLACE INTO storage_table (group_uuid, plugin_name, bank_money, require_bank_permission) VALUES (?, ?, ?, ?)";
@@ -326,7 +343,7 @@ public class DataIO {
             }
         }
 
-        public static boolean saveInventoryOnly(GroupData g, StorageData storageData, String pageId) {
+        public static boolean saveInventoryOnly(GroupData g, StorageData storageData, String pageId, UUID playerUUID) {
             try (Connection conn = db.getConnection()) {
                 InventoryData inv = storageData.storageInventory.get(pageId);
                 storageData.groupUUID = g.groupUUID;
@@ -349,7 +366,7 @@ public class DataIO {
                     return false;
                 }
 
-                saveSinglePage(conn, g, pageId, inv);
+                saveSinglePage(conn, g, pageId, inv, playerUUID, false);
                 saveGroupTable(conn, g); // group_tableは必須（versionが無くても更新してOK）
 
                 UnifiedLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), g);
@@ -380,6 +397,8 @@ public class DataIO {
                 ps.executeBatch();
             }
         }
+
+
     // ===========================================================
     // ===== 2. LOAD ============================================
     // ===========================================================
@@ -397,7 +416,6 @@ public class DataIO {
             try (PreparedStatement ps = conn.prepareStatement(
                     "SELECT group_name, display_name, is_private, owner_plugin FROM group_table WHERE group_uuid = ?")) {
                 ps.setString(1, groupUUID.toString());
-                Bukkit.getLogger().info("UUID検索: '" + groupUUID.toString() + "'");
                 try (ResultSet rs = ps.executeQuery()) {
                     if (!rs.next()) return null;
                     groupName = rs.getString("group_name");
@@ -408,36 +426,36 @@ public class DataIO {
             }
 
             // --- group_member_table -----------------------------
-            Set<OfflinePlayer> playerList = new HashSet<>();
-            Map<OfflinePlayer, String[]> playerPerm = new HashMap<>();
+            Map<UUID, List<String>> tempRoles = new HashMap<>();
             try (PreparedStatement ps = conn.prepareStatement(
                     "SELECT member_uuid, role FROM group_member_table WHERE group_uuid = ?")) {
                 ps.setString(1, groupUUID.toString());
                 try (ResultSet rs = ps.executeQuery()) {
-                    Map<String, List<String>> temp = new HashMap<>();
                     while (rs.next()) {
-                        temp.computeIfAbsent(rs.getString("member_uuid"), k -> new ArrayList<>())
-                                .add(rs.getString("role"));
-                    }
-                    for (Map.Entry<String, List<String>> e : temp.entrySet()) {
-                        OfflinePlayer pl = Bukkit.getOfflinePlayer(UUID.fromString(e.getKey()));
-                        playerList.add(pl);
-                        playerPerm.put(pl, e.getValue().toArray(new String[0]));
+                        UUID uuid = UUID.fromString(rs.getString("member_uuid"));
+                        String role = rs.getString("role");
+                        tempRoles.computeIfAbsent(uuid, k -> new ArrayList<>()).add(role);
                     }
                 }
             }
+
+            // GroupMemberData に変換
+            List<GroupMemberData> memberList = tempRoles.entrySet().stream()
+                    .map(e -> new GroupMemberData(e.getKey(), e.getValue().toArray(new String[0])))
+                    .collect(Collectors.toList());
 
             // --- storage + inventory + tags ----------------------
             StorageData storage = loadStorageData(conn, groupUUID);
 
             // GroupDataを生成（versionは不要）
-            return new GroupData(groupName, displayName, playerList, playerPerm, isPrivate, storage, ownerPlugin, groupUUID);
+            return new GroupData(groupName, displayName, memberList, isPrivate, storage, ownerPlugin, groupUUID);
 
         } catch (SQLException e) {
             Bukkit.getLogger().warning("GroupData の読み込みに失敗: " + e.getMessage());
             return null;
         }
     }
+
     //グループ名から取得する
     public static GroupData loadGroupData(String groupName) {
         try (Connection conn = db.getConnection()) {
@@ -512,7 +530,6 @@ public class DataIO {
                     InventoryData inv = new InventoryData(display, rows, reqPerm, slotMap);
                     inv.version = version; // ← version設定！
                     map.put(pageId, inv);
-                    Bukkit.getLogger().info(pageId + "loadinvdata:"+ version);
                 }
             }
         }
@@ -783,7 +800,7 @@ public class DataIO {
     // ===== 3. DELETE ==========================================
     // ===========================================================
     /** ページ単位削除 */
-    public static void deletePageData(Connection conn, UUID groupUUID, String pluginName, String pageId, String executedBy) throws SQLException {
+    private static void deletePageData(Connection conn, UUID groupUUID, String pluginName, String pageId, String executedBy) throws SQLException {
 
         // 差分ログを削除前に保存
         GroupData group = loadGroupData(groupUUID);
@@ -809,21 +826,22 @@ public class DataIO {
         logDeletionInfo("Page \"" + pageId + "\" in GroupUUID \"" + groupUUID + "\" was deleted by " + executedBy);
     }
 
-    public static void deleteGroupData(Connection conn, UUID groupUUID, String pluginName, String groupName, String executedBy) throws SQLException {
-
-        // 差分ログを削除前に保存
-        GroupData group = GroupManager.getGroupByUUID(groupUUID);
+    private static void deleteGroupData(Connection conn, UUID groupUUID, String pluginName, String groupName, String executedBy) throws SQLException {
+        // 差分ログ保存＆削除履歴＋バックアップも保存
+        GroupData group = loadGroupData(groupUUID);
         if (group != null) {
             UnifiedLogManager.saveDiffLogs(BetterStorage.BSPlugin.getDatabaseManager(), group);
+            UnifiedLogManager.saveDeleteHistory(group, executedBy); // ✅ ここで履歴＋バックアップ保存
         }
 
+        // 各テーブルから削除
         String[] sqls = {
                 "DELETE FROM inventory_item_table WHERE group_uuid=? AND plugin_name=?",
                 "DELETE FROM inventory_table WHERE group_uuid=? AND plugin_name=?",
                 "DELETE FROM tag_table WHERE group_uuid=? AND plugin_name=?",
                 "DELETE FROM storage_table WHERE group_uuid=? AND plugin_name=?",
                 "DELETE FROM group_member_table WHERE group_uuid=?",
-                "DELETE FROM group_table WHERE group_uuid=?"  // ← UUID使用に変更
+                "DELETE FROM group_table WHERE group_uuid=?"
         };
 
         for (String sql : sqls) {
@@ -839,28 +857,51 @@ public class DataIO {
         logDeletionInfo("Group \"" + groupName + "\" (UUID=" + groupUUID + ") was deleted by " + executedBy);
     }
 
+    public static boolean deletePageData(UUID groupUUID, String pluginName, String pageId, String executedBy) {
+        try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection()) {
+            deletePageData(conn, groupUUID, pluginName, pageId, executedBy);
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("[BetterStorage] ページ削除中にエラー: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean deleteGroupData(UUID groupUUID, String pluginName, String groupName, String executedBy) {
+        try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection()) {
+            deleteGroupData(conn, groupUUID, pluginName, groupName, executedBy);
+        } catch (SQLException e) {
+            Bukkit.getLogger().warning("[BetterStorage] グループ削除中にエラー: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+
     // ===========================================================
     // ===== 4. LOG =============================================
     // ===========================================================
 
-    public static void logInventoryItemChangeAsync(DatabaseManager db, UUID groupUUID, String pluginName, String pageId, int slot, OperationType op, ItemStack item) {
-        // 削除操作ならAIRでも保存する
+    public static void logInventoryItemChangeAsync(DatabaseManager db, UUID groupUUID, String pluginName, String pageId, int slot, OperationType op, ItemStack item, UUID playerUUID) {
         boolean isRemove = (op == OperationType.REMOVE);
-
-        // nullやAIRを除外（ただし削除は除外しない）
         if (item == null || (!isRemove && item.getType() == Material.AIR)) return;
 
         String serializedItem = ItemSerializer.serializeToBase64(item);
         String displayName = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : "";
         String material = item.getType().name();
         int amount = item.getAmount();
+        String plainName = ChatColor.stripColor(displayName);
 
         Bukkit.getScheduler().runTaskAsynchronously(BetterStorage.BSPlugin, () -> {
             try (Connection conn = db.getConnection()) {
-                String plainName = ChatColor.stripColor(displayName);
-                try (PreparedStatement ps = conn.prepareStatement(
-                        "INSERT INTO inventory_item_log (group_uuid, plugin_name, page_id, slot, operation_type, itemstack, display_name, display_name_plain, material, amount, timestamp) " +
-                                "VALUES (?,?,?,?,?,?,?,?,?,?,NOW())")) {
+                String sql = "INSERT INTO inventory_item_log " +
+                        "(group_uuid, plugin_name, page_id, slot, operation_type, itemstack, display_name, display_name_plain, material, amount, player_uuid, timestamp) " +
+                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW())";
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, groupUUID.toString());
                     ps.setString(2, pluginName);
                     ps.setString(3, pageId);
@@ -871,6 +912,7 @@ public class DataIO {
                     ps.setString(8, plainName);
                     ps.setString(9, material);
                     ps.setInt(10, amount);
+                    ps.setString(11, playerUUID != null ? playerUUID.toString() : null); // null安全
                     ps.executeUpdate();
                 }
             } catch (SQLException e) {
@@ -878,6 +920,7 @@ public class DataIO {
             }
         });
     }
+
 
     private static void logInventoryItemChange(Connection conn, UUID groupUUID, String pluginName, String pageId, int slot, String op, ItemStack item) throws SQLException {
         String displayName = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : "";
@@ -918,8 +961,9 @@ public class DataIO {
             }
         }
 
-        GroupData group = GroupManager.getGroupByUUID(groupUUID);
-        if (group != null) {
+        // GroupManager → resolveByUUID に置き換え
+        GroupData group = GroupData.resolveByUUID(groupUUID);
+        if (group != null && group.storageData != null) {
             InventoryData inv = group.storageData.storageInventory.get(pageId);
             if (inv != null) {
                 inv.itemStackSlot.clear();
@@ -933,6 +977,7 @@ public class DataIO {
             }
         }
     }
+
 
     private static void writeLogFile(String msg) {
         try (FileWriter w = new FileWriter(new File(BetterStorage.BSPlugin.getDataFolder(), "BetterStorage.log"), true)) {
@@ -960,7 +1005,7 @@ public class DataIO {
             ps.setString(2, plugin);
             ps.setString(3, "%" + keyword + "%");
             try (ResultSet rs = ps.executeQuery()) {
-                GroupData group = GroupManager.getGroupByUUID(groupUUID);
+                GroupData group = GroupData.resolveByUUID(groupUUID); // ← 修正点
                 if (group != null && group.storageData != null) {
                     while (rs.next()) {
                         String pageId = rs.getString("page_id");
@@ -975,6 +1020,7 @@ public class DataIO {
         return result;
     }
 
+
     // アイテムのDisplayNameによるページ検索
     public static List<InventoryData> getPagesContainingDisplayNameWithDisplay(Connection conn, UUID groupUUID, String plugin, String keyword) throws SQLException {
         List<InventoryData> result = new ArrayList<>();
@@ -984,7 +1030,7 @@ public class DataIO {
             ps.setString(2, plugin);
             ps.setString(3, "%" + keyword + "%");
             try (ResultSet rs = ps.executeQuery()) {
-                GroupData group = GroupManager.getGroupByUUID(groupUUID);
+                GroupData group = GroupData.resolveByUUID(groupUUID);
                 if (group != null && group.storageData != null) {
                     while (rs.next()) {
                         String pageId = rs.getString("page_id");

@@ -21,7 +21,9 @@ public class InventoryDataBackup {
 
         for (Map.Entry<Integer, ItemStack> entry : original.itemStackSlot.entrySet()) {
             String base64 = ItemSerializer.serializeToBase64(entry.getValue());
-            itemStackBase64.put(entry.getKey(), base64);
+            if (base64 != null) {
+                itemStackBase64.put(entry.getKey(), base64);
+            }
         }
     }
 
