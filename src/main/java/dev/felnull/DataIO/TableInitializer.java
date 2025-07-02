@@ -178,7 +178,6 @@ public class TableInitializer {
                             "group_uuid VARCHAR(255) NOT NULL, " +             // 対象グループ
                             "plugin_name VARCHAR(255) NOT NULL, " +            // 操作対象のプラグイン
                             "target_time TIMESTAMP NOT NULL, " +               // ロールバックされた時刻
-                            "executor VARCHAR(255), " +                        // 実行者（null = コンソール）
                             "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +  // 記録時刻
                             ");"
             );

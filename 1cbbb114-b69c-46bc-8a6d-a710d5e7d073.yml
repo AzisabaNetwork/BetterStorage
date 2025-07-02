@@ -1,0 +1,2891 @@
+'0':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '3':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '4':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '5':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '6':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: NETHER_STAR
+    amount: 8
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"light_purple","text":"名前変更コイン"},{"bold":true,"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"yellow","text":"このコインをLGW武器調整班に渡すと任意の武器の名前を変更可能"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":true,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"Epic
+        Item!!"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_red","text":"取引禁止"}],"text":""}'
+  '7':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: NETHER_STAR
+    amount: 9
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"light_purple","text":"テクスチャ変更コイン/レプリカ"},{"bold":true,"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"yellow","text":"このコインをLGW武器調整班に渡すと任意の武器のテクスチャを変更可能(最大32x32)"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":true,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"Epic
+        Item!!"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_red","text":"取引禁止"}],"text":""}'
+  '8':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 35
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"yellow","text":"通常カスタマイズチケット"},{"italic":false,"color":"yellow","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"green","text":"一部市販武器の通常カスタマイズが可能なチケット。"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"対応可能カスタマイズ:"},{"italic":false,"color":"dark_red","text":"FAST
+        MAG"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"EXTENDED
+        MAGS"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"LASER
+        SIGHT"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"IRON
+        SIGHT"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"GRIP"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"ACOG"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"SUPPRESSOR"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"Gun
+        Powder"}],"text":""}'
+      custom-model-data: 5
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: Customticket
+  '9':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '10':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '11':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PURPUR_BLOCK
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"勝利の魂塊"},{"bold":true,"italic":false,"color":"dark_purple","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"light_purple","text":"INFO:"},{"bold":true,"italic":false,"color":"white","text":"勝利報酬。いろいろなことに使えそうだ。"}],"text":""}'
+  '12':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PURPUR_BLOCK
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"勝利の魂塊"},{"bold":true,"italic":false,"color":"dark_purple","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"light_purple","text":"INFO:"},{"bold":true,"italic":false,"color":"white","text":"勝利報酬。いろいろなことに使えそうだ。"}],"text":""}'
+  '13':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: CREEPER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"鹿の角"},{"italic":false,"color":"red","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"ぬん"}],"text":""}'
+      custom-model-data: 1
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: dear
+  '14':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"はずれ圧縮"},{"italic":false,"color":"dark_purple","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"はずれを64枚集めて圧縮したもの"}],"text":""}'
+      custom-model-data: 12
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazuassyuku
+  '15':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '16':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '17':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"キルストリークチケット"},{"italic":false,"color":"dark_purple","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"5ksをした時にゲットできる。アイテムと交換できる。"}],"text":""}'
+      custom-model-data: 4
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: KSTICKET
+  '18':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '19':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"キルストリークチケット"},{"italic":false,"color":"dark_purple","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"5ksをした時にゲットできる。アイテムと交換できる。"}],"text":""}'
+      custom-model-data: 4
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: KSTICKET
+  '20':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '21':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PURPUR_BLOCK
+    amount: 14
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"勝利の魂塊"},{"bold":true,"italic":false,"color":"dark_purple","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"light_purple","text":"INFO:"},{"bold":true,"italic":false,"color":"white","text":"勝利報酬。いろいろなことに使えそうだ。"}],"text":""}'
+  '22':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '23':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '24':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"Killチケット"},{"bold":false,"italic":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"},{"italic":false,"color":"dark_gray","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めるとガチャを回せる"}],"text":""}'
+      custom-model-data: 9
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: FIRSTSTARTkill
+  '25':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 12
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"5KSチケット"},{"bold":false,"italic":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"},{"italic":false,"color":"dark_gray","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"5KSした証200枚集めるとスキン武器の材料になる"}],"text":""}'
+      custom-model-data: 8
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: FIRSTSTART5ks
+  '26':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 9
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '27':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: SHULKER_SHELL
+    amount: 2
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"HW
+        "},{"bold":false,"italic":false,"color":"gold","text":"Fruit"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"これはこの世の果物ですか？"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"[2"},{"bold":true,"italic":false,"color":"dark_purple","text":"0"},{"bold":true,"italic":false,"color":"gold","text":"2"},{"bold":true,"italic":false,"color":"dark_purple","text":"4
+        "},{"bold":true,"italic":false,"color":"gold","text":"H"},{"bold":true,"italic":false,"color":"dark_purple","text":"A"},{"bold":true,"italic":false,"color":"gold","text":"L"},{"bold":true,"italic":false,"color":"dark_purple","text":"L"},{"bold":true,"italic":false,"color":"gold","text":"O"},{"bold":true,"italic":false,"color":"dark_purple","text":"W"},{"bold":true,"italic":false,"color":"gold","text":"E"},{"bold":true,"italic":false,"color":"dark_purple","text":"E"},{"bold":true,"italic":false,"color":"gold","text":"N]"}],"text":""}'
+  '28':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PRISMARINE_SHARD
+    amount: 2
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"プレミアムガチャキーの破片"},{"bold":false,"italic":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"},{"italic":false,"color":"dark_gray","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"プレミアムガチャを回す素材"}],"text":""}'
+      custom-model-data: 1
+      enchants:
+        LURE: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: FIRSTSTARThazure
+  '29':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 39
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"#EE7800","text":"小袋入りの"},{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"#FF0000","text":"飴"},{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"玉"},{"bold":false,"italic":false,"color":"gray","text":"[限定Kill報酬]"},{"italic":false,"color":"gray","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"もっとくれなきゃいたずらするぞ！"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"いっぱい集めてきて？"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"[2"},{"bold":true,"italic":false,"color":"dark_purple","text":"0"},{"bold":true,"italic":false,"color":"gold","text":"2"},{"bold":true,"italic":false,"color":"dark_purple","text":"4
+        "},{"bold":true,"italic":false,"color":"gold","text":"H"},{"bold":true,"italic":false,"color":"dark_purple","text":"A"},{"bold":true,"italic":false,"color":"gold","text":"L"},{"bold":true,"italic":false,"color":"dark_purple","text":"L"},{"bold":true,"italic":false,"color":"gold","text":"O"},{"bold":true,"italic":false,"color":"dark_purple","text":"W"},{"bold":true,"italic":false,"color":"gold","text":"E"},{"bold":true,"italic":false,"color":"dark_purple","text":"E"},{"bold":true,"italic":false,"color":"gold","text":"N]"}],"text":""}'
+      custom-model-data: 16
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: HWkill
+  '30':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PURPUR_BLOCK
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"勝利の魂塊"},{"bold":true,"italic":false,"color":"dark_purple","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"light_purple","text":"INFO:"},{"bold":true,"italic":false,"color":"white","text":"勝利報酬。いろいろなことに使えそうだ。"}],"text":""}'
+  '31':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 2
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"OTs-12
+        tiss"},{"bold":false,"italic":false,"color":"aqua","text":"カスタマイズチケット"},{"italic":false,"color":"aqua","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"green","text":"OTs-12
+        tissの専用カスタマイズが可能なチケット。"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"対応カスタマイズ:"},{"italic":false,"color":"dark_red","text":"SWIFT
+        MAGS"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"LARGE
+        MAGS"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"RIFLE
+        SCOPE"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_blue","text":"N"},{"italic":false,"color":"dark_purple","text":"IGHT"},{"italic":false,"color":"dark_blue","text":"V"},{"italic":false,"color":"dark_purple","text":"ISION
+        SCOPE"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 5
+      enchants:
+        LURE: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: OTSUKIMICUSTOMticket
+  '32':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 26
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"キルストリークチケット"},{"italic":false,"color":"dark_purple","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"5ksをした時にゲットできる。アイテムと交換できる。"}],"text":""}'
+      custom-model-data: 4
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: KSTICKET
+'1':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"AK-74"},{"italic":false,"color":"white","text":"
+        ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      custom-model-data: 4
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: AK74
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"XR5
+        Gen2"},{"italic":false,"color":"white","text":" ▪ «60»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"AR
+        "},{"italic":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN
+        "},{"italic":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"Attachments
+        "}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"・"},{"italic":false,"color":"red","text":"XR5
+        Gen2用拡張キット"}],"text":""}'
+      custom-model-data: 81
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: -0.011
+          name: CSP_Main
+          slot: HAND
+          uuid: 545e8b0e-d6e1-4348-acd4-2f6824cf8f7e
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: XR5GEN2
+        crackshotplus:attachments: XR5GEN2Plus
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"TAR-21"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"FAST
+        MAG"},{"italic":false,"color":"white","text":" ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      custom-model-data: 49
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: -0.01
+          name: CSP_Main
+          slot: HAND
+          uuid: 6dfa8148-5bae-416d-ac9f-20bc639c181e
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: TAR21FASTMAG
+  '3':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"FX-05"},{"italic":false,"color":"white","text":"
+        ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DESC:"},{"italic":false,"color":"gold","text":"「Xiuhcoatl」火の蛇を意味するメキシコ製アサルトライフル"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"自国生産の思想により設計・製造された。"}],"text":""}'
+      custom-model-data: 99
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      Unbreakable: true
+      PublicBukkitValues:
+        crackshotplus:wn: FX05
+  '4':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"AK-12"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"LASER
+        SIGHT"},{"italic":false,"color":"white","text":" ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: AK12LASER
+  '6':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"FA-MAS
+        F1 "},{"italic":false,"color":"gray","text":"["},{"italic":false,"color":"green","text":"FULL"},{"italic":false,"color":"gray","text":"]"},{"italic":false,"color":"white","text":"
+        ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"green","text":"FULL"},{"italic":false,"color":"gray","text":"-"},{"italic":false,"color":"green","text":"3BURST"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"オフハンドキーで射撃モードを"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"[フルオート]
+        or [3点バースト]に変更できるAR。"}],"text":""}'
+      custom-model-data: 14
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: FAMASF1
+  '7':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"Iceberg
+        Tavor CTAR-21 Special"},{"italic":false,"color":"white","text":" ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"TYPE:"},{"italic":false,"color":"blue","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"DATA:"},{"italic":false,"color":"blue","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"MODE:"},{"italic":false,"color":"blue","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"Attachments
+        "}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"・"},{"italic":false,"color":"red","text":"CTAR21用近代化改修キット"}],"text":""}'
+      custom-model-data: 114
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.01
+          name: CSP_Main
+          slot: HAND
+          uuid: 6a6b7c5c-268a-48f9-9c10-647268250b67
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: CTAR21
+        crackshotplus:attachments: CTAR21MODEL
+  '8':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"AK-74"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"FAST
+        MAG"},{"italic":false,"color":"white","text":" ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      custom-model-data: 4
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: AK74FASTMAG
+'2':
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"PKP
+        Печенег"},{"italic":false,"color":"white","text":" ▪ «150»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"LMG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"yellow","text":"ガチャ限定"}],"text":""}'
+      custom-model-data: 102
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: -0.0085
+          name: CSP_Main
+          slot: HAND
+          uuid: e015e8f3-2262-4aa3-94db-311868a1a588
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: PKP
+'3':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","clickEvent":{"action":"open_url","value":"http://Over.Modelcase"},"text":"Over.Modelcase"},{"bold":true,"italic":false,"color":"gray","text":"
+        "},{"bold":true,"italic":false,"color":"white","text":"- "},{"bold":true,"italic":false,"color":"blue","text":"GRAVITON
+        "},{"bold":true,"italic":false,"color":"white","text":"-"},{"bold":true,"italic":false,"color":"white","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"GADGET"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SP"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"GRAVITON"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"巨大な銃身でグリップを挟んだ形状の双銃身の大型銃"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"高圧の重力波を射出し標的の動きを錯乱させる"}],"text":""}'
+      custom-model-data: 63
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      Unbreakable: true
+      Damage: 1
+      PublicBukkitValues:
+        crackshotplus:wn: overmodelcasegraviton
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Remote
+        "},{"bold":true,"italic":false,"color":"red","text":"C4 "},{"bold":false,"italic":false,"color":"white","text":"
+        «1»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"---"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SP"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"---"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_red","text":"--製
+        遠隔起動式C4"}],"text":""}'
+      custom-model-data: 62
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: C4
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"FGM172-SRAW"},{"italic":false,"color":"gray","text":"/"},{"italic":false,"color":"dark_red","text":"Smoke"},{"italic":false,"color":"white","text":"
+        ▪ «×»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"GL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SP"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"スモーク仕様の誘導ランチャー。"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"着弾地点に視界を遮るスモークを展開する。"}],"text":""}'
+      custom-model-data: 116
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: FGM172_SRAWS
+'4':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Springfield
+        XD"},{"italic":false,"color":"white","text":" ▪ «13»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"HG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SUB"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"クロアチア軍の正式採用拳銃。"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"yellow","text":"ガチャ限定"}],"text":""}'
+      custom-model-data: 101
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.0
+          name: CSP_Main
+          slot: HAND
+          uuid: 344b51da-d1e8-46c3-8fb6-b4a21a664ed7
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: SpringFieldXD
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Beretta
+        M92F"},{"italic":false,"color":"white","text":" ▪ «15»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"HG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SUB"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      custom-model-data: 8
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: BerettaM92F
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"MK23"},{"italic":false,"color":"white","text":"
+        ▪ «12»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"HG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SUB"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"yellow","text":"ガチャ限定"}],"text":""}'
+      custom-model-data: 109
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.005
+          name: CSP_Main
+          slot: HAND
+          uuid: b3c9252c-76d5-49d1-b4d3-3e77dd91babe
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: MK23
+'5':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Honey
+        Badger"},{"italic":false,"color":"white","text":" ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SMG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":true,"strikethrough":false,"obfuscated":false,"color":"blue","text":"最新式のサプレッサーを内蔵している"}],"text":""}'
+      custom-model-data: 21
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: Honey
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"PPSh-41"},{"italic":false,"color":"white","text":"
+        ▪ «71»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SMG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      custom-model-data: 39
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: PPSh41
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"MSMC"},{"italic":false,"color":"white","text":"
+        ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SMG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"yellow","text":"ガチャ限定"}],"text":""}'
+      custom-model-data: 104
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.005
+          name: CSP_Main
+          slot: HAND
+          uuid: 9587b7e7-ecf1-41f7-bf3e-38817c619023
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: MSMC
+'6':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: AIR
+'7':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"KSG-12"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"LASER
+        SIGHT"},{"italic":false,"color":"white","text":" ▪ «13»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"PUMP"}],"text":""}'
+      custom-model-data: 22
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: KSGLASER
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"AA-12"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"LASER
+        SIGHT"},{"italic":false,"color":"white","text":" ▪ «12»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      custom-model-data: 1
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: AA12LASER
+'8':
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"L"},{"bold":true,"italic":false,"color":"white","text":"42"},{"bold":true,"italic":false,"color":"red","text":"A"},{"bold":true,"italic":false,"color":"white","text":"1"},{"bold":false,"italic":false,"color":"white","text":"
+        ▪ «9»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_green","text":"TYPE:"},{"italic":false,"color":"gold","text":"SR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_green","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_green","text":"MODE:"},{"italic":false,"color":"gold","text":"BOLT"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"射程は短いが機動力が高いSR。"}],"text":""}'
+      custom-model-data: 158
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.008
+          name: CSP_Main
+          slot: HAND
+          uuid: a6241f4a-4cb8-4391-aeec-aae68af9f9c6
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: L42A1
+'9':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: AIR
+'10':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"YOKAI"},{"italic":false,"color":"white","text":"
+        ▪ «×»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"DRONE"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SP"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SONIC"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"射程は短いが、相手の三半規管に障害をおこす。"}],"text":""}'
+      custom-model-data: 67
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.0
+          name: CSP_Main
+          slot: HAND
+          uuid: 31925256-6861-43f6-afd3-609a07d84295
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: YOKAI
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"YOKAI"},{"italic":false,"color":"white","text":"
+        ▪ «×»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"DRONE"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SP"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SONIC"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"射程は短いが、相手の三半規管に障害をおこす。"}],"text":""}'
+      custom-model-data: 67
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.0
+          name: CSP_Main
+          slot: HAND
+          uuid: f106e5db-20d6-4a71-84e9-ba14da0e232b
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: YOKAI
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"M1
+        Garand"},{"italic":false,"color":"white","text":" ▪ «7»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"DMR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"yellow","text":"ガチャ限定"}],"text":""}'
+      custom-model-data: 110
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: -0.008
+          name: CSP_Main
+          slot: HAND
+          uuid: 539deaa2-b62f-4777-845c-ab64ba21e16f
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: M1Garand
+  '3':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"救援物資イベントキルチケット"},{"italic":false,"color":"white","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"green","text":"集めよう。"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"[2024FALLEVENT]"}],"text":""}'
+      PublicBukkitValues:
+        crackshotplus:wn: 2024fall_kill
+  '4':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 14
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"救援物資イベントキルチケット"},{"italic":false,"color":"white","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"green","text":"集めよう。"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"[2024FALLEVENT]"}],"text":""}'
+      PublicBukkitValues:
+        crackshotplus:wn: 2024fall_kill
+  '5':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"CBJ
+        MS"},{"italic":false,"color":"white","text":" ▪ «94»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SMG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 152
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: CBJMS
+  '6':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PURPUR_BLOCK
+    amount: 5
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"勝利の魂塊"},{"bold":true,"italic":false,"color":"dark_purple","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"light_purple","text":"INFO:"},{"bold":true,"italic":false,"color":"white","text":"勝利報酬。いろいろなことに使えそうだ。"}],"text":""}'
+  '7':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"WESN"},{"italic":false,"color":"white","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"Knife"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"Knife"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"Attack"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"超小型ナイフ、ダメージ量こそ少ないが素早く動くことができる"}],"text":""}'
+      custom-model-data: 57
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.02
+          name: CSP_Main
+          slot: HAND
+          uuid: afa66cbe-1f0d-4af8-9f91-271540a1e0ae
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: WESN
+  '8':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"MSMC"},{"italic":false,"color":"white","text":"
+        ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SMG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"yellow","text":"ガチャ限定"}],"text":""}'
+      custom-model-data: 104
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.005
+          name: CSP_Main
+          slot: HAND
+          uuid: 6a35da03-169d-4d84-aef9-4ab2f62366f0
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: MSMC
+'11':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Benelli"},{"italic":false,"color":"yellow","text":"-"},{"italic":false,"color":"gold","text":"M4"},{"italic":false,"color":"yellow","text":"/"},{"italic":false,"color":"gold","text":"H"},{"italic":false,"color":"dark_purple","text":"A"},{"italic":false,"color":"gold","text":"L"},{"italic":false,"color":"dark_purple","text":"L"},{"italic":false,"color":"gold","text":"O"},{"italic":false,"color":"dark_purple","text":"W"},{"italic":false,"color":"gold","text":"E"},{"italic":false,"color":"dark_purple","text":"E"},{"italic":false,"color":"gold","text":"N"},{"italic":false,"color":"white","text":"
+        ▪ «8»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"[2"},{"bold":true,"italic":false,"color":"dark_purple","text":"0"},{"bold":true,"italic":false,"color":"gold","text":"2"},{"bold":true,"italic":false,"color":"dark_purple","text":"4
+        "},{"bold":true,"italic":false,"color":"gold","text":"H"},{"bold":true,"italic":false,"color":"dark_purple","text":"A"},{"bold":true,"italic":false,"color":"gold","text":"L"},{"bold":true,"italic":false,"color":"dark_purple","text":"L"},{"bold":true,"italic":false,"color":"gold","text":"O"},{"bold":true,"italic":false,"color":"dark_purple","text":"W"},{"bold":true,"italic":false,"color":"gold","text":"E"},{"bold":true,"italic":false,"color":"dark_purple","text":"E"},{"bold":true,"italic":false,"color":"gold","text":"N]"}],"text":""}'
+      custom-model-data: 197
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: BenelliM4HW
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Benelli"},{"italic":false,"color":"yellow","text":"-"},{"italic":false,"color":"gold","text":"M4"},{"italic":false,"color":"yellow","text":"/"},{"italic":false,"color":"gold","text":"H"},{"italic":false,"color":"dark_purple","text":"A"},{"italic":false,"color":"gold","text":"L"},{"italic":false,"color":"dark_purple","text":"L"},{"italic":false,"color":"gold","text":"O"},{"italic":false,"color":"dark_purple","text":"W"},{"italic":false,"color":"gold","text":"E"},{"italic":false,"color":"dark_purple","text":"E"},{"italic":false,"color":"gold","text":"N"},{"italic":false,"color":"white","text":"
+        ▪ «7»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"[2"},{"bold":true,"italic":false,"color":"dark_purple","text":"0"},{"bold":true,"italic":false,"color":"gold","text":"2"},{"bold":true,"italic":false,"color":"dark_purple","text":"4
+        "},{"bold":true,"italic":false,"color":"gold","text":"H"},{"bold":true,"italic":false,"color":"dark_purple","text":"A"},{"bold":true,"italic":false,"color":"gold","text":"L"},{"bold":true,"italic":false,"color":"dark_purple","text":"L"},{"bold":true,"italic":false,"color":"gold","text":"O"},{"bold":true,"italic":false,"color":"dark_purple","text":"W"},{"bold":true,"italic":false,"color":"gold","text":"E"},{"bold":true,"italic":false,"color":"dark_purple","text":"E"},{"bold":true,"italic":false,"color":"gold","text":"N]"}],"text":""}'
+      custom-model-data: 197
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: BenelliM4HW
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"#EE7800","text":"小袋入りの"},{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"#FF0000","text":"飴"},{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"玉"},{"bold":false,"italic":false,"color":"gray","text":"[限定Kill報酬]"},{"italic":false,"color":"gray","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"もっとくれなきゃいたずらするぞ！"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"いっぱい集めてきて？"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"[2"},{"bold":true,"italic":false,"color":"dark_purple","text":"0"},{"bold":true,"italic":false,"color":"gold","text":"2"},{"bold":true,"italic":false,"color":"dark_purple","text":"4
+        "},{"bold":true,"italic":false,"color":"gold","text":"H"},{"bold":true,"italic":false,"color":"dark_purple","text":"A"},{"bold":true,"italic":false,"color":"gold","text":"L"},{"bold":true,"italic":false,"color":"dark_purple","text":"L"},{"bold":true,"italic":false,"color":"gold","text":"O"},{"bold":true,"italic":false,"color":"dark_purple","text":"W"},{"bold":true,"italic":false,"color":"gold","text":"E"},{"bold":true,"italic":false,"color":"dark_purple","text":"E"},{"bold":true,"italic":false,"color":"gold","text":"N]"}],"text":""}'
+      custom-model-data: 16
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: HWkill
+  '3':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: SHULKER_SHELL
+    amount: 2
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"HW
+        "},{"bold":false,"italic":false,"color":"gold","text":"Fruit"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"これはこの世の果物ですか？"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"[2"},{"bold":true,"italic":false,"color":"dark_purple","text":"0"},{"bold":true,"italic":false,"color":"gold","text":"2"},{"bold":true,"italic":false,"color":"dark_purple","text":"4
+        "},{"bold":true,"italic":false,"color":"gold","text":"H"},{"bold":true,"italic":false,"color":"dark_purple","text":"A"},{"bold":true,"italic":false,"color":"gold","text":"L"},{"bold":true,"italic":false,"color":"dark_purple","text":"L"},{"bold":true,"italic":false,"color":"gold","text":"O"},{"bold":true,"italic":false,"color":"dark_purple","text":"W"},{"bold":true,"italic":false,"color":"gold","text":"E"},{"bold":true,"italic":false,"color":"dark_purple","text":"E"},{"bold":true,"italic":false,"color":"gold","text":"N]"}],"text":""}'
+  '4':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: BONE
+    amount: 6
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"ほね"},{"bold":true,"italic":false,"color":"white","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"これだれの..?"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"[2"},{"bold":true,"italic":false,"color":"dark_purple","text":"0"},{"bold":true,"italic":false,"color":"gold","text":"2"},{"bold":true,"italic":false,"color":"dark_purple","text":"4
+        "},{"bold":true,"italic":false,"color":"gold","text":"H"},{"bold":true,"italic":false,"color":"dark_purple","text":"A"},{"bold":true,"italic":false,"color":"gold","text":"L"},{"bold":true,"italic":false,"color":"dark_purple","text":"L"},{"bold":true,"italic":false,"color":"gold","text":"O"},{"bold":true,"italic":false,"color":"dark_purple","text":"W"},{"bold":true,"italic":false,"color":"gold","text":"E"},{"bold":true,"italic":false,"color":"dark_purple","text":"E"},{"bold":true,"italic":false,"color":"gold","text":"N]"}],"text":""}'
+  '5':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PURPUR_BLOCK
+    amount: 10
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_purple","text":"勝利の魂塊"},{"bold":true,"italic":false,"color":"dark_purple","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"light_purple","text":"INFO:"},{"bold":true,"italic":false,"color":"white","text":"勝利報酬。いろいろなことに使えそうだ。"}],"text":""}'
+'12':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: AIR
+'13':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '3':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '4':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 47
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '5':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+'14':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"AR-15"},{"italic":false,"color":"white","text":"
+        ▪ «25»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 156
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: AR15
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"M1A1
+        THOMPSON"},{"italic":false,"color":"white","text":" ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SMG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 153
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: THOMPSONM1A1
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Mk48"},{"italic":false,"color":"white","text":"
+        ▪ «100»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"LMG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 150
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: -0.02
+          name: CSP_Main
+          slot: HAND
+          uuid: b8b8c701-ab5e-44bb-8847-284272790680
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: MK48
+  '3':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"SV-98"},{"italic":false,"color":"white","text":"
+        ˗ «10»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"BOLT"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 48
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: SV
+  '4':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: BOOK
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"yellow","text":"お月見"},{"bold":true,"italic":false,"color":"gray","text":"の"},{"bold":true,"italic":false,"color":"dark_purple","text":"極意
+        "},{"bold":false,"italic":false,"color":"aqua","text":"Lv4"},{"italic":false,"color":"aqua","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"お月見を最大限楽しむための極意が載っている。"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"曰く"},{"italic":false,"color":"gold","text":"「月に行く際はNASAに助けを求めよ」"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"[お"},{"italic":false,"color":"yellow","text":"月見"},{"italic":false,"color":"gray","text":"イベント2024]"}],"text":""}'
+      enchants:
+        LURE: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+  '5':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"OTs-12
+        tiss"},{"italic":false,"color":"white","text":" ▪ «20»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"専用のアタッチメントを装着可能"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 163
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.0
+          name: CSP_Main
+          slot: HAND
+          uuid: 5ce2a642-6d11-444c-a951-e964df4420fb
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: OTs12-tiss
+  '6':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"OTs-12
+        tiss"},{"italic":false,"color":"white","text":" ▪ «20»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"専用のアタッチメントを装着可能"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 163
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.0
+          name: CSP_Main
+          slot: HAND
+          uuid: c3d24a84-d666-46ed-bb84-5f50474799cf
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: OTs12-tiss
+  '7':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 2
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"LGW俳人の短冊"},{"bold":true,"italic":false,"color":"aqua","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"おわらない
+        ぼくたちのなつ これからだ"}],"text":""}'
+      custom-model-data: 7
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: MINISTARTtic
+  '9':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 13
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"お"},{"bold":true,"italic":false,"color":"yellow","text":"月見"},{"bold":true,"italic":false,"color":"gray","text":"イベントチケット"},{"bold":true,"italic":false,"color":"gray","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"お月見イベントで利用できるチケット。"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"[お"},{"italic":false,"color":"yellow","text":"月見"},{"italic":false,"color":"gray","text":"イベント2024]"}],"text":""}'
+      custom-model-data: 15
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: OTSUKIMIticket
+  '10':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"BT
+        APC-9"},{"italic":false,"color":"white","text":" ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SMG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 147
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: BTAPC9
+  '11':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"SAIGA-12"},{"italic":false,"color":"white","text":"
+        ▪ «4»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 92
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: SAIGA12
+  '12':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"Railgun"},{"bold":false,"italic":false,"color":"white","text":"
+        ▪ «8»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"RAILGUN_SR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":true,"strikethrough":false,"obfuscated":false,"color":"blue","text":"弾速は"},{"italic":false,"underlined":true,"color":"aqua","text":"音速"},{"italic":false,"underlined":true,"color":"blue","text":"をも超える。"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 142
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.0
+          name: CSP_Main
+          slot: HAND
+          uuid: 6a07d551-9da5-4cd1-9327-be189fb65f86
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: RAILGUN
+  '13':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"SV-98"},{"italic":false,"color":"white","text":"
+        ▪ «9»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"BOLT"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 48
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: SV
+  '15':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"SAIGA-12"},{"italic":false,"color":"white","text":"
+        ▪ «8»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 92
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: SAIGA12
+  '17':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"HK416A1"},{"italic":false,"color":"white","text":"
+        ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 149
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.0
+          name: CSP_Main
+          slot: HAND
+          uuid: 7654e8e8-d31b-4cb0-82dc-b64e3bdf96fd
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: HK416A1
+  '18':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"LunaticGun"},{"italic":false,"color":"white","text":"
+        ▪ «10»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"DANMAKU"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_gray","text":"["},{"bold":true,"italic":false,"color":"gold","text":"サ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"バ"},{"bold":true,"italic":false,"color":"red","text":"ー"},{"bold":true,"italic":false,"color":"gold","text":"生"},{"bold":true,"italic":false,"color":"red","text":"誕"},{"bold":true,"italic":false,"color":"gold","text":"祭"},{"bold":true,"italic":false,"color":"red","text":"!"},{"bold":false,"italic":false,"color":"dark_gray","text":"]"}],"text":""}'
+      custom-model-data: 157
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: LunaticGun
+'15':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Colt
+        SAA"},{"italic":false,"color":"white","text":" ▪ «6»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"HG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SUB"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"REVOLVER"}],"text":""}'
+      custom-model-data: 137
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.0
+          name: CSP_Main
+          slot: HAND
+          uuid: 79840be6-5c68-4a44-8857-1645ea5a72d3
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: ColtSAA
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Colt
+        SAA"},{"italic":false,"color":"white","text":" ▪ «6»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"HG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SUB"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"REVOLVER"}],"text":""}'
+      custom-model-data: 137
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.0
+          name: CSP_Main
+          slot: HAND
+          uuid: 79840be6-5c68-4a44-8857-1645ea5a72d3
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: ColtSAA
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Colt
+        SAA"},{"italic":false,"color":"white","text":" ▪ «6»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"HG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SUB"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"REVOLVER"}],"text":""}'
+      custom-model-data: 137
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.0
+          name: CSP_Main
+          slot: HAND
+          uuid: 37e20d7f-5e02-46f1-a768-3fcc23593501
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: ColtSAA
+  '3':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Colt
+        SAA"},{"italic":false,"color":"white","text":" ▪ «6»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"HG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SUB"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"REVOLVER"}],"text":""}'
+      custom-model-data: 137
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.0
+          name: CSP_Main
+          slot: HAND
+          uuid: b9eaaac9-6037-4dec-83ab-ba43edafc1de
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: ColtSAA
+  '4':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"SHERIFF"},{"italic":false,"color":"gold","text":"
+        ▪ «6»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"HG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SUB"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"REVOLVER"}],"text":""}'
+      custom-model-data: 138
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.0
+          name: CSP_Main
+          slot: HAND
+          uuid: d9f120d3-8bf3-4860-8d57-faeea0106075
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: SHERIFF
+'16':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Type-89"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"aqua","text":"SUMMER"},{"italic":false,"color":"white","text":"
+        ▪ «50»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"2BURST"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"夏ガチャ限定"}],"text":""}'
+      custom-model-data: 117
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      Unbreakable: true
+      Damage: 938
+      PublicBukkitValues:
+        crackshotplus:wn: Type89SUMMER
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"CUT
+        SUIKA"},{"italic":false,"color":"white","text":" ▪ «12»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"SUIKA"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"SUB"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"SHOOT"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_green","text":"勢いよく種を飛ばして攻撃する"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_red","text":"["},{"italic":false,"color":"gold","text":"M1911"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"dark_red","text":"EXTENDED
+        MAGS"},{"italic":false,"color":"dark_green","text":"迷彩"},{"italic":false,"color":"dark_red","text":"]"}],"text":""}'
+      custom-model-data: 122
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: CUT-SUIKA
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"SPAS-12"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"aqua","text":"SUMMER"},{"italic":false,"color":"white","text":"
+        ▪ «9»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"SG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"夏ガチャ限定"}],"text":""}'
+      custom-model-data: 119
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      Unbreakable: true
+      Damage: 935
+      PublicBukkitValues:
+        crackshotplus:wn: SPASSUMMER
+  '3':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"VSS"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"/"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"SUMMER"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"
+        ▪ «20»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"SR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"※サプレッサーは標準装備です"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"夏ガチャ限定"}],"text":""}'
+      custom-model-data: 121
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      Unbreakable: true
+      Damage: 937
+      PublicBukkitValues:
+        crackshotplus:wn: VSSSUMMER
+  '4':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Beretta
+        M92F"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"aqua","text":"SUMMER"},{"italic":false,"color":"white","text":"
+        ▪ «25»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"HG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"SUB"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"SEMI"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"夏ガチャ限定"}],"text":""}'
+      custom-model-data: 118
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      Unbreakable: true
+      Damage: 936
+      PublicBukkitValues:
+        crackshotplus:wn: BerettaSUMMER
+  '5':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"HK
+        MP5"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"aqua","text":"SUMMER"},{"italic":false,"color":"white","text":"
+        ▪ «30»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"SMG"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"FULL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"夏ガチャ限定"}],"text":""}'
+      custom-model-data: 120
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      Unbreakable: true
+      Damage: 934
+      PublicBukkitValues:
+        crackshotplus:wn: HKMP5SUMMER
+  '6':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 3
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"夏ガチャ2024
+        外れ"},{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"動いてないのに暑いよ〜"}],"text":""}'
+      custom-model-data: 3
+  '9':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Type-89"},{"italic":false,"color":"white","text":"/"},{"italic":false,"color":"aqua","text":"SUMMER"},{"italic":false,"color":"white","text":"
+        ▪ «47»"}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"AR"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"MAIN"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"2BURST"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"夏ガチャ限定"}],"text":""}'
+      custom-model-data: 117
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      Unbreakable: true
+      Damage: 938
+      PublicBukkitValues:
+        crackshotplus:wn: Type89SUMMER
+  '14':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_red","text":"赤薔薇騎士団のレイピア"},{"italic":false,"color":"white","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"Knife"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"Knife"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"Attack"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"赤薔薇騎士団に所属する団員に支給されるレイピア"}],"text":""}'
+      - '{"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"wesn
+        迷彩"}],"text":""}'
+      custom-model-data: 159
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.02
+          name: CSP_Main
+          slot: HAND
+          uuid: 28bfc8e5-e3ff-4328-8eac-08b81f327c95
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: RedRoserapier
+  '15':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"胎動の紅大鎌"},{"italic":false,"color":"white","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"HEAL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"HEAL
+        Knife"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"---"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"即時ダメージ1・満腹度回復・再生6"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"CT1.5秒"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"[味方回復不可]"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"まだ蠢いている大鎌"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"一度傷つけた所を謎の物質で覆いつくす"}],"text":""}'
+      custom-model-data: 160
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.01
+          name: CSP_Main
+          slot: HAND
+          uuid: 239aeca3-9f40-4bfa-af0f-9267bfcac0ff
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: Crimsonscythe
+  '16':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"aqua","text":"青雷刀IXA"},{"italic":false,"color":"white","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"HEAL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"HEAL
+        Knife"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"---"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"即時回復1・満腹度微回復"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"CT1.5秒"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"[味方回復不可]"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"雷を特殊加工で作られた刀"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"強力な電撃で傷を癒す"}],"text":""}'
+      custom-model-data: 162
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.02
+          name: CSP_Main
+          slot: HAND
+          uuid: ca4471a7-ba39-439a-a8e1-ce257ed07365
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: bluekatana
+  '17':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"Steam
+        Hummer"},{"italic":false,"color":"white","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"Knife"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"KNIFE"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"Attack"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"dark_red","text":"現代からは考えられない技術のハンマー"}],"text":""}'
+      - '{"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"Combat
+        迷彩"}],"text":""}'
+      custom-model-data: 161
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.01
+          name: CSP_Main
+          slot: HAND
+          uuid: 50a49c6a-b40f-47fa-b68f-0b3fa7711b23
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: SteamHummer
+  '24':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"胎動の紅大鎌"},{"italic":false,"color":"white","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"HEAL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"HEAL
+        Knife"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"---"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"即時ダメージ1・満腹度回復・再生6"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"CT1.5秒"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"[味方回復不可]"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"まだ蠢いている大鎌"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"一度傷つけた所を謎の物質で覆いつくす"}],"text":""}'
+      custom-model-data: 160
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.01
+          name: CSP_Main
+          slot: HAND
+          uuid: 239aeca3-9f40-4bfa-af0f-9267bfcac0ff
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: Crimsonscythe
+  '33':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: FLOWER_BANNER_PATTERN
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"胎動の紅大鎌"},{"italic":false,"color":"white","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"TYPE:"},{"italic":false,"color":"gold","text":"HEAL"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"DATA:"},{"italic":false,"color":"gold","text":"HEAL
+        Knife"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"MODE:"},{"italic":false,"color":"gold","text":"---"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"即時ダメージ1・満腹度回復・再生6"}],"text":""}'
+      - '{"extra":[{"bold":true,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gray","text":"CT1.5秒"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"red","text":"[味方回復不可]"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"まだ蠢いている大鎌"}],"text":""}'
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"一度傷つけた所を謎の物質で覆いつくす"}],"text":""}'
+      custom-model-data: 160
+      attribute-modifiers:
+        GENERIC_MOVEMENT_SPEED:
+        - ==: org.bukkit.attribute.AttributeModifier
+          amount: 0.01
+          name: CSP_Main
+          slot: HAND
+          uuid: 239aeca3-9f40-4bfa-af0f-9267bfcac0ff
+          operation: 0
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: Crimsonscythe
+'17':
+  '0':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '1':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '2':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '3':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '4':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '5':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '6':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '7':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 64
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu
+  '8':
+    ==: org.bukkit.inventory.ItemStack
+    v: 2586
+    type: PAPER
+    amount: 6
+    meta:
+      ==: ItemMeta
+      meta-type: UNSPECIFIC
+      display-name: '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"gold","text":"はずれ(´・ω・`)"},{"italic":false,"color":"gold","text":""}],"text":""}'
+      lore:
+      - '{"extra":[{"bold":false,"italic":false,"underlined":false,"strikethrough":false,"obfuscated":false,"color":"white","text":"集めたらいいことあるかも"}],"text":""}'
+      custom-model-data: 2
+      ItemFlags:
+      - HIDE_ENCHANTS
+      - HIDE_ATTRIBUTES
+      - HIDE_UNBREAKABLE
+      - HIDE_DESTROYS
+      - HIDE_PLACED_ON
+      - HIDE_POTION_EFFECTS
+      PublicBukkitValues:
+        crackshotplus:wn: hazu

@@ -101,7 +101,7 @@ public class DataIO {
         } else {
             // ロック無視モードならログ出すだけ
             inv.version = dbPageVersion + 1;
-            Bukkit.getLogger().info("[BetterStorage] ⚠ ロック無視モードで保存中 pageId=" + pageId + ", clientVersion=" + inv.version);
+            //Bukkit.getLogger().info("[BetterStorage] ⚠ 楽観ロック無視モードで保存中 pageId=" + pageId + ", clientVersion=" + inv.version);
         }
 
         // ---------- inventory_table ----------
@@ -555,11 +555,11 @@ public class DataIO {
                 "SELECT plugin_name, bank_money, require_bank_permission FROM storage_table WHERE group_uuid = ?")) {
             ps.setString(1, groupUUID.toString());
 
-            Bukkit.getLogger().info("[Debug] Executing query for group_uuid = " + groupUUID);
+            //Bukkit.getLogger().info("[Debug] Executing query for group_uuid = " + groupUUID);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()){
-                    Bukkit.getLogger().warning("[Debug] No result found for group_uuid = " + groupUUID);
+                    Bukkit.getLogger().warning("[BetterStorage] No result found for group_uuid = " + groupUUID);
                     return null;
                 }
                 pluginName = rs.getString("plugin_name");
@@ -567,7 +567,7 @@ public class DataIO {
                 String requireBankPermRaw = rs.getString("require_bank_permission");
                 requireBankPerm = gson.fromJson(rs.getString("require_bank_permission"), new TypeToken<Set<String>>() {}.getType());
 
-                Bukkit.getLogger().info("[Debug] Loaded: plugin=" + pluginName + ", bank=" + bankMoney + ", perms=" + requireBankPermRaw);
+                //Bukkit.getLogger().info("[Debug] Loaded: plugin=" + pluginName + ", bank=" + bankMoney + ", perms=" + requireBankPermRaw);
             }
         }
 
@@ -588,7 +588,7 @@ public class DataIO {
     //外部呼出し用
     public static StorageData loadStorageMetaOnly(UUID groupUUID) {
         try (Connection conn = db.getConnection()) {
-            Bukkit.getLogger().info("[Debug] loadStorageMetaOnly: groupUUID = " + groupUUID);
+            //Bukkit.getLogger().info("[Debug] loadStorageMetaOnly: groupUUID = " + groupUUID);
             return loadStorageMetaOnly(conn, groupUUID);
         } catch (SQLException e) {
             Bukkit.getLogger().warning("StorageMetaの読み込みに失敗: " + e.getMessage());

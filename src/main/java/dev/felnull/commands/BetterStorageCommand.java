@@ -286,90 +286,6 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                 }.runTaskAsynchronously(BetterStorage.BSPlugin);
                 return true;
             }
-            case "exportlog": {
-                if (args.length < 3) {
-                    sender.sendMessage("引数が不足しています。/bstorage exportlog <playerName> <検索対象:色なしDisplayName>");
-                    return true;
-                }
-
-                String playerName = args[1];
-                String displayNamePlain = args[2];
-
-                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(playerName);
-                if (offlinePlayer == null) {
-                    sender.sendMessage("プレイヤーが見つかりませんでした。");
-                    return true;
-                }
-
-                UUID playerUUID = offlinePlayer.getUniqueId();
-                sender.sendMessage("日次集計を実行しています...");
-
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        // ① まず summary を生成
-                        new ItemLogSummaryTask(db).run(); // ← runTask() ではなく run() を直接呼んで即時同期処理
-
-                        // ② summary ができたら読み出す
-                        List<Map<String, Object>> records = new ArrayList<>();
-                        String query =
-                                "SELECT date, group_uuid, plugin_name, page_id, material, display_name, operation_type, total_amount " +
-                                        "FROM inventory_item_summary " +
-                                        "WHERE player_uuid = ? AND display_name_plain = ? " +
-                                        "ORDER BY date ASC";
-
-                        try (Connection conn = db.getConnection();
-                             PreparedStatement ps = conn.prepareStatement(query)) {
-
-                            ps.setString(1, playerUUID.toString());
-                            ps.setString(2, displayNamePlain);
-
-                            try (ResultSet rs = ps.executeQuery()) {
-                                while (rs.next()) {
-                                    Map<String, Object> entry = new LinkedHashMap<>();
-                                    entry.put("date", rs.getDate("date").toString());
-                                    entry.put("group_uuid", rs.getString("group_uuid"));
-                                    entry.put("plugin_name", rs.getString("plugin_name"));
-                                    entry.put("page_id", rs.getString("page_id"));
-                                    entry.put("material", rs.getString("material"));
-                                    entry.put("display_name", rs.getString("display_name"));
-                                    entry.put("operation_type", rs.getString("operation_type"));
-                                    entry.put("total_amount", rs.getInt("total_amount"));
-                                    records.add(entry);
-                                }
-                            }
-                        } catch (SQLException e) {
-                            Bukkit.getScheduler().runTask(BetterStorage.BSPlugin,
-                                    () -> sender.sendMessage("データベースエラー: " + e.getMessage()));
-                            return;
-                        }
-
-                        if (records.isEmpty()) {
-                            Bukkit.getScheduler().runTask(BetterStorage.BSPlugin,
-                                    () -> sender.sendMessage("該当するログが見つかりませんでした。"));
-                            return;
-                        }
-
-                        // ファイル出力
-                        File exportFile = new File(BetterStorage.BSPlugin.getDataFolder(), "logs/" + playerName + "_" + displayNamePlain + ".yml");
-                        exportFile.getParentFile().mkdirs();
-                        YamlConfiguration config = new YamlConfiguration();
-                        config.set("records", records);
-
-                        try {
-                            config.save(exportFile);
-                            Bukkit.getScheduler().runTask(BetterStorage.BSPlugin,
-                                    () -> sender.sendMessage("操作ログを " + exportFile.getName() + " に保存しました。"));
-                        } catch (IOException e) {
-                            Bukkit.getScheduler().runTask(BetterStorage.BSPlugin,
-                                    () -> sender.sendMessage("ファイル保存に失敗しました: " + e.getMessage()));
-                        }
-                    }
-                }.runTaskAsynchronously(BetterStorage.BSPlugin);
-
-                return true;
-            }
-
             case "wipealldata": {
                 sender.sendMessage(ChatColor.YELLOW + "全テーブル削除を開始します...");
 
@@ -553,6 +469,56 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                 sender.sendMessage("グループ「" + groupData.groupName + "」を完全に削除しました。");
                 return true;
             }
+            case "rollbacklog": {
+                if (args.length < 2) {
+                    sender.sendMessage("使い方: /bstorage rollbacklog <groupUUID>");
+                    return true;
+                }
+
+                UUID groupUUID;
+                try {
+                    groupUUID = resolveGroupUUID(args[1]);
+                } catch (IllegalArgumentException e) {
+                    sender.sendMessage("UUIDの形式が不正です。");
+                    return true;
+                }
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        try (Connection conn = db.getConnection();
+                             PreparedStatement ps = conn.prepareStatement(
+                                     "SELECT timestamp, target_time, plugin_name " +
+                                             "FROM rollback_operation_log " +
+                                             "WHERE group_uuid = ? ORDER BY timestamp DESC LIMIT 10")) {
+
+                            ps.setString(1, groupUUID.toString());
+
+                            try (ResultSet rs = ps.executeQuery()) {
+                                List<String> lines = new ArrayList<>();
+                                while (rs.next()) {
+                                    String time = rs.getString("timestamp");
+                                    String target = rs.getString("target_time");
+                                    String plugin = rs.getString("plugin_name");
+                                    lines.add("[" + time + "] → " + target + " (" + plugin + ")");
+                                }
+
+                                if (lines.isEmpty()) {
+                                    sender.sendMessage("ロールバック履歴は見つかりませんでした。");
+                                } else {
+                                    sender.sendMessage("=== ロールバック履歴 ===");
+                                    for (String line : lines) {
+                                        sender.sendMessage(line);
+                                    }
+                                }
+                            }
+                        } catch (SQLException e) {
+                            sender.sendMessage("エラーが発生しました: " + e.getMessage());
+                        }
+                    }
+                }.runTaskAsynchronously(BetterStorage.BSPlugin);
+                return true;
+            }
 
 
             default:
@@ -593,7 +559,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
         List<String> suggestions = new ArrayList<>();
 
         if (args.length == 1) {
-            suggestions.addAll(Arrays.asList("rollback", "rollbacklist", "diff", "difflist", "help", "backup", "exportlog", "recover", "recoverlist", "wipedata", "confirmwipe"));
+            suggestions.addAll(Arrays.asList("rollback", "rollbacklist", "diff", "difflist", "help", "backup", "rollbacklog", "recover", "recoverlist", "wipedata", "confirmwipe"));
         } else if (args.length == 2 && Arrays.asList("rollback", "rollbacklist", "diff", "difflist" ).contains(args[0].toLowerCase())) {
             suggestions.addAll(
                     DataIO.loadAllGroups().stream()

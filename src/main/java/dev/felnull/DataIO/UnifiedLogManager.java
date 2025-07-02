@@ -195,7 +195,7 @@ public class UnifiedLogManager {
 
             if (success) {
                 // ✅ ロールバック操作を別テーブルに記録
-                logRollbackOperation(groupUUID, group.ownerPlugin, targetTime, null); // 実行者はnull（コンソール実行時など）
+                logRollbackOperation(groupUUID, group.ownerPlugin, targetTime);
             }
 
             return success;
@@ -206,14 +206,14 @@ public class UnifiedLogManager {
         }
     }
 
-    public static void logRollbackOperation(UUID groupUUID, String pluginName, LocalDateTime targetTime, @Nullable String executor) {
+    public static void logRollbackOperation(UUID groupUUID, String pluginName, LocalDateTime targetTime) {
         try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection();
              PreparedStatement ps = conn.prepareStatement(
-                     "INSERT INTO rollback_operation_log (group_uuid, plugin_name, target_time, executor) VALUES (?, ?, ?, ?)")) {
+                     "INSERT INTO rollback_operation_log (group_uuid, plugin_name, target_time) VALUES (?, ?, ?)")
+        ) {
             ps.setString(1, groupUUID.toString());
             ps.setString(2, pluginName);
             ps.setString(3, targetTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            ps.setString(4, executor);
             ps.executeUpdate();
         } catch (SQLException e) {
             Bukkit.getLogger().warning("[BetterStorage] ロールバック操作ログの保存に失敗: " + e.getMessage());
