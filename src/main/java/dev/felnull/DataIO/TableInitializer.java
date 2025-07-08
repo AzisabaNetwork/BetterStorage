@@ -23,9 +23,10 @@ public class TableInitializer {
                             "group_name VARCHAR(255) UNIQUE NOT NULL, " +                   // 論理名（内部参照に使う）
                             "display_name VARCHAR(255), " +                                 // 表示名（ユーザー向け）
                             "is_private BOOLEAN NOT NULL, " +                               // 非公開グループかどうか
-                            "owner_plugin VARCHAR(255)" +                                   // このグループを扱うプラグイン名
+                            "owner_plugin VARCHAR(255), " +                                 // このグループを扱うプラグイン名
                             ");"
             );
+
 
             // グループに所属するメンバー情報
             stmt.executeUpdate(
@@ -182,6 +183,17 @@ public class TableInitializer {
                             ");"
             );
 
+            //グループデータの削除履歴
+            stmt.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS deleted_group_history (" +
+                            "group_uuid VARCHAR(255) NOT NULL, " +                 // 削除対象のグループUUID
+                            "group_name VARCHAR(255), " +                          // グループの名前（表示用）
+                            "deletion_timestamp DATETIME NOT NULL, " +             // 削除された時刻
+                            "executed_by VARCHAR(64), " +                          // 実行者（UUID or 名前）
+                            "PRIMARY KEY (group_uuid, deletion_timestamp)" +       // 主キー制約
+                            ");"
+            );
+
             LOGGER.info("[BetterStorage] 全テーブルの初期化が完了しました。");
 
         } catch (SQLException e) {
@@ -268,6 +280,27 @@ public class TableInitializer {
 
             default:
                 throw new IllegalArgumentException("Unknown index name: " + indexName);
+        }
+    }
+
+    /**
+     * 指定したテーブルに指定カラムが存在しない場合、自動で追加するにゃ。
+     *
+     * @param conn DB接続
+     * @param tableName 対象テーブル名（例: "group_table"）
+     * @param columnName 追加したいカラム名（例: "ecp_imported"）
+     * @param columnDefinition カラムの定義（例: "BOOLEAN NOT NULL DEFAULT FALSE"）
+     */
+    private static void addColumnIfNotExists(Connection conn, String tableName, String columnName, String columnDefinition) {
+        try (ResultSet rs = conn.getMetaData().getColumns(null, null, tableName, columnName)) {
+            if (!rs.next()) {
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.executeUpdate("ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnDefinition);
+                    LOGGER.info("[BetterStorage] " + tableName + " にカラム '" + columnName + "' を追加したにゃ！");
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.warning("[BetterStorage] " + tableName + " のカラム '" + columnName + "' チェック中にエラーが起きたにゃ: " + e.getMessage());
         }
     }
 

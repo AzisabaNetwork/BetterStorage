@@ -4,6 +4,8 @@ main: dev.felnull.BetterStorage
 api-version: '1.16'
 depend:
   - BetterGUI
+softdepend:
+  - EnderChestPlus
 commands:
   bstorage:
     description: BetterStorageの管理用コマンド
