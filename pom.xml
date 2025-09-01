@@ -110,7 +110,6 @@
           <artifactId>mariadb-java-client</artifactId>
           <version>3.5.3</version>
       </dependency>
-
   </dependencies>
   
   <distributionManagement>

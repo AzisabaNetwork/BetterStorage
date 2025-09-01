@@ -19,11 +19,12 @@ public class TableInitializer {
             // グループの基本情報（UUID主キー＋表示名＋バージョンなど）
             stmt.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS group_table (" +
-                            "group_uuid VARCHAR(255) PRIMARY KEY, " +                       // 内部識別子（UUID）
-                            "group_name VARCHAR(255) UNIQUE NOT NULL, " +                   // 論理名（内部参照に使う）
-                            "display_name VARCHAR(255), " +                                 // 表示名（ユーザー向け）
-                            "is_private BOOLEAN NOT NULL, " +                               // 非公開グループかどうか
-                            "owner_plugin VARCHAR(255), " +                                 // このグループを扱うプラグイン名
+                            "group_uuid VARCHAR(255) PRIMARY KEY, " +     // 内部識別子（UUID）
+                            "group_name VARCHAR(255) UNIQUE NOT NULL, " + // 論理名（内部参照に使う）
+                            "display_name VARCHAR(255), " +               // 表示名（ユーザー向け）
+                            "is_private BOOLEAN NOT NULL, " +             // 非公開グループかどうか
+                            "owner_plugin VARCHAR(255), " +               // このグループを扱うプラグイン名
+                            "ecp_imported TINYINT(1) NOT NULL DEFAULT 0 " + // ECPからインポート済みかどうか
                             ");"
             );
 
@@ -292,12 +293,22 @@ public class TableInitializer {
      * @param columnDefinition カラムの定義（例: "BOOLEAN NOT NULL DEFAULT FALSE"）
      */
     private static void addColumnIfNotExists(Connection conn, String tableName, String columnName, String columnDefinition) {
-        try (ResultSet rs = conn.getMetaData().getColumns(null, null, tableName, columnName)) {
-            if (!rs.next()) {
-                try (Statement stmt = conn.createStatement()) {
-                    stmt.executeUpdate("ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnDefinition);
-                    LOGGER.info("[BetterStorage] " + tableName + " にカラム '" + columnName + "' を追加したにゃ！");
+        try {
+            boolean exists = false;
+            try (ResultSet rs = conn.getMetaData().getColumns(null, null, tableName, columnName)) {
+                exists = rs.next();
+            }
+            if (!exists) {
+                try (ResultSet rs = conn.getMetaData().getColumns(null, null, tableName.toUpperCase(), columnName.toUpperCase())) {
+                    exists = rs.next();
                 }
+            }
+            if (exists) return;
+
+            String sql = "ALTER TABLE `" + tableName + "` ADD COLUMN `" + columnName + "` " + columnDefinition;
+            try (Statement stmt = conn.createStatement()) {
+                stmt.executeUpdate(sql);
+                LOGGER.info("[BetterStorage] " + tableName + " にカラム '" + columnName + "' を追加したにゃ！");
             }
         } catch (SQLException e) {
             LOGGER.warning("[BetterStorage] " + tableName + " のカラム '" + columnName + "' チェック中にエラーが起きたにゃ: " + e.getMessage());
