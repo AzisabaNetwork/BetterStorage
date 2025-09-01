@@ -157,6 +157,9 @@ public class UnifiedLogManager {
 
     public static boolean restoreGroupToTimestamp(UUID groupUUID, LocalDateTime targetTime) {
         try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection()) {
+
+            //todoここに適用中の時にインベントリ開けなくする処理入れるべき
+
             // 1. スナップショットを取得
             String sql = "SELECT timestamp, json_data FROM rollback_log " +
                     "WHERE group_uuid = ? AND timestamp <= ? ORDER BY timestamp DESC LIMIT 1";

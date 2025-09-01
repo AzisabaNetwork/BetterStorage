@@ -145,6 +145,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
+
                         UUID groupUUID = resolveGroupUUID(targetName);
                         if (groupUUID == null) {
                             Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
@@ -250,7 +251,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
 
             case "backup": {
                 if (args.length < 2) {
-                    sender.sendMessage("引数が不足しています。/bstorage rollbacksave <groupName/playerName>");
+                    sender.sendMessage("引数が不足しています。/bstorage backup <groupName/playerName>");
                     return true;
                 }
 
@@ -317,7 +318,7 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
 
                             // 初期化（テーブルとインデックスを再作成）
                             TableInitializer.initTables();
-                            TableInitializer.ensureIndexes(BetterStorage.BSPlugin.getDatabaseManager());
+                            TableInitializer.   ensureIndexes(BetterStorage.BSPlugin.getDatabaseManager());
 
                             Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () ->
                                     sender.sendMessage(ChatColor.GREEN + "[BetterStorage] 全テーブルを削除して再作成しましたにゃ。"));

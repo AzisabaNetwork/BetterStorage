@@ -16,191 +16,152 @@ public class TableInitializer {
         try (Connection conn = BetterStorage.BSPlugin.getDatabaseManager().getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // グループの基本情報（UUID主キー＋表示名＋バージョンなど）
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS group_table (" +
-                            "group_uuid VARCHAR(255) PRIMARY KEY, " +     // 内部識別子（UUID）
-                            "group_name VARCHAR(255) UNIQUE NOT NULL, " + // 論理名（内部参照に使う）
-                            "display_name VARCHAR(255), " +               // 表示名（ユーザー向け）
-                            "is_private BOOLEAN NOT NULL, " +             // 非公開グループかどうか
-                            "owner_plugin VARCHAR(255), " +               // このグループを扱うプラグイン名
-                            "ecp_imported TINYINT(1) NOT NULL DEFAULT 0 " + // ECPからインポート済みかどうか
-                            ");"
-            );
+            // --- 骨格だけ作る（各テーブル 最小1列。制約は後段で保証） ---
 
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS group_table (group_uuid VARCHAR(255) PRIMARY KEY)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS group_member_table (group_uuid VARCHAR(255) NULL)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS storage_table (group_uuid VARCHAR(255) NULL)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS inventory_table (group_uuid VARCHAR(255) NULL)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS inventory_item_table (group_uuid VARCHAR(255) NULL)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS tag_table (group_uuid VARCHAR(255) NULL)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS inventory_item_log (group_uuid VARCHAR(255) NULL)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS diff_log_inventory_items (group_uuid VARCHAR(255) NULL)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS diff_log_tags (group_uuid VARCHAR(255) NULL)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS inventory_item_summary (date DATE NULL)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS rollback_log (group_uuid VARCHAR(255) NULL)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS group_deleted_backup (group_uuid VARCHAR(255) NULL)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS rollback_operation_log (group_uuid VARCHAR(255) NULL)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS deleted_group_history (group_uuid VARCHAR(255) NULL)");
 
-            // グループに所属するメンバー情報
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS group_member_table (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
-                            "member_uuid VARCHAR(36) NOT NULL, " +                          // プレイヤーのUUID
-                            "role VARCHAR(255) NOT NULL" +                                  // 権限（OWNER, MEMBERなど）
-                            ");"
-            );
+            // --- 不足カラムを“追加のみ”で補完（元の定義どおり） ---
 
-            // ストレージ情報（銀行/お金関係）
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS storage_table (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
-                            "plugin_name VARCHAR(255) NOT NULL, " +                         // 使用しているプラグイン
-                            "bank_money DOUBLE NOT NULL, " +                                // 所持金
-                            "require_bank_permission TEXT" +                                // アクセス権限
-                            ");"
-            );
+            // group_table
+            addColumnIfNotExists(conn, "group_table", "group_name",   "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "group_table", "display_name", "VARCHAR(255)");
+            addColumnIfNotExists(conn, "group_table", "is_private",   "BOOLEAN NOT NULL");
+            addColumnIfNotExists(conn, "group_table", "owner_plugin", "VARCHAR(255)");
+            addColumnIfNotExists(conn, "group_table", "ecp_imported", "TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'ECPからインポート済みかどうか'");
 
-            // 各ページ単位のインベントリ設定
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS inventory_table (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +             // 所属グループ
-                            "plugin_name VARCHAR(255) NOT NULL, " +            // プラグイン名
-                            "page_id VARCHAR(255) NOT NULL, " +                // ページ識別子（例: "main"）
-                            "display_name VARCHAR(255), " +                    // GUIの見た目名
-                            "row_count INT NOT NULL, " +                       // GUIの行数（1～6）
-                            "require_permission TEXT, " +                      // アクセス制限
-                            "version BIGINT NOT NULL DEFAULT 0, " +            // ★ページ単位のバージョン管理（楽観ロック用）
-                            "CONSTRAINT unique_page_group UNIQUE (group_uuid, page_id)" +  // group_uuid と page_id の組み合わせにユニーク制約を追加
-                            ");"
-            );
+            // group_member_table
+            addColumnIfNotExists(conn, "group_member_table", "member_uuid", "VARCHAR(36) NOT NULL");
+            addColumnIfNotExists(conn, "group_member_table", "role",        "VARCHAR(255) NOT NULL");
 
-            // インベントリページ内のアイテム情報
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS inventory_item_table (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +                  // 所属グループ
-                            "plugin_name VARCHAR(255) NOT NULL, " +                 // プラグイン名
-                            "page_id VARCHAR(255) NOT NULL, " +                     // ページ識別子
-                            "slot INT NOT NULL, " +                                 // スロット番号（0～53）
-                            "itemstack TEXT NOT NULL, " +                           // シリアライズされたアイテム
-                            "display_name VARCHAR(255), " +                         // 表示名（任意）
-                            "display_name_plain VARCHAR(255), " +                   // 色コード除去済み表示名
-                            "material VARCHAR(255), " +                             // 材質（Material名）    これらは検索用
-                            "amount INT" +                                          // 数量
-                            ");"
-            );
+            // storage_table
+            addColumnIfNotExists(conn, "storage_table", "plugin_name",             "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "storage_table", "bank_money",              "DOUBLE NOT NULL");
+            addColumnIfNotExists(conn, "storage_table", "require_bank_permission", "TEXT");
 
-            // ページに設定されたタグ情報
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS tag_table (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
-                            "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
-                            "page_id VARCHAR(255) NOT NULL, " +                             // 対象ページ
-                            "user_tag VARCHAR(255)" +                                       // ユーザー定義のタグ（例: "大切なアイテム,AssaultRifle"）
-                            ");"
-            );
+            // inventory_table
+            addColumnIfNotExists(conn, "inventory_table", "plugin_name",        "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "inventory_table", "page_id",            "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "inventory_table", "display_name",       "VARCHAR(255)");
+            addColumnIfNotExists(conn, "inventory_table", "row_count",          "INT NOT NULL");
+            addColumnIfNotExists(conn, "inventory_table", "require_permission", "TEXT");
+            addColumnIfNotExists(conn, "inventory_table", "version",            "BIGINT NOT NULL DEFAULT 0");
 
-            // アイテム操作ログ（操作種別＋日時）
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS inventory_item_log (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
-                            "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
-                            "page_id VARCHAR(255) NOT NULL, " +                             // ページ
-                            "slot INT NOT NULL, " +                                         // スロット
-                            "operation_type VARCHAR(32) NOT NULL, " +                       // 操作種別（ADD/REMOVE/UPDATEなど）
-                            "player_uuid VARCHAR(36), " +                                   // 操作したプレイヤー
-                            "itemstack TEXT, " +                                            // アイテム
-                            "display_name VARCHAR(255), " +                                 // 表示名
-                            "display_name_plain VARCHAR(255), " +                           // 色コード除去済み表示名
-                            "material VARCHAR(255), " +                                     // 材質
-                            "amount INT, " +                                                // 数量
-                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +      // ログ記録時刻
-                            ");"
-            );
+            // inventory_item_table
+            addColumnIfNotExists(conn, "inventory_item_table", "plugin_name",        "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "inventory_item_table", "page_id",            "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "inventory_item_table", "slot",               "INT NOT NULL");
+            addColumnIfNotExists(conn, "inventory_item_table", "itemstack",          "TEXT NOT NULL");
+            addColumnIfNotExists(conn, "inventory_item_table", "display_name",       "VARCHAR(255)");
+            addColumnIfNotExists(conn, "inventory_item_table", "display_name_plain", "VARCHAR(255)");
+            addColumnIfNotExists(conn, "inventory_item_table", "material",           "VARCHAR(255)");
+            addColumnIfNotExists(conn, "inventory_item_table", "amount",             "INT");
 
-            // 差分ログ（主にロールバックの復元用）
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS diff_log_inventory_items (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
-                            "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
-                            "page_id VARCHAR(255) NOT NULL, " +                             // 対象ページ
-                            "slot INT NOT NULL, " +                                         // スロット番号
-                            "itemstack TEXT, " +                                            // 差分のアイテム（新状態）
-                            "old_itemstack TEXT, " +                                        // 変更前のアイテム（旧状態）★追加★
-                            "display_name VARCHAR(255), " +                                 // 差分にも表示名を残す
-                            "display_name_plain VARCHAR(255), " +                           // 検索用に色なし名
-                            "material VARCHAR(255), " +                                     // 検索用
-                            "amount INT, " +                                                // 検索用
-                            "operation_type VARCHAR(32), " +                                // 操作種別
-                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +      // 記録時刻
-                            ");"
-            );
+            // tag_table
+            addColumnIfNotExists(conn, "tag_table", "plugin_name", "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "tag_table", "page_id",     "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "tag_table", "user_tag",    "VARCHAR(255)");
 
-            // タグの変更に関する差分ログ
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS diff_log_tags (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
-                            "plugin_name VARCHAR(255) NOT NULL, " +                         // プラグイン名
-                            "page_id VARCHAR(255) NOT NULL, " +                             // 対象ページ
-                            "tag TEXT, " +                                                  // タグ内容
-                            "operation_type VARCHAR(32), " +                                // 操作種別（ADD/REMOVE）
-                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +      // 記録時刻
-                            ");"
-            );
+            // inventory_item_log
+            addColumnIfNotExists(conn, "inventory_item_log", "plugin_name",        "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "inventory_item_log", "page_id",            "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "inventory_item_log", "slot",               "INT NOT NULL");
+            addColumnIfNotExists(conn, "inventory_item_log", "operation_type",     "VARCHAR(32) NOT NULL");
+            addColumnIfNotExists(conn, "inventory_item_log", "player_uuid",        "VARCHAR(36)");
+            addColumnIfNotExists(conn, "inventory_item_log", "itemstack",          "TEXT");
+            addColumnIfNotExists(conn, "inventory_item_log", "display_name",       "VARCHAR(255)");
+            addColumnIfNotExists(conn, "inventory_item_log", "display_name_plain", "VARCHAR(255)");
+            addColumnIfNotExists(conn, "inventory_item_log", "material",           "VARCHAR(255)");
+            addColumnIfNotExists(conn, "inventory_item_log", "amount",             "INT");
+            addColumnIfNotExists(conn, "inventory_item_log", "timestamp",          "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
 
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS inventory_item_summary (" +
-                            "date DATE NOT NULL, " +
-                            "player_uuid VARCHAR(36), " +
-                            "group_uuid VARCHAR(128), " +
-                            "plugin_name VARCHAR(64), " +
-                            "page_id VARCHAR(64), " +
-                            "material VARCHAR(64), " +
-                            "display_name VARCHAR(128), " +
-                            "display_name_plain VARCHAR(128), " +
-                            "operation_type VARCHAR(16), " +
-                            "total_amount INT, " +
-                            "PRIMARY KEY (" +
-                            "date, player_uuid, group_uuid, plugin_name, " +
-                            "page_id, material, display_name_plain, operation_type" +
-                            ")" +
-                            ");"
-            );
+            // diff_log_inventory_items
+            addColumnIfNotExists(conn, "diff_log_inventory_items", "plugin_name",        "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "diff_log_inventory_items", "page_id",            "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "diff_log_inventory_items", "slot",               "INT NOT NULL");
+            addColumnIfNotExists(conn, "diff_log_inventory_items", "itemstack",          "TEXT");
+            addColumnIfNotExists(conn, "diff_log_inventory_items", "old_itemstack",      "TEXT");
+            addColumnIfNotExists(conn, "diff_log_inventory_items", "display_name",       "VARCHAR(255)");
+            addColumnIfNotExists(conn, "diff_log_inventory_items", "display_name_plain", "VARCHAR(255)");
+            addColumnIfNotExists(conn, "diff_log_inventory_items", "material",           "VARCHAR(255)");
+            addColumnIfNotExists(conn, "diff_log_inventory_items", "amount",             "INT");
+            addColumnIfNotExists(conn, "diff_log_inventory_items", "operation_type",     "VARCHAR(32)");
+            addColumnIfNotExists(conn, "diff_log_inventory_items", "timestamp",          "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
 
-            // ロールバック用の完全バックアップ
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS rollback_log (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +                          // 所属グループ
-                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +    // バックアップ時刻
-                            "json_data LONGBLOB NOT NULL, " +                               // グループ全体のシリアライズJSON（※圧縮バイナリ対応のためLONGBLOBに変更）
-                            "PRIMARY KEY (group_uuid, timestamp)" +                         // 時刻単位で識別
-                            ");"
-            );
+            // diff_log_tags
+            addColumnIfNotExists(conn, "diff_log_tags", "plugin_name",    "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "diff_log_tags", "page_id",        "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "diff_log_tags", "tag",            "TEXT");
+            addColumnIfNotExists(conn, "diff_log_tags", "operation_type", "VARCHAR(32)");
+            addColumnIfNotExists(conn, "diff_log_tags", "timestamp",      "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
 
-            // 削除されたグループのバックアップ保存用テーブル
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS group_deleted_backup (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +
-                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
-                            "json_data LONGBLOB NOT NULL, " +
-                            "PRIMARY KEY (group_uuid, timestamp)" +
-                            ");"
-            );
+            // inventory_item_summary（PKは後段で付与）
+            addColumnIfNotExists(conn, "inventory_item_summary", "player_uuid",        "VARCHAR(36)");
+            addColumnIfNotExists(conn, "inventory_item_summary", "group_uuid",         "VARCHAR(128)");
+            addColumnIfNotExists(conn, "inventory_item_summary", "plugin_name",        "VARCHAR(64)");
+            addColumnIfNotExists(conn, "inventory_item_summary", "page_id",            "VARCHAR(64)");
+            addColumnIfNotExists(conn, "inventory_item_summary", "material",           "VARCHAR(64)");
+            addColumnIfNotExists(conn, "inventory_item_summary", "display_name",       "VARCHAR(128)");
+            addColumnIfNotExists(conn, "inventory_item_summary", "display_name_plain", "VARCHAR(128)");
+            addColumnIfNotExists(conn, "inventory_item_summary", "operation_type",     "VARCHAR(16)");
+            addColumnIfNotExists(conn, "inventory_item_summary", "total_amount",       "INT");
 
-            // ロールバック操作のログ（誰がいつどこに戻したか）
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS rollback_operation_log (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +             // 対象グループ
-                            "plugin_name VARCHAR(255) NOT NULL, " +            // 操作対象のプラグイン
-                            "target_time TIMESTAMP NOT NULL, " +               // ロールバックされた時刻
-                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" +  // 記録時刻
-                            ");"
-            );
+            // rollback_log（複合PKは後段で付与）
+            addColumnIfNotExists(conn, "rollback_log", "timestamp", "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
+            addColumnIfNotExists(conn, "rollback_log", "json_data", "LONGBLOB NOT NULL");
 
-            //グループデータの削除履歴
-            stmt.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS deleted_group_history (" +
-                            "group_uuid VARCHAR(255) NOT NULL, " +                 // 削除対象のグループUUID
-                            "group_name VARCHAR(255), " +                          // グループの名前（表示用）
-                            "deletion_timestamp DATETIME NOT NULL, " +             // 削除された時刻
-                            "executed_by VARCHAR(64), " +                          // 実行者（UUID or 名前）
-                            "PRIMARY KEY (group_uuid, deletion_timestamp)" +       // 主キー制約
-                            ");"
-            );
+            // group_deleted_backup（複合PKは後段で付与）
+            addColumnIfNotExists(conn, "group_deleted_backup", "timestamp", "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
+            addColumnIfNotExists(conn, "group_deleted_backup", "json_data", "LONGBLOB NOT NULL");
 
-            LOGGER.info("[BetterStorage] 全テーブルの初期化が完了しました。");
+            // rollback_operation_log
+            addColumnIfNotExists(conn, "rollback_operation_log", "plugin_name", "VARCHAR(255) NOT NULL");
+            addColumnIfNotExists(conn, "rollback_operation_log", "target_time", "TIMESTAMP NOT NULL");
+            addColumnIfNotExists(conn, "rollback_operation_log", "timestamp",   "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
+
+            // deleted_group_history（複合PKは後段で付与）
+            addColumnIfNotExists(conn, "deleted_group_history", "group_name",         "VARCHAR(255)");
+            addColumnIfNotExists(conn, "deleted_group_history", "deletion_timestamp", "DATETIME NOT NULL");
+            addColumnIfNotExists(conn, "deleted_group_history", "executed_by",        "VARCHAR(64)");
+
+            // --- 制約を後段で付与（内容は元の定義を維持） ---
+            ensurePrimaryKey(conn, "inventory_item_summary",
+                    new String[]{"date","player_uuid","group_uuid","plugin_name","page_id","material","display_name_plain","operation_type"});
+
+            ensurePrimaryKey(conn, "rollback_log",
+                    new String[]{"group_uuid","timestamp"});
+
+            ensurePrimaryKey(conn, "group_deleted_backup",
+                    new String[]{"group_uuid","timestamp"});
+
+            ensurePrimaryKey(conn, "deleted_group_history",
+                    new String[]{"group_uuid","deletion_timestamp"});
+
+            // UNIQUE(group_table.group_name) は ensureIndexes 側にある想定（なければここで↓）
+            ensureUniqueIndex(conn, "group_table", "unique_group_name", new String[]{"group_name"});
+
+            // UNIQUE(inventory_table(group_uuid,page_id)) はもともと制約だったので UNIQUE INDEX で維持
+            ensureUniqueIndex(conn, "inventory_table", "unique_inventory_page", new String[]{"group_uuid","page_id"});
+
+            LOGGER.info("[BetterStorage] 全テーブルの初期化（骨格→列補完→制約付与）完了にゃ");
 
         } catch (SQLException e) {
-            LOGGER.warning("[BetterStorage] テーブル初期化中にエラーが発生しました: " + e.getMessage());
+            LOGGER.warning("[BetterStorage] テーブル初期化中にエラー: " + e.getMessage());
         }
     }
+
 
 
     public static void ensureIndexes(DatabaseManager db) {
@@ -314,6 +275,54 @@ public class TableInitializer {
             LOGGER.warning("[BetterStorage] " + tableName + " のカラム '" + columnName + "' チェック中にエラーが起きたにゃ: " + e.getMessage());
         }
     }
+
+    // 既にあるPK名はDB依存で取れないこともあるので、存在判定は getPrimaryKeys で列集合一致をざっくりチェック
+    private static void ensurePrimaryKey(Connection conn, String table, String[] columns) {
+        try {
+            // 既存PK列集合を取得
+            Set<String> existing = new LinkedHashSet<>();
+            try (ResultSet rs = conn.getMetaData().getPrimaryKeys(null, null, table)) {
+                while (rs.next()) existing.add(rs.getString("COLUMN_NAME").toLowerCase());
+            }
+            Set<String> target = Arrays.stream(columns).map(String::toLowerCase).collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+            if (existing.equals(target)) return; // 既に一致
+
+            // 既に別PKがある場合は触らない（構造変更禁止のため）。無ければ付与。
+            if (!existing.isEmpty()) {
+                LOGGER.warning("[BetterStorage] " + table + " に既存のPRIMARY KEYがあり、想定と異なるため変更しないにゃ。");
+                return;
+            }
+            String cols = Arrays.stream(columns).map(c -> "`"+c+"`").collect(java.util.stream.Collectors.joining(","));
+            try (Statement st = conn.createStatement()) {
+                st.executeUpdate("ALTER TABLE `"+table+"` ADD PRIMARY KEY ("+cols+")");
+                LOGGER.info("[BetterStorage] " + table + " にPRIMARY KEYを付与したにゃ: " + Arrays.toString(columns));
+            }
+        } catch (SQLException e) {
+            LOGGER.warning("[BetterStorage] PRIMARY KEY付与エラー ("+table+"): " + e.getMessage());
+        }
+    }
+
+    private static void ensureUniqueIndex(Connection conn, String table, String indexName, String[] columns) {
+        try {
+            boolean exists = false;
+            try (ResultSet rs = conn.getMetaData().getIndexInfo(null, null, table, true, false)) {
+                while (rs.next()) {
+                    String idx = rs.getString("INDEX_NAME");
+                    if (indexName.equalsIgnoreCase(idx)) { exists = true; break; }
+                }
+            }
+            if (exists) return;
+
+            String cols = Arrays.stream(columns).map(c -> "`"+c+"`").collect(java.util.stream.Collectors.joining(","));
+            try (Statement st = conn.createStatement()) {
+                st.executeUpdate("CREATE UNIQUE INDEX `"+indexName+"` ON `"+table+"`("+cols+")");
+                LOGGER.info("[BetterStorage] " + table + " に UNIQUE INDEX " + indexName + " を作成したにゃ");
+            }
+        } catch (SQLException e) {
+            LOGGER.warning("[BetterStorage] UNIQUE INDEX作成エラー ("+table+"/"+indexName+"): " + e.getMessage());
+        }
+    }
+
 
 
 }
