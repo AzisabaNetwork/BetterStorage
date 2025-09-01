@@ -1,14 +1,9 @@
 package dev.felnull.commands;
 
 import dev.felnull.BetterStorage;
-import dev.felnull.Data.DeletedGroupBackup;
 import dev.felnull.Data.DeletedGroupInfo;
 import dev.felnull.Data.GroupData;
 import dev.felnull.DataIO.*;
-import dev.felnull.task.ItemLogSummaryTask;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -115,14 +110,9 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                                 sender.sendMessage("[ " + nameOrGroup + " ] のログ一覧:");
                                 for (LocalDateTime log : logs) {
                                     String formatted = log.format(FORMATTER);
-                                    Component msg = Component.text(" - [ ")
-                                            .append(Component.text(formatted)
-                                                    .color(NamedTextColor.AQUA)
-                                                    .clickEvent(ClickEvent.suggestCommand("/bstorage rollback " + nameOrGroup + " \"" + formatted + "\""))
-
-                                                    .hoverEvent(HoverEvent.showText(Component.text("クリックでロールバックコマンドをチャット欄に入力"))))
-                                            .append(Component.text(" ]"));
-                                    sender.sendMessage(msg);
+                                    String command = "/bstorage rollback " + nameOrGroup + " \"" + formatted + "\"";
+                                    String hover = "クリックでロールバックコマンドをチャット欄に入力";
+                                    ComponentUtil.sendClickableMessage(sender, formatted, command, hover);
                                 }
                             });
                         }
@@ -214,27 +204,19 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                             if (combined.isEmpty()) {
                                 sender.sendMessage("ログは見つかりませんでした。");
                             } else {
-                                sender.sendMessage(Component.text("[ " + nameOrGroup + " ] のログ一覧:").color(NamedTextColor.YELLOW));
+                                ComponentUtil.sendPlainMessage(sender, "[ " + nameOrGroup + " ] のログ一覧:", NamedTextColor.YELLOW);
                                 for (LocalDateTime log : combined) {
                                     String formatted = log.format(FORMATTER);
                                     boolean isSnapshot = snapshots.contains(log);
 
-                                    NamedTextColor color = isSnapshot ? NamedTextColor.GREEN : NamedTextColor.AQUA;
                                     String command = isSnapshot
-                                            ? "/bstorage rollback " + nameOrGroup + " " + formatted
-                                            : "/bstorage diff " + nameOrGroup + " " + formatted;
+                                            ? "/bstorage rollback " + nameOrGroup + " \"" + formatted + "\""
+                                            : "/bstorage diff " + nameOrGroup + " \"" + formatted + "\"";
                                     String hoverText = isSnapshot
                                             ? "クリックでロールバックコマンドを入力"
                                             : "クリックで差分表示コマンドを入力";
 
-                                    Component msg = Component.text(" - [ ")
-                                            .append(Component.text(formatted)
-                                                    .color(color)
-                                                    .clickEvent(ClickEvent.suggestCommand(command))
-                                                    .hoverEvent(HoverEvent.showText(Component.text(hoverText))))
-                                            .append(Component.text(" ]"));
-
-                                    sender.sendMessage(msg);
+                                    ComponentUtil.sendClickableMessage(sender, formatted, command, hoverText);
                                 }
                             }
                         });
@@ -386,22 +368,18 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
                         }
 
                         Bukkit.getScheduler().runTask(BetterStorage.BSPlugin, () -> {
-                            sender.sendMessage(Component.text("削除されたグループ一覧:").color(NamedTextColor.YELLOW));
+                            ComponentUtil.sendPlainMessage(sender, "削除されたグループ一覧:", NamedTextColor.YELLOW);
 
                             for (DeletedGroupInfo info : deletedGroups) {
                                 String label = info.displayName != null ? info.displayName : info.groupName;
                                 String uuid = info.groupUUID.toString();
                                 String time = info.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-                                Component msg = Component.text(" - [ ")
-                                        .append(Component.text(label + " (" + time + ")")
-                                                .color(NamedTextColor.AQUA)
-                                                .clickEvent(ClickEvent.suggestCommand("/bstorage recover " + uuid))
-                                                .hoverEvent(HoverEvent.showText(Component.text("クリックで復元コマンドを入力"))))
-                                        .append(Component.text(" ]"))
-                                        .color(NamedTextColor.GRAY);
+                                String text = label + " (" + time + ")";
+                                String command = "/bstorage recover " + uuid;
+                                String hover = "クリックで復元コマンドを入力";
 
-                                sender.sendMessage(msg);
+                                ComponentUtil.sendClickableMessage(sender, text, command, hover);
                             }
                         });
                     }
@@ -575,4 +553,10 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
         // 第3引数以降の補完は提供しない
         return suggestions;
     }
+
+    // 共通形式で置換するメソッド
+    private String buildInteractiveMessage(String label, String commandHint) {
+        return ChatColor.GRAY + " - [ " + ChatColor.AQUA + label + ChatColor.GRAY + " ] " + ChatColor.DARK_GRAY + "(「" + commandHint + "」を手動で入力してください)";
+    }
+
 }
