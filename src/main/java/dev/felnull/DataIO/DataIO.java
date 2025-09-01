@@ -377,7 +377,7 @@ public class DataIO {
             }
         }
 
-        private static void saveTags(Connection conn, GroupData g) throws SQLException {
+        public static void saveTags(Connection conn, GroupData g) throws SQLException {
             String sql = "REPLACE INTO tag_table (group_uuid, plugin_name, page_id, user_tag) VALUES (?, ?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 for (Map.Entry<String, InventoryData> entry : g.storageData.storageInventory.entrySet()) {
