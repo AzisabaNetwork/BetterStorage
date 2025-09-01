@@ -53,3 +53,5 @@ BetterStorageは外部プラグインから `GroupData`, `InventoryData` など�
 
 MIT License（予定）
 
+注意EnderChestPlusのimportはEnderChestPlus側の不具合で、セーブして一定時間が経過するまでデータが保存されないため使えなくした後にImportすることをお勧めします!!
+

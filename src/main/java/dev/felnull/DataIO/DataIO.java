@@ -607,7 +607,7 @@ public class DataIO {
 
             if (invData != null) {
                 // データが見つかればそのまま返す
-                Bukkit.getLogger().info("Loaded latest inventory data for pageId: " + pageId);
+                //Bukkit.getLogger().info("Loaded latest inventory data for pageId: " + pageId);
                 return invData;
             } else {
                 // pageIdが見つからない場合
