@@ -200,19 +200,7 @@ public class DataIO {
 
 
         // ---------- tag_table ----------
-        String tagSql = "REPLACE INTO tag_table (group_uuid, plugin_name, page_id, user_tag) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement ps = conn.prepareStatement(tagSql)) {
-            if (inv.userTags != null && !inv.userTags.isEmpty()) {
-                for (String tag : inv.userTags) {
-                    ps.setString(1, g.groupUUID.toString());
-                    ps.setString(2, g.ownerPlugin);
-                    ps.setString(3, pageId);
-                    ps.setString(4, tag);
-                    ps.addBatch();
-                }
-                ps.executeBatch();
-            }
-        }
+        syncTagsForPage(conn, g, pageId, inv);
 
         return true;
     }
@@ -376,29 +364,103 @@ public class DataIO {
                 return false;
             }
         }
-        /*
-        private static void saveTags(Connection conn, GroupData g) throws SQLException {
-            String sql = "REPLACE INTO tag_table (group_uuid, plugin_name, page_id, user_tag) VALUES (?, ?, ?, ?)";
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                for (Map.Entry<String, InventoryData> entry : g.storageData.storageInventory.entrySet()) {
-                    String pageId = entry.getKey();
-                    List<String> tags = entry.getValue().userTags;
 
-                    if (tags != null && !tags.isEmpty()) {
-                        for (String tag : tags) {
-                            ps.setString(1, g.groupUUID.toString());
-                            ps.setString(2, g.ownerPlugin);
-                            ps.setString(3, pageId);
-                            ps.setString(4, tag);
-                            ps.addBatch();
-                        }
-                    }
+    /** タグの差分同期（tag_tableを現在の集合に合わせてDELETE/INSERT）＋ diff_log_tags 追記 */
+    private static void syncTagsForPage(Connection conn, GroupData g, String pageId, InventoryData inv) throws SQLException {
+        // 1) 入力クレンジング＆重複排除（順序保持）
+        java.util.Set<String> newTags = (inv.userTags == null) ? java.util.Collections.emptySet()
+                : inv.userTags.stream()
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(java.util.stream.Collectors.toCollection(java.util.LinkedHashSet::new));
+
+        // 2) 既存タグを取得（現在の実データ）
+        java.util.Set<String> existing = new java.util.LinkedHashSet<>();
+        final String sel = "SELECT user_tag FROM tag_table WHERE group_uuid = ? AND plugin_name = ? AND page_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sel)) {
+            ps.setString(1, g.groupUUID.toString());
+            ps.setString(2, g.ownerPlugin);
+            ps.setString(3, pageId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) existing.add(rs.getString(1));
+            }
+        }
+
+        // 3) 差分計算
+        java.util.Set<String> toInsert = newTags.stream().filter(t -> !existing.contains(t))
+                .collect(java.util.stream.Collectors.toCollection(java.util.LinkedHashSet::new));
+        java.util.Set<String> toDelete = existing.stream().filter(t -> !newTags.contains(t))
+                .collect(java.util.stream.Collectors.toCollection(java.util.LinkedHashSet::new));
+
+        // 4) 削除
+        if (!toDelete.isEmpty()) {
+            String del = "DELETE FROM tag_table WHERE group_uuid = ? AND plugin_name = ? AND page_id = ? AND user_tag = ?";
+            try (PreparedStatement ps = conn.prepareStatement(del)) {
+                for (String t : toDelete) {
+                    ps.setString(1, g.groupUUID.toString());
+                    ps.setString(2, g.ownerPlugin);
+                    ps.setString(3, pageId);
+                    ps.setString(4, t);
+                    ps.addBatch();
                 }
                 ps.executeBatch();
             }
         }
-         */
 
+        // 5) 追加
+        if (!toInsert.isEmpty()) {
+            String ins = "INSERT INTO tag_table (group_uuid, plugin_name, page_id, user_tag) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement ps = conn.prepareStatement(ins)) {
+                for (String t : toInsert) {
+                    ps.setString(1, g.groupUUID.toString());
+                    ps.setString(2, g.ownerPlugin);
+                    ps.setString(3, pageId);
+                    ps.setString(4, t);
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+            }
+        }
+
+        // 6) メモリ上の inv.userTags も正規化済み集合に合わせて整える
+        inv.userTags.clear();
+        inv.userTags.addAll(newTags);
+
+        // 7) diff_log_tags に ADD/REMOVE を記録
+        UnifiedLogManager.logTagDiffsForPage(conn, g, inv, pageId);
+    }
+
+    /** タグだけ全ページ分を保存（差分同期＋diff追記） */
+    public static boolean saveTagsOnly(GroupData g) {
+        if (g == null || g.storageData == null) return true;
+        try (Connection conn = db.getConnection()) {
+            for (Map.Entry<String, InventoryData> e : g.storageData.storageInventory.entrySet()) {
+                String pageId = e.getKey();
+                InventoryData inv = e.getValue();
+                if (inv == null) continue;
+                syncTagsForPage(conn, g, pageId, inv);
+            }
+            return true;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().warning("[BetterStorage] タグ保存に失敗: " + ex.getMessage());
+            return false;
+        }
+    }
+
+    /** タグだけ特定ページ分を保存（差分同期＋diff追記） */
+    public static boolean saveTagsOnly(GroupData g, String pageId) {
+        if (g == null || g.storageData == null) return true;
+        InventoryData inv = g.storageData.storageInventory.get(pageId);
+        if (inv == null) return true;
+        try (Connection conn = db.getConnection()) {
+            syncTagsForPage(conn, g, pageId, inv);
+            return true;
+        } catch (SQLException ex) {
+            Bukkit.getLogger().warning("[BetterStorage] タグ保存に失敗(pageId=" + pageId + "): " + ex.getMessage());
+            return false;
+        }
+    }
 
     // ===========================================================
     // ===== 2. LOAD ============================================

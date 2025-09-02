@@ -689,8 +689,11 @@ public class UnifiedLogManager {
         return list;
     }
 
-
-
-
+    public static boolean logTagDiffsForPage(Connection conn, GroupData groupData,
+                                             InventoryData inv, String pageId) throws SQLException {
+        String now = java.time.LocalDateTime.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return saveTagDiffs(conn, groupData, inv, pageId, now);
+    }
 }
 
