@@ -21,9 +21,14 @@ public class InventoryData {
         this.itemStackSlot = itemStackSlot;
     }
 
-    // タグ追加用の補助メソッド
+    // タグ用の補助メソッド
     public void addUserTag(String tag) {
+        if (tag == null) return;
         userTags.add(tag);
+    }
+    public boolean removeUserTag(String tag){
+        if (tag == null) return false;
+        return userTags.removeIf(s -> Objects.equals(s, tag));
     }
 
     // タグ全取得
