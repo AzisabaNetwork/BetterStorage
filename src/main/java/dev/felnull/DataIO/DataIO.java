@@ -367,9 +367,6 @@ public class DataIO {
 
     /** タグの差分同期（tag_tableを現在の集合に合わせてDELETE/INSERT）＋ diff_log_tags 追記 */
     private static void syncTagsForPage(Connection conn, GroupData g, String pageId, InventoryData inv) throws SQLException {
-        for(String s : inv.userTags){
-            Bukkit.getLogger().info(s);
-        }
         // 1) 入力クレンジング＆重複排除（順序保持）
         java.util.Set<String> newTags = (inv.userTags == null) ? java.util.Collections.emptySet()
                 : inv.userTags.stream()
