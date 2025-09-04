@@ -99,6 +99,7 @@ public class TableInitializer {
             addColumnIfNotExists(conn, "diff_log_inventory_items", "amount",             "INT");
             addColumnIfNotExists(conn, "diff_log_inventory_items", "operation_type",     "VARCHAR(32)");
             addColumnIfNotExists(conn, "diff_log_inventory_items", "timestamp",          "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
+            addColumnIfNotExists(conn, "diff_log_inventory_items", "meta_json",          "TEXT");
 
             // diff_log_tags
             addColumnIfNotExists(conn, "diff_log_tags", "plugin_name",    "VARCHAR(255) NOT NULL");

@@ -525,10 +525,12 @@ public class BetterStorageCommand implements CommandExecutor, TabCompleter {
             default:
                 sender.sendMessage("使用可能なコマンド:");
                 sender.sendMessage("/bstorage rollback <groupName/playerName> <yyyy-MM-dd HH:mm:ss> - 指定した時点に巻き戻す");
-                sender.sendMessage("/bstorage list <groupName/playerName> - 利用可能なログ日時を表示");
+                sender.sendMessage("/bstorage rollbacklist <groupName/playerName> - 利用可能なログ日時を表示");
                 sender.sendMessage("/bstorage diff <groupName/playerName> <yyyy-MM-dd HH:mm:ss> - 差分ログから状態を復元");
                 sender.sendMessage("/bstorage difflist <groupName/playerName> - 差分ログの日時一覧を表示");
                 sender.sendMessage("/bstorage backup <groupName/playerName> - 現在の状態で強制バックアップ");
+                sender.sendMessage("/bstorage recover <groupUUID> 削除済みのグループを復旧");
+                sender.sendMessage("/bstorage wipedata <GroupName/PlayerName> グループを削除");
                 break;
 
         }

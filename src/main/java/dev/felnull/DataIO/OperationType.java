@@ -5,7 +5,11 @@ public enum OperationType {
     REMOVE,
     UPDATE,
     CLEAR,
-    MOVE;
+    MOVE,
+    PAGE_CREATE,
+    PAGE_DELETE,
+    PAGE_META,
+    PAGE_RENAME;
 
     /**
      * データベースに保存する文字列形式を取得（必要なら小文字にしても可）

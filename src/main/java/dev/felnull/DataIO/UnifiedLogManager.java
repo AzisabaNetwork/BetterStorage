@@ -1,6 +1,8 @@
 package dev.felnull.DataIO;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import dev.felnull.BetterStorage;
 import dev.felnull.Data.*;
 import org.bukkit.Bukkit;
@@ -21,6 +23,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import static dev.felnull.DataIO.DataIO.db;
 
 public class UnifiedLogManager {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -252,6 +256,72 @@ public class UnifiedLogManager {
         UUID groupUUID = groupData.groupUUID;
 
         try (Connection conn = db.getConnection()) {
+
+            // ===== 0) 構造イベント（先にページ集合を正す）=====
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "SELECT page_id, operation_type, meta_json, timestamp " +
+                            "FROM diff_log_inventory_items " +
+                            "WHERE group_uuid=? AND plugin_name=? AND timestamp > ? AND timestamp <= ? " +
+                            "AND operation_type IN ('PAGE_CREATE','PAGE_DELETE','PAGE_META','PAGE_RENAME') " +
+                            "ORDER BY timestamp ASC")) {
+
+                ps.setString(1, groupUUID.toString());
+                ps.setString(2, groupData.ownerPlugin);
+                ps.setString(3, from.format(FORMATTER));
+                ps.setString(4, to.format(FORMATTER));
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        String pageId = rs.getString("page_id");
+                        String op = rs.getString("operation_type");
+                        String metaJson = null;
+                        try { metaJson = rs.getString("meta_json"); } catch (SQLException ignore) {}
+
+                        switch (op) {
+                            case "PAGE_CREATE": {
+                                ensurePagePresentOrCreate(groupData, pageId);
+                                break;
+                            }
+                            case "PAGE_DELETE": {
+                                groupData.storageData.storageInventory.remove(pageId);
+                                break;
+                            }
+                            case "PAGE_META": { // 任意：rows は final なら再生成 or 後でDBから拾う
+                                InventoryData inv = ensurePagePresentOrCreate(groupData, pageId);
+                                if (metaJson != null) {
+                                    try {
+                                        JsonObject m = new JsonParser().parse(metaJson).getAsJsonObject();
+                                        if (m.has("displayName")) inv.displayName = m.get("displayName").getAsString();
+                                        if (m.has("requirePermission")) {
+                                            String csv = m.get("requirePermission").getAsString();
+                                            inv.requirePermission = csv.isEmpty()
+                                                    ? new HashSet<>()
+                                                    : new HashSet<>(Arrays.asList(csv.split(",")));
+                                        }
+                                        if (m.has("version")) inv.version = m.get("version").getAsLong();
+                                        // rows は inv.rows が final なら、新しい InventoryData を作って置き換える
+                                    } catch (Exception ignore) {}
+                                }
+                                break;
+                            }
+                            case "PAGE_RENAME": { // 任意
+                                if (metaJson != null) {
+                                    try {
+                                        JsonObject rn = new JsonParser().parse(metaJson).getAsJsonObject();
+                                        String oldId = rn.get("old").getAsString();
+                                        String newId = rn.get("new").getAsString();
+                                        InventoryData inv = groupData.storageData.storageInventory.remove(oldId);
+                                        if (inv == null) inv = ensurePagePresentOrCreate(groupData, oldId);
+                                        groupData.storageData.storageInventory.put(newId, inv);
+                                    } catch (Exception ignore) {}
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
             // ----- アイテムの差分適用 -----
             Set<LocalDateTime> appliedTimestamps = new LinkedHashSet<>();
             String itemSql = "SELECT page_id, slot, itemstack, timestamp FROM diff_log_inventory_items " +
@@ -331,6 +401,18 @@ public class UnifiedLogManager {
         }
     }
 
+    // ★ 追加：存在しなければ最小メタで作る（inventory_table から拾えるならそこで埋めてOK）
+    private static InventoryData ensurePagePresentOrCreate(GroupData groupData, String pageId) {
+        Map<String, InventoryData> map = groupData.storageData.storageInventory;
+        InventoryData inv = map.get(pageId);
+        if (inv != null) return inv;
+
+        // 既知のメタがあれば取ってくる（簡易版：行数6・空権限でプレースホルダ）
+        inv = new InventoryData(pageId, 6, new HashSet<>(), new HashMap<>());
+        inv.setFullyLoaded(true);
+        map.put(pageId, inv);
+        return inv;
+    }
 
     public static void saveDiffLogs(DatabaseManager db, GroupData groupData) {
         try (Connection conn = db.getConnection()) {
@@ -694,6 +776,43 @@ public class UnifiedLogManager {
         String now = java.time.LocalDateTime.now()
                 .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         return saveTagDiffs(conn, groupData, inv, pageId, now);
+    }
+
+    private static void logPageEvent(UUID groupUUID, String pluginName,
+                                     String pageId, OperationType op, @Nullable String metaJson) throws SQLException {
+        try (PreparedStatement ps = db.getConnection().prepareStatement(
+                "INSERT INTO diff_log_inventory_items " +
+                        "(group_uuid, plugin_name, page_id, slot, operation_type, itemstack, old_itemstack, meta_json, timestamp) " +
+                        "VALUES (?,?,?,?,?,NULL,NULL,?,CURRENT_TIMESTAMP)")) {
+            ps.setString(1, groupUUID.toString());
+            ps.setString(2, pluginName);
+            ps.setString(3, pageId);
+            ps.setInt(4, -1);              // 構造イベントの印
+            ps.setString(5, op.toDbString());           // 'PAGE_CREATE' / 'PAGE_DELETE' / 'PAGE_META' / 'PAGE_RENAME'
+            ps.setString(6, metaJson);
+            ps.executeUpdate();
+        }
+    }
+    /*
+    logPageEvent(conn, groupUUID, group.ownerPlugin, pageId, "PAGE_CREATE", null);
+    logPageEvent(conn, groupUUID, group.ownerPlugin, pageId, "PAGE_DELETE", null);
+    diffCreateLogMeta
+    diffRename
+    を適切に呼ぶこと
+     */
+    public static void diffCreateLogMeta(UUID groupUUID, String pluginName, String pageID, String displayName, int rows, Set<String> requirePermission) throws SQLException {
+        JsonObject meta = new JsonObject();
+        meta.addProperty("displayName", displayName);
+        meta.addProperty("rows", rows);
+        meta.addProperty("requirePermission", String.join(",", requirePermission));
+        logPageEvent(groupUUID, pluginName, pageID, OperationType.PAGE_META, meta.toString());
+    }
+
+    public static void diffRename(UUID groupUUID, String pluginName, String pageID, String oldId, String newId) throws SQLException {
+        JsonObject rn = new JsonObject();
+        rn.addProperty("old", oldId);
+        rn.addProperty("new", newId);
+        logPageEvent(groupUUID, pluginName, pageID, OperationType.PAGE_RENAME, rn.toString());
     }
 }
 
