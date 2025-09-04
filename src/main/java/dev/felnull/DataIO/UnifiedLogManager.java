@@ -778,7 +778,7 @@ public class UnifiedLogManager {
         return saveTagDiffs(conn, groupData, inv, pageId, now);
     }
 
-    private static void logPageEvent(UUID groupUUID, String pluginName,
+    public static void logPageEvent(UUID groupUUID, String pluginName,
                                      String pageId, OperationType op, @Nullable String metaJson) throws SQLException {
         try (PreparedStatement ps = db.getConnection().prepareStatement(
                 "INSERT INTO diff_log_inventory_items " +
@@ -794,8 +794,8 @@ public class UnifiedLogManager {
         }
     }
     /*
-    logPageEvent(conn, groupUUID, group.ownerPlugin, pageId, "PAGE_CREATE", null);
-    logPageEvent(conn, groupUUID, group.ownerPlugin, pageId, "PAGE_DELETE", null);
+    logPageEvent(groupUUID, group.ownerPlugin, pageId, "PAGE_CREATE", null);
+    logPageEvent(groupUUID, group.ownerPlugin, pageId, "PAGE_DELETE", null);
     diffCreateLogMeta
     diffRename
     を適切に呼ぶこと
