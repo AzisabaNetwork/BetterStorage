@@ -95,7 +95,7 @@ public class DatabaseManager {
         config.setConnectionTimeout(30000);
         config.setIdleTimeout(600000);
         config.setMaxLifetime(1800000);
-        config.setConnectionInitSql("SET time_zone = 'Asia/Tokyo'");
+        config.setConnectionInitSql("SET time_zone = '+09:00'");
         return config;
     }
 
