@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -68,17 +69,7 @@ public class DatabaseManager {
         this.username = plugin.getConfig().getString("database.username");
         this.password = plugin.getConfig().getString("database.password");
         Bukkit.getLogger().info("[BetterStorage] 接続先 → " + ip + ":" + port + "/" + dbName);
-        String jdbcUrl = "jdbc:mariadb://" + ip + ":" + port + "/" + dbName
-                + "?useUnicode=true&characterEncoding=utf8mb4";
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(jdbcUrl);
-        config.setUsername(username);
-        config.setPassword(password);
-        config.setMaximumPoolSize(10);
-        config.setMinimumIdle(2);
-        config.setConnectionTimeout(30000);
-        config.setIdleTimeout(600000);
-        config.setMaxLifetime(1800000);
+        HikariConfig config = getHikariConfig();
 
         if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
@@ -91,6 +82,23 @@ public class DatabaseManager {
             // 成功
         }
     }
+
+    private @NotNull HikariConfig getHikariConfig() {
+        String jdbcUrl = "jdbc:mariadb://" + ip + ":" + port + "/" + dbName
+                + "?useUnicode=true&characterEncoding=utf8mb4";
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(jdbcUrl);
+        config.setUsername(username);
+        config.setPassword(password);
+        config.setMaximumPoolSize(30);
+        config.setMinimumIdle(2);
+        config.setConnectionTimeout(30000);
+        config.setIdleTimeout(600000);
+        config.setMaxLifetime(1800000);
+        config.setConnectionInitSql("SET time_zone = 'Asia/Tokyo'");
+        return config;
+    }
+
     // DB利用可否判定
     public boolean isConnected() {
         return isDbConnected;

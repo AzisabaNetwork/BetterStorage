@@ -953,34 +953,14 @@ public class DataIO {
 
         String serializedItem = ItemSerializer.serializeToBase64(item);
         String displayName = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : "";
-        String material = item.getType().name();
-        int amount = item.getAmount();
         String plainName = ChatColor.stripColor(displayName);
 
-        Bukkit.getScheduler().runTaskAsynchronously(BetterStorage.BSPlugin, () -> {
-            try (Connection conn = db.getConnection()) {
-                String sql = "INSERT INTO inventory_item_log " +
-                        "(group_uuid, plugin_name, page_id, slot, operation_type, itemstack, display_name, display_name_plain, material, amount, player_uuid, timestamp) " +
-                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW())";
-
-                try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setString(1, groupUUID.toString());
-                    ps.setString(2, pluginName);
-                    ps.setString(3, pageId);
-                    ps.setInt(4, slot);
-                    ps.setString(5, op.toDbString());
-                    ps.setString(6, serializedItem);
-                    ps.setString(7, displayName);
-                    ps.setString(8, plainName);
-                    ps.setString(9, material);
-                    ps.setInt(10, amount);
-                    ps.setString(11, playerUUID != null ? playerUUID.toString() : null); // null安全
-                    ps.executeUpdate();
-                }
-            } catch (SQLException e) {
-                Bukkit.getLogger().warning("[BetterStorage] 非同期ログ保存失敗: " + e.getMessage());
-            }
-        });
+        AsyncItemLogger.ItemLogEvent ev = new AsyncItemLogger.ItemLogEvent(
+                groupUUID, pluginName, pageId, slot,
+                op.toDbString(), serializedItem, displayName, plainName,
+                item.getType().name(), item.getAmount(), playerUUID
+        );
+        AsyncItemLogger.enqueue(ev); // ← ここだけ
     }
 
 

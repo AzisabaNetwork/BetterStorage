@@ -191,10 +191,32 @@ public class UnifiedLogManager {
             if (group == null) {
                 group = backup.toGroupData(); // 完全復元
             } else {
+                saveBackupSnapshot(group);
                 // storageData だけ置き換える
                 StorageData restored = backup.storageData.toStorageData();
                 restored.attach(group);
                 group.storageData = restored;
+            }
+
+            // 2_2旧データ削除
+            // 旧データ削除（このグループ＋このプラグインのページ・アイテム・タグ [+ storage]）
+            final String gid = groupUUID.toString();
+            final String plugin = group.ownerPlugin;
+
+            try (PreparedStatement delItems = conn.prepareStatement(
+                    "DELETE FROM inventory_item_table WHERE group_uuid=? AND plugin_name=?");
+                 PreparedStatement delTags = conn.prepareStatement(
+                         "DELETE FROM tag_table            WHERE group_uuid=? AND plugin_name=?");
+                 PreparedStatement delPages = conn.prepareStatement(
+                         "DELETE FROM inventory_table      WHERE group_uuid=? AND plugin_name=?");
+                 PreparedStatement delStorage = conn.prepareStatement( // ← storage も入れ替える場合のみ
+                         "DELETE FROM storage_table        WHERE group_uuid=? AND plugin_name=?")) {
+
+                // 子 → 親（items → tags → pages → storage）の順で削除
+                delItems.setString(1, gid);   delItems.setString(2, plugin);   delItems.executeUpdate();
+                delTags.setString(1, gid);    delTags.setString(2, plugin);    delTags.executeUpdate();
+                delPages.setString(1, gid);   delPages.setString(2, plugin);   delPages.executeUpdate();
+                delStorage.setString(1, gid); delStorage.setString(2, plugin); delStorage.executeUpdate(); // 不要なら削除
             }
 
             // 3. 差分ログを snapshot → targetTime に適用
@@ -209,6 +231,7 @@ public class UnifiedLogManager {
 
         } catch (Exception e) {
             Bukkit.getLogger().warning("[BetterStorage] 巻き戻しに失敗: " + e.getMessage());
+            Bukkit.getLogger().info("復元中...");
             return false;
         }
     }
@@ -269,14 +292,15 @@ public class UnifiedLogManager {
                 ps.setString(2, groupData.ownerPlugin);
                 ps.setString(3, from.format(FORMATTER));
                 ps.setString(4, to.format(FORMATTER));
-
+                Bukkit.getLogger().info("aiauwdh");
                 try (ResultSet rs = ps.executeQuery()) {
+                    Bukkit.getLogger().info("ha?!");
                     while (rs.next()) {
                         String pageId = rs.getString("page_id");
                         String op = rs.getString("operation_type");
                         String metaJson = null;
                         try { metaJson = rs.getString("meta_json"); } catch (SQLException ignore) {}
-
+                        Bukkit.getLogger().info("ayag!");
                         switch (op) {
                             case "PAGE_CREATE": {
                                 ensurePagePresentOrCreate(groupData, pageId);
@@ -284,6 +308,7 @@ public class UnifiedLogManager {
                             }
                             case "PAGE_DELETE": {
                                 groupData.storageData.storageInventory.remove(pageId);
+                                Bukkit.getLogger().info("削除!");
                                 break;
                             }
                             case "PAGE_META": { // 任意：rows は final なら再生成 or 後でDBから拾う
@@ -336,26 +361,28 @@ public class UnifiedLogManager {
                     while (rs.next()) {
                         String pageId = rs.getString("page_id");
                         int slot = rs.getInt("slot");
-                        String base64 = rs.getString("itemstack");
-                        String timestampStr = rs.getString("timestamp");
+                        if(slot != -1){
+                            String base64 = rs.getString("itemstack");
+                            String timestampStr = rs.getString("timestamp");
 
-                        ItemStack item = ItemSerializer.deserializeFromBase64(base64);
+                            ItemStack item = ItemSerializer.deserializeFromBase64(base64);
 
-                        InventoryData inv = groupData.storageData.storageInventory.get(pageId);
-                        if (inv != null && inv.itemStackSlot != null) {
-                            if (item == null || item.getType() == Material.AIR) {
-                                inv.itemStackSlot.remove(slot);
-                            } else {
-                                inv.itemStackSlot.put(slot, item);
+                            InventoryData inv = groupData.storageData.storageInventory.get(pageId);
+                            if (inv != null && inv.itemStackSlot != null) {
+                                if (item == null || item.getType() == Material.AIR) {
+                                    inv.itemStackSlot.remove(slot);
+                                } else {
+                                    inv.itemStackSlot.put(slot, item);
+                                }
                             }
-                        }
 
-                        // 差分適用された timestamp を記録
-                        try {
-                            LocalDateTime appliedTime = LocalDateTime.parse(timestampStr, FORMATTER);
-                            appliedTimestamps.add(appliedTime);
-                        } catch (Exception e) {
-                            Bukkit.getLogger().warning("timestampのパースに失敗: " + timestampStr);
+                            // 差分適用された timestamp を記録
+                            try {
+                                LocalDateTime appliedTime = LocalDateTime.parse(timestampStr, FORMATTER);
+                                appliedTimestamps.add(appliedTime);
+                            } catch (Exception e) {
+                                Bukkit.getLogger().warning("timestampのパースに失敗: " + timestampStr);
+                            }
                         }
                     }
                 }
@@ -597,7 +624,7 @@ public class UnifiedLogManager {
                     int slot = rs.getInt("slot");
                     String operationType = rs.getString("operation_type");
 
-                    if (seenSlots.contains(slot)) {
+                    if (seenSlots.contains(slot)||slot == -1) {
                         continue;
                     }
                     seenSlots.add(slot);
