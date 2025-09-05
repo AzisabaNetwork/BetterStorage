@@ -292,15 +292,12 @@ public class UnifiedLogManager {
                 ps.setString(2, groupData.ownerPlugin);
                 ps.setString(3, from.format(FORMATTER));
                 ps.setString(4, to.format(FORMATTER));
-                Bukkit.getLogger().info("aiauwdh");
                 try (ResultSet rs = ps.executeQuery()) {
-                    Bukkit.getLogger().info("ha?!");
                     while (rs.next()) {
                         String pageId = rs.getString("page_id");
                         String op = rs.getString("operation_type");
                         String metaJson = null;
                         try { metaJson = rs.getString("meta_json"); } catch (SQLException ignore) {}
-                        Bukkit.getLogger().info("ayag!");
                         switch (op) {
                             case "PAGE_CREATE": {
                                 ensurePagePresentOrCreate(groupData, pageId);
